@@ -179,7 +179,8 @@ class Game {
       this.characterIdleImage = sprites.idle;
       this.characterJumpImage = sprites.jump;
       this.characterDefeatImage = sprites.defeat;
-  });
+    });
+  }
 
   start() {
     if (!this.isRunning) {
