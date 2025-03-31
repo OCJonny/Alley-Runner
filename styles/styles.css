@@ -148,6 +148,10 @@ body {
   z-index: 10;
 }
 /* 🎯 End Game Screen */
+#endGameScreen {
+  background-color: #121212;
+  text-align: center;
+}
 #endGameScreen h2 {
   font-size: 36px;
   margin: 20px 0 10px;
