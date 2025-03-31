@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alley Run</title>
+    <link rel="stylesheet" href="styles/styles.css" />
+  </head>
+  <body>
+    <!-- Title Screen -->
+    <div id="titleScreen" class="screen">
+      <img src="images/AlleyRun_logo_white.png" class="logo" />
+      <img
+        src="images/Button_Start.png"
+        class="start-button"
+        onclick="showMainMenu()"
+      />
+    </div>
+
+    <!-- Main Menu -->
+    <div id="mainMenu" class="screen hidden">
+      <img src="images/AlleyRun_logo_white.png" class="logo-small" />
+      <img src="images/Button_Lightning.png" onclick="startGame('lightning')" />
+      <img src="images/Button_Fire.png" onclick="startGame('fire')" />
+      <img src="images/Button_Water.png" onclick="startGame('water')" />
+      <img src="images/Button_Earth.png" onclick="startGame('earth')" />
+    </div>
+
+    <!-- Game Screen -->
+    <div id="gameScreen" class="screen hidden">
+      <canvas id="gameCanvas" width="800" height="600"></canvas>
+      <div class="hud">
+        <span id="score">Score: 0</span>
+        <span id="highScore">High: 0</span>
+      </div>
+    </div>
+
+    <script src="scripts/screens.js"></script>
+    <script src="scripts/game.js"></script>
+  </body>
+</html>
