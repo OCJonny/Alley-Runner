@@ -286,10 +286,10 @@ class Game {
 
   async loadCharacterSprites(domain) {
     const capital = domain.charAt(0).toUpperCase() + domain.slice(1);
-    const folder = `images/${capital}Sprites`;
+    const folder = `images/${capital} Sprites`;
 
-    const runPaths = Array.from({ length: 4 }, (_, i) => `${folder}/${capital}_Character_Run${i + 1}.png`);
-    const jumpPaths = Array.from({ length: 6 }, (_, i) => `${folder}/${capital}_Character_Jump${i + 1}.png`);
+    const runPaths = Array.from({ length: 4 }, (_, i) => `${folder}/${capital}_Character_Run ${i + 1}.png`);
+    const jumpPaths = Array.from({ length: 6 }, (_, i) => `${folder}/${capital}_Character_Jump ${i + 1}.png`);
 
     const [runFrames, jumpFrames, idle, jump, defeat] = await Promise.all([
       this.preloadImages(runPaths),
