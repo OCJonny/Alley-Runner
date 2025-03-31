@@ -25,14 +25,32 @@
       <img src="images/Button_Water.png" onclick="startGame('water')" />
       <img src="images/Button_Earth.png" onclick="startGame('earth')" />
     </div>
-
     <!-- Game Screen -->
     <div id="gameScreen" class="screen hidden">
       <canvas id="gameCanvas" width="800" height="600"></canvas>
+      <!-- HUD for score -->
       <div class="hud">
         <span id="score">Score: 0</span>
         <span id="highScore">High: 0</span>
       </div>
+      <!-- Speed bar at the bottom -->
+      <div class="speed-container">
+        <div id="speedBar"></div>
+      </div>
+      <!-- Flashing message when speed increases -->
+      <div id="speedUpMessage">⚡ Speed Up!</div>
+    </div>
+    <!-- End Game Screen -->
+    <div id="endGameScreen" class="screen hidden">
+      <img src="images/AlleyRun_logo_white.png" class="logo-small" />
+      <h2>Game Over</h2>
+      <p id="finalScore">Your Score: 0</p>
+      <p id="finalHighScore">High Score: 0</p>
+      <img
+        src="images/Button_Restart.png"
+        class="start-button"
+        onclick="restartGame()"
+      />
     </div>
 
     <script src="scripts/screens.js"></script>

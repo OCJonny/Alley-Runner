@@ -30,6 +30,18 @@ function showTitleScreen() {
   showScreen('titleScreen');
 }
 
+// Show the end game screen
+function showEndScreen(score) {
+  document.getElementById("gameScreen").classList.add("hidden");
+  document.getElementById("endGameScreen").classList.remove("hidden");
+
+  document.getElementById("finalScore").textContent = `Your Score: ${score}`;
+
+  // Use current element's scoreKey (grabbed from game instance)
+  const highScore = localStorage.getItem(game?.scoreKey) || 0;
+  document.getElementById("finalHighScore").textContent = `High Score: ${highScore}`;
+}
+
 // Game start function that takes the element type
 function startGame(elementType) {
   console.log(`Starting game with ${elementType} element`);
@@ -45,4 +57,9 @@ function startGame(elementType) {
   } else {
     console.error('Game canvas not found');
   }
+}
+// ✅ Restart game from end screen
+function restartGame() {
+  document.getElementById("endGameScreen").classList.add("hidden");
+  document.getElementById("mainMenu").classList.remove("hidden");
 }

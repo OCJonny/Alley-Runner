@@ -111,6 +111,53 @@ body {
   margin: 0 20px;
 }
 
+/* Speed bar container */
+.speed-container {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 12px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid #fff;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+/* Actual speed bar fill */
+#speedBar {
+  height: 100%;
+  background-color: #4CAF50;
+  width: 0%;
+  transition: width 0.2s;
+}
+
+/* Speed up message */
+#speedUpMessage {
+  position: absolute;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 28px;
+  color: gold;
+  font-weight: bold;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  z-index: 10;
+}
+/* 🎯 End Game Screen */
+#endGameScreen h2 {
+  font-size: 36px;
+  margin: 20px 0 10px;
+}
+
+#endGameScreen p {
+  font-size: 24px;
+  margin-bottom: 30px;
+}
+
 /* Responsive styles */
 @media (max-width: 768px) {
   #mainMenu img {
