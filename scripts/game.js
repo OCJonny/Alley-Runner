@@ -65,7 +65,7 @@ class Game {
     this.highScore = localStorage.getItem(this.scoreKey) || 0;
 
     // === SPEED ===
-    this.speedScale = 0.75; // ⬆ starting speed (try 0.5 for slower)
+    this.speedScale = 1; // ⬆ starting speed (try 0.5 for slower)
     this.lastSpeedTier = 1;
     this.recentlySpedUp = false;
     this.lastSpeedTier = 0;
@@ -265,7 +265,7 @@ class Game {
     }
 
     // Speed bar update
-    const barWidth = ((this.speedScale - 0.75) / (2.0 - 0.75)) * 100;
+    const barWidth = ((this.speedScale - 0.9) / (2.0 - 0.9)) * 100;
     document.getElementById("speedBar").style.width = `${barWidth}%`;
     const speedBar = document.getElementById("speedBar");
     speedBar.style.backgroundColor =
@@ -343,8 +343,8 @@ class Game {
       };
 
       const obstacleRect = {
-        x: obstacle.x + (obstacle.width * 0.075),
-        y: obstacle.y + (obstacle.height * 0.075),
+        x: obstacle.x + obstacle.width * 0.075,
+        y: obstacle.y + obstacle.height * 0.075,
         width: obstacle.width * 0.85,
         height: obstacle.height * 0.85 * 0.85, // Further reduce height by 15%
       };
