@@ -14,8 +14,8 @@ class Game {
     const beanImage = new Image();
     beanImage.src = "images/RedBean.png";
 
-    const width = 64;
-    const height = 64;
+    const width = 128;
+    const height = 128;
     const x = this.canvas.width;
     const y = this.canvas.height - height - 180 - Math.random() * 50; // adjusted for larger size
 
