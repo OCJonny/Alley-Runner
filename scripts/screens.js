@@ -5,6 +5,23 @@ bgMusic.volume = 0.5;
 
 let soundEnabled = true; // shared flag
 
+// Sound toggle function
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  if (soundEnabled) {
+    bgMusic.play();
+    document.getElementById("soundToggle").textContent = "🔊";
+  } else {
+    bgMusic.pause();
+    document.getElementById("soundToggle").textContent = "🔇";
+  }
+  
+  // Update game instance sound if it exists
+  if (game) {
+    game.soundEnabled = soundEnabled;
+  }
+}
+
 // Screen management functions
 
 // Show a specific screen and hide others

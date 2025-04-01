@@ -29,7 +29,7 @@ class Game {
     });
   }
 
-  constructor(canvas, elementType) {
+  constructor(canvas, elementType, soundEnabled) {
     // BEAN COUNTER
     this.beanCount = 0;
     this.beanKey = `${elementType}_beans`; // e.g. fire_beans
@@ -108,7 +108,7 @@ class Game {
         this.velocityY = this.jumpForce;
         this.isJumping = true;
         this.jumpFrameIndex = 0;
-      if (this.soundEnabled) this.jumpSound?.play();
+        if (this.soundEnabled) this.jumpSound?.play();
       }
     });
 
@@ -132,7 +132,7 @@ class Game {
     this.jumpSound = new Audio("sounds/Jump.wav");
     this.beanSound = new Audio("sounds/Bean.wav");
     this.deathSound = new Audio("sounds/Death.wav");
-    
+
     document.getElementById("highScore").textContent =
       `High: ${this.highScore}`;
 
@@ -144,7 +144,7 @@ class Game {
     this.deathSound = new Audio("sounds/Death.wav");
 
     // 👂 Setup toggle button
-    this.soundEnabled = true;
+    this.soundEnabled = soundEnabled; // Use global sound setting
 
     document.getElementById("soundToggle").addEventListener("click", () => {
       this.soundEnabled = !this.soundEnabled;
@@ -172,7 +172,7 @@ class Game {
   stop() {
     this.isRunning = false;
     this.hasCollided = true;
-    
+
     if (this.soundEnabled) {
       this.deathSound?.play();
       bgMusic?.pause(); // Using the bgMusic from screens.js
