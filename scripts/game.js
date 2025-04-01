@@ -42,7 +42,7 @@ class Game {
     this.characterHeight = 128;
     this.velocityY = 0;
     this.gravity = 0.2; // ⬆ lower for floaty jumps
-    this.jumpForce = -8; // ⬆ more negative = higher jump
+    this.jumpForce = -16; // doubled jump height
     this.isJumping = false;
 
     // ADDING BEAN
