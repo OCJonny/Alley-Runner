@@ -82,7 +82,7 @@ class Game {
 
     this.jumpFrameIndex = 0;
     this.jumpFrameTimer = 0;
-    this.jumpFrameInterval = 100; // Faster jump animation (was 300)
+    this.jumpFrameInterval = 400; // Back to slower jump animation
   }
 
   async init() {
