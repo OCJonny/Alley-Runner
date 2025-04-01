@@ -41,8 +41,8 @@ class Game {
     this.characterWidth = 128; // doubled sprite size
     this.characterHeight = 128;
     this.velocityY = 0;
-    this.gravity = 0.2; // ⬆ lower for floaty jumps
-    this.jumpForce = -8; // ⬆ more negative = higher jump
+    this.gravity = 0.24; // ⬆ lower for floaty jumps
+    this.jumpForce = -12; // ⬆ more negative = higher jump
     this.isJumping = false;
 
     // ADDING BEAN
@@ -187,7 +187,8 @@ class Game {
     const totalBeans = parseInt(this.savedBeanCount) + this.beanCount;
     localStorage.setItem(this.beanKey, totalBeans);
 
-    document.getElementById("highScore").textContent = `High: ${this.highScore}`;
+    document.getElementById("highScore").textContent =
+      `High: ${this.highScore}`;
     showEndScreen(this.score);
   }
 
@@ -389,7 +390,6 @@ class Game {
         this.updateScore();
         this.beans.splice(index, 1);
       }
-
 
       // Remove if off screen
       if (bean.x + bean.width < 0) {
