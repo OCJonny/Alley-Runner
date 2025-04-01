@@ -78,11 +78,11 @@ class Game {
     // === ANIMATION ===
     this.currentFrameIndex = 0;
     this.frameTimer = 0;
-    this.frameInterval = 500; // ms between run frames
+    this.frameInterval = 150; // Faster run animation (was 500)
 
     this.jumpFrameIndex = 0;
     this.jumpFrameTimer = 0;
-    this.jumpFrameInterval = 300; // ms between jump frames
+    this.jumpFrameInterval = 100; // Faster jump animation (was 300)
   }
 
   async init() {
