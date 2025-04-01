@@ -162,6 +162,28 @@ body {
   margin-bottom: 30px;
 }
 
+.defeat-sprite {
+  width: 128px;
+  height: auto;
+  margin-bottom: 20px;
+}
+/* Bouncing Defeated Sprite */
+@keyframes slowBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.defeat-sprite {
+  width: 128px;
+  height: auto;
+  margin-bottom: 20px;
+  animation: slowBounce 3s ease-in-out infinite;
+}
+
 /* Responsive styles */
 @media (max-width: 768px) {
   #mainMenu img {

@@ -36,10 +36,14 @@ function showEndScreen(score) {
   document.getElementById("endGameScreen").classList.remove("hidden");
 
   document.getElementById("finalScore").textContent = `Your Score: ${score}`;
-
-  // Use current element's scoreKey (grabbed from game instance)
   const highScore = localStorage.getItem(game?.scoreKey) || 0;
   document.getElementById("finalHighScore").textContent = `High Score: ${highScore}`;
+
+  // 👇 Set the defeat sprite based on the current game instance
+  const defeatSprite = document.getElementById("defeatSprite");
+  if (defeatSprite && game?.characterDefeatImage?.src) {
+    defeatSprite.src = game.characterDefeatImage.src;
+  }
 }
 
 // Game start function that takes the element type

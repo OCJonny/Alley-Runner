@@ -54,9 +54,12 @@ class Game {
     this.jumpFrameInterval = 300; // ms between jump frames
   }
 
-  async init() {
+    async init() {
     this.scoreTimer = 0;
-    this.scoreInterval = 200; // ⬆ time between score increases
+    this.scoreInterval = 200;
+
+    // 🟡 FIX: Define capital
+    const capital = this.elementType.charAt(0).toUpperCase() + this.elementType.slice(1);
 
     // Controls
     window.addEventListener("keydown", (e) => {
@@ -75,14 +78,12 @@ class Game {
       }
     });
 
-    const cap = this.elementType.charAt(0).toUpperCase() + this.elementType.slice(1);
-
     // Load background and obstacle
     this.backgroundImage = new Image();
-    this.backgroundImage.src = `images/BG_${cap}.png`;
+    this.backgroundImage.src = `images/BG_${capital}.png`;
 
     this.obstacleImage = new Image();
-    this.obstacleImage.src = `images/Obstacle_${cap}.png`;
+    this.obstacleImage.src = `images/Obstacle_${capital}.png`;
 
     // Load character sprites
     const sprites = await this.loadCharacterSprites(this.elementType);
@@ -91,6 +92,7 @@ class Game {
     this.characterIdleImage = sprites.idle;
     this.characterJumpImage = sprites.jump;
     this.characterDefeatImage = sprites.defeat;
+    console.log("Loading sprites for", capital);
 
     document.getElementById("highScore").textContent = `High: ${this.highScore}`;
 
@@ -152,6 +154,7 @@ class Game {
   }
 
   loop() {
+    console.log("Game loop running");
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     if (this.backgroundImage.complete) {
