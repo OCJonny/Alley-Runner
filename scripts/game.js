@@ -343,10 +343,10 @@ class Game {
       };
 
       const obstacleRect = {
-        x: obstacle.x + (obstacle.width * 0.075), // Add 7.5% on each side (15% total)
+        x: obstacle.x + (obstacle.width * 0.075),
         y: obstacle.y + (obstacle.height * 0.075),
-        width: obstacle.width * 0.85,  // Reduce width by 15%
-        height: obstacle.height * 0.85, // Reduce height by 15%
+        width: obstacle.width * 0.85,
+        height: obstacle.height * 0.85 * 0.85, // Further reduce height by 15%
       };
 
       if (this.checkCollision(playerRect, obstacleRect)) this.stop();
