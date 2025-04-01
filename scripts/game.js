@@ -10,7 +10,31 @@ async function initGame(canvas, elementType) {
 }
 
 class Game {
+  spawnBean() {
+    const beanImage = new Image();
+    beanImage.src = "images/RedBean.png";
+
+    const width = 32;
+    const height = 32;
+    const x = this.canvas.width;
+    const y = this.canvas.height - height - 120 - Math.random() * 50; // random jump height
+
+    this.beans.push({
+      x,
+      y,
+      width,
+      height,
+      speed: 3 + Math.random() * 2,
+      image: beanImage,
+    });
+  }
+
   constructor(canvas, elementType) {
+    // BEAN COUNTER
+    this.beanCount = 0;
+    this.beanKey = `${elementType}_beans`; // e.g. fire_beans
+    this.savedBeanCount = localStorage.getItem(this.beanKey) || 0;
+
     // === CHARACTER PROPERTIES ===
     this.characterX = 150; // character starting X
     this.characterY = canvas.height - 150; // initial Y
@@ -20,6 +44,11 @@ class Game {
     this.gravity = 0.2; // ⬆ lower for floaty jumps
     this.jumpForce = -8; // ⬆ more negative = higher jump
     this.isJumping = false;
+
+    // ADDING BEAN
+    this.beans = []; // List of red beans
+    this.beanSpawnTimer = 0;
+    this.beanSpawnInterval = 3000; // Adjust as needed
 
     // === CANVAS & CONTEXT ===
     this.canvas = canvas;
@@ -38,6 +67,8 @@ class Game {
     // === SPEED ===
     this.speedScale = 0.75; // ⬆ starting speed (try 0.5 for slower)
     this.lastSpeedTier = 1;
+    this.recentlySpedUp = false;
+    this.lastSpeedTier = 0;
 
     // === OBSTACLE ===
     this.obstacles = [];
@@ -54,12 +85,13 @@ class Game {
     this.jumpFrameInterval = 300; // ms between jump frames
   }
 
-    async init() {
+  async init() {
     this.scoreTimer = 0;
     this.scoreInterval = 200;
 
     // 🟡 FIX: Define capital
-    const capital = this.elementType.charAt(0).toUpperCase() + this.elementType.slice(1);
+    const capital =
+      this.elementType.charAt(0).toUpperCase() + this.elementType.slice(1);
 
     // Controls
     window.addEventListener("keydown", (e) => {
@@ -67,6 +99,7 @@ class Game {
         this.velocityY = this.jumpForce;
         this.isJumping = true;
         this.jumpFrameIndex = 0;
+        if (this.soundEnabled) this.jumpSound?.play();
       }
     });
 
@@ -75,6 +108,7 @@ class Game {
         this.velocityY = this.jumpForce;
         this.isJumping = true;
         this.jumpFrameIndex = 0;
+      if (this.soundEnabled) this.jumpSound?.play();
       }
     });
 
@@ -94,9 +128,35 @@ class Game {
     this.characterDefeatImage = sprites.defeat;
     console.log("Loading sprites for", capital);
 
-    document.getElementById("highScore").textContent = `High: ${this.highScore}`;
+    // Load sounds
+    this.jumpSound = new Audio("sounds/Jump.wav");
+    this.beanSound = new Audio("sounds/Bean.wav");
+    this.deathSound = new Audio("sounds/Death.wav");
+    
+    document.getElementById("highScore").textContent =
+      `High: ${this.highScore}`;
 
     console.log(`Game initialized with ${this.elementType}`);
+
+    // 🔊 Load sound effects
+    this.jumpSound = new Audio("sounds/Jump.wav");
+    this.beanSound = new Audio("sounds/Bean.wav");
+    this.deathSound = new Audio("sounds/Death.wav");
+
+    // 👂 Setup toggle button
+    this.soundEnabled = true;
+
+    document.getElementById("soundToggle").addEventListener("click", () => {
+      this.soundEnabled = !this.soundEnabled;
+
+      if (this.soundEnabled) {
+        this.music.play();
+        document.getElementById("soundToggle").textContent = "🔊";
+      } else {
+        this.music.pause();
+        document.getElementById("soundToggle").textContent = "🔇";
+      }
+    });
   }
 
   start() {
@@ -110,14 +170,23 @@ class Game {
   }
 
   stop() {
+    if (this.soundEnabled) this.deathSound?.play();
+    this.music.pause();
     this.isRunning = false;
     this.hasCollided = true;
+    this.deathSound?.play();
+    this.music?.pause();
 
     if (this.score > this.highScore) {
       this.highScore = this.score;
       localStorage.setItem(this.scoreKey, this.highScore);
     }
-    document.getElementById("highScore").textContent = `High: ${this.highScore}`;
+    // Save beans
+    const totalBeans = parseInt(this.savedBeanCount) + this.beanCount;
+    localStorage.setItem(this.beanKey, totalBeans);
+
+    document.getElementById("highScore").textContent =
+      `High: ${this.highScore}`;
     showEndScreen(this.score); // from screens.js
   }
 
@@ -140,7 +209,7 @@ class Game {
       width,
       height,
       speed: 4 + Math.random() * 2,
-      image: obstacleImage
+      image: obstacleImage,
     });
   }
 
@@ -158,7 +227,13 @@ class Game {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     if (this.backgroundImage.complete) {
-      this.ctx.drawImage(this.backgroundImage, 0, 0, this.canvas.width, this.canvas.height);
+      this.ctx.drawImage(
+        this.backgroundImage,
+        0,
+        0,
+        this.canvas.width,
+        this.canvas.height,
+      );
     }
 
     if (this.hasCollided && this.characterDefeatImage.complete) {
@@ -167,7 +242,7 @@ class Game {
         this.characterX,
         this.characterY,
         this.characterWidth,
-        this.characterHeight
+        this.characterHeight,
       );
       return;
     }
@@ -175,18 +250,28 @@ class Game {
     if (!this.isRunning) return;
 
     // Speed Up
-    if (this.score % 150 === 0 && this.score !== 0 && !this.recentlySpedUp) {
+    const tier = Math.floor(this.score / 100);
+    if (tier > this.lastSpeedTier && !this.recentlySpedUp) {
       this.speedScale = Math.min(this.speedScale + 0.05, 2.0);
       this.showSpeedUpMessage();
       this.recentlySpedUp = true;
-      setTimeout(() => { this.recentlySpedUp = false; }, 500);
+      this.lastSpeedTier = tier;
+
+      setTimeout(() => {
+        this.recentlySpedUp = false;
+      }, 500);
     }
 
     // Speed bar update
-    const barWidth = ((this.speedScale - 1) / 1) * 100;
+    const barWidth = ((this.speedScale - 0.75) / (2.0 - 0.75)) * 100;
     document.getElementById("speedBar").style.width = `${barWidth}%`;
     const speedBar = document.getElementById("speedBar");
-    speedBar.style.backgroundColor = this.speedScale < 1.3 ? "#4CAF50" : this.speedScale < 1.6 ? "#FFC107" : "#F44336";
+    speedBar.style.backgroundColor =
+      this.speedScale < 1.3
+        ? "#4CAF50"
+        : this.speedScale < 1.6
+          ? "#FFC107"
+          : "#F44336";
 
     // Physics
     this.velocityY += this.gravity;
@@ -199,17 +284,21 @@ class Game {
     }
 
     // Animation
-    const currentFrame = this.isJumping ? this.jumpFrames[this.jumpFrameIndex] : this.runFrames[this.currentFrameIndex];
+    const currentFrame = this.isJumping
+      ? this.jumpFrames[this.jumpFrameIndex]
+      : this.runFrames[this.currentFrameIndex];
     if (this.isJumping) {
       this.jumpFrameTimer += 16;
       if (this.jumpFrameTimer >= this.jumpFrameInterval) {
-        this.jumpFrameIndex = (this.jumpFrameIndex + 1) % this.jumpFrames.length;
+        this.jumpFrameIndex =
+          (this.jumpFrameIndex + 1) % this.jumpFrames.length;
         this.jumpFrameTimer = 0;
       }
     } else {
       this.frameTimer += 16;
       if (this.frameTimer >= this.frameInterval) {
-        this.currentFrameIndex = (this.currentFrameIndex + 1) % this.runFrames.length;
+        this.currentFrameIndex =
+          (this.currentFrameIndex + 1) % this.runFrames.length;
         this.frameTimer = 0;
       }
     }
@@ -220,7 +309,7 @@ class Game {
         this.characterX,
         this.characterY,
         this.characterWidth,
-        this.characterHeight
+        this.characterHeight,
       );
     }
 
@@ -235,25 +324,76 @@ class Game {
     this.obstacles.forEach((obstacle, index) => {
       obstacle.x -= obstacle.speed * this.speedScale;
       if (obstacle.image.complete) {
-        this.ctx.drawImage(obstacle.image, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+        this.ctx.drawImage(
+          obstacle.image,
+          obstacle.x,
+          obstacle.y,
+          obstacle.width,
+          obstacle.height,
+        );
       }
 
       const playerRect = {
         x: this.characterX,
         y: this.characterY,
         width: this.characterWidth,
-        height: this.characterHeight
+        height: this.characterHeight,
       };
 
       const obstacleRect = {
         x: obstacle.x,
         y: obstacle.y,
         width: obstacle.width,
-        height: obstacle.height
+        height: obstacle.height,
       };
 
       if (this.checkCollision(playerRect, obstacleRect)) this.stop();
       if (obstacle.x + obstacle.width < 0) this.obstacles.splice(index, 1);
+    });
+
+    // === RED BEANS ===
+    this.beanSpawnTimer += 16;
+    if (this.beanSpawnTimer >= this.beanSpawnInterval) {
+      this.spawnBean();
+      this.beanSpawnTimer = 0;
+      this.beanSpawnInterval = 3000 + Math.random() * 2000;
+    }
+
+    this.beans.forEach((bean, index) => {
+      bean.x -= bean.speed * this.speedScale;
+
+      if (bean.image.complete) {
+        this.ctx.drawImage(bean.image, bean.x, bean.y, bean.width, bean.height);
+      }
+
+      // Collision with character
+      const playerRect = {
+        x: this.characterX,
+        y: this.characterY,
+        width: this.characterWidth,
+        height: this.characterHeight,
+      };
+
+      const beanRect = {
+        x: bean.x,
+        y: bean.y,
+        width: bean.width,
+        height: bean.height,
+      };
+
+      if (this.checkCollision(playerRect, beanRect)) {
+        if (this.soundEnabled) this.beanSound?.play();
+        this.score += 10;
+        this.beanCount++;
+        this.updateScore();
+        this.beans.splice(index, 1);
+      }
+
+
+      // Remove if off screen
+      if (bean.x + bean.width < 0) {
+        this.beans.splice(index, 1);
+      }
     });
 
     // Score
@@ -271,12 +411,14 @@ class Game {
   showSpeedUpMessage() {
     const message = document.getElementById("speedUpMessage");
     message.style.opacity = 1;
-    setTimeout(() => { message.style.opacity = 0; }, 1000);
+    setTimeout(() => {
+      message.style.opacity = 0;
+    }, 1000);
   }
 
   // Preload helpers
   preloadImage(src) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       const img = new Image();
       img.src = src;
       img.onload = () => resolve(img);
@@ -284,22 +426,28 @@ class Game {
   }
 
   preloadImages(srcArray) {
-    return Promise.all(srcArray.map(src => this.preloadImage(src)));
+    return Promise.all(srcArray.map((src) => this.preloadImage(src)));
   }
 
   async loadCharacterSprites(domain) {
     const capital = domain.charAt(0).toUpperCase() + domain.slice(1);
-    const folder = 'images';
+    const folder = "images";
 
-    const runPaths = Array.from({ length: 4 }, (_, i) => `${folder}/${capital}_Run ${i + 1}.png`);
-    const jumpPaths = Array.from({ length: 6 }, (_, i) => `${folder}/${capital}_Jump ${i + 1}.png`);
+    const runPaths = Array.from(
+      { length: 4 },
+      (_, i) => `${folder}/${capital}_Run ${i + 1}.png`,
+    );
+    const jumpPaths = Array.from(
+      { length: 6 },
+      (_, i) => `${folder}/${capital}_Jump ${i + 1}.png`,
+    );
 
     const [runFrames, jumpFrames, idle, jump, defeat] = await Promise.all([
       this.preloadImages(runPaths),
       this.preloadImages(jumpPaths),
       this.preloadImage(`${folder}/${capital}_Character_Idle.png`),
       this.preloadImage(`${folder}/${capital}_Character_Jump.png`),
-      this.preloadImage(`${folder}/${capital}_Character_Defeat.png`)
+      this.preloadImage(`${folder}/${capital}_Character_Defeat.png`),
     ]);
 
     return { runFrames, jumpFrames, idle, jump, defeat };

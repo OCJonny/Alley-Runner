@@ -1,3 +1,10 @@
+// Global Music (shared across screens)
+let bgMusic = new Audio("sounds/Game Music.mp3");
+bgMusic.loop = true;
+bgMusic.volume = 0.5;
+
+let soundEnabled = true; // shared flag
+
 // Screen management functions
 
 // Show a specific screen and hide others
@@ -28,7 +35,9 @@ function showGameScreen() {
 // Show the title screen
 function showTitleScreen() {
   showScreen('titleScreen');
+  if (soundEnabled) bgMusic.play();
 }
+
 
 // Show the end game screen
 function showEndScreen(score) {
@@ -38,6 +47,10 @@ function showEndScreen(score) {
   document.getElementById("finalScore").textContent = `Your Score: ${score}`;
   const highScore = localStorage.getItem(game?.scoreKey) || 0;
   document.getElementById("finalHighScore").textContent = `High Score: ${highScore}`;
+  const beanCount = localStorage.getItem(game?.beanKey) || 0;
+  document.getElementById("beanCountDisplay").textContent = `Beans Collected: ${beanCount}`;
+ 
+  if (soundEnabled) bgMusic.pause();
 
   // 👇 Set the defeat sprite based on the current game instance
   const defeatSprite = document.getElementById("defeatSprite");
@@ -64,6 +77,7 @@ function startGame(elementType) {
 }
 // ✅ Restart game from end screen
 function restartGame() {
+  if (soundEnabled) bgMusic.play();
   document.getElementById("endGameScreen").classList.add("hidden");
   document.getElementById("mainMenu").classList.remove("hidden");
 }
