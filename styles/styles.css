@@ -115,19 +115,19 @@ body {
 .hud {
   position: absolute;
   top: 20px;
-  left: 0;
-  width: 100%;
-  padding: 10px;
+  left: 20px; /* moved to top-left */
   display: flex;
-  justify-content: space-between;
+  flex-direction: column; /* stack vertically */
+  align-items: flex-start;
   font-family: 'Arial', sans-serif;
   font-size: 18px;
   color: white;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  z-index: 10; /* make sure it's behind the sound button */
 }
 
 .hud span {
-  margin: 0 20px;
+  margin: 4px 0;
 }
 
 /* Speed bar container */
