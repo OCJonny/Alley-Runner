@@ -7,9 +7,10 @@ let soundEnabled = true; // shared flag
 
 // Play music when page loads
 document.addEventListener('DOMContentLoaded', () => {
-  if (soundEnabled) {
-    bgMusic.play();
-  }
+  bgMusic.play().catch(error => {
+    console.log("Audio playback failed:", error);
+  });
+  document.getElementById("soundToggle").textContent = "🔊";
 });
 
 // Sound toggle function
