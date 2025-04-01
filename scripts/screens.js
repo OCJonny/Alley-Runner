@@ -35,12 +35,7 @@ function showGameScreen() {
 // Show the title screen
 function showTitleScreen() {
   showScreen('titleScreen');
-  if (soundEnabled) {
-    bgMusic.load(); // Ensure music is loaded
-    bgMusic.play().catch(error => {
-      console.log("Audio playback failed:", error);
-    });
-  }
+  if (soundEnabled) bgMusic.play();
 }
 
 
