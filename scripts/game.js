@@ -14,10 +14,10 @@ class Game {
     const beanImage = new Image();
     beanImage.src = "images/RedBean.png";
 
-    const width = 32;
-    const height = 32;
+    const width = 64;
+    const height = 64;
     const x = this.canvas.width;
-    const y = this.canvas.height - height - 120 - Math.random() * 50; // random jump height
+    const y = this.canvas.height - height - 180 - Math.random() * 50; // adjusted for larger size
 
     this.beans.push({
       x,
@@ -37,9 +37,9 @@ class Game {
 
     // === CHARACTER PROPERTIES ===
     this.characterX = 150; // character starting X
-    this.characterY = canvas.height - 150; // initial Y
-    this.characterWidth = 64; // sprite size
-    this.characterHeight = 64;
+    this.characterY = canvas.height - 250; // adjusted for larger size
+    this.characterWidth = 128; // doubled sprite size
+    this.characterHeight = 128;
     this.velocityY = 0;
     this.gravity = 0.2; // ⬆ lower for floaty jumps
     this.jumpForce = -8; // ⬆ more negative = higher jump
@@ -199,8 +199,8 @@ class Game {
     const obstacleImage = new Image();
     obstacleImage.src = this.obstacleImage.src;
 
-    const width = 64;
-    const height = 64;
+    const width = 128;
+    const height = 128;
     const x = this.canvas.width;
     const y = this.canvas.height - height - 50;
 
