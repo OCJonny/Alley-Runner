@@ -14,8 +14,8 @@ class Game {
     const beanImage = new Image();
     beanImage.src = "images/RedBean.png";
 
-    const width = 64;
-    const height = 64;
+    const width = 166;
+    const height = 166;
     const x = this.canvas.width;
     const y = this.canvas.height - height - 180 - Math.random() * 50; // adjusted for larger size
 
@@ -42,7 +42,7 @@ class Game {
     this.characterHeight = 128;
     this.velocityY = 0;
     this.gravity = 0.2; // ⬆ lower for floaty jumps
-    this.jumpForce = -8; // ⬆ more negative = higher jump
+    this.jumpForce = -20.8; // increased jump height by 30%
     this.isJumping = false;
 
     // ADDING BEAN
