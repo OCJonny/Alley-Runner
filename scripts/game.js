@@ -170,24 +170,25 @@ class Game {
   }
 
   stop() {
-    if (this.soundEnabled) this.deathSound?.play();
-    this.music.pause();
     this.isRunning = false;
     this.hasCollided = true;
-    this.deathSound?.play();
-    this.music?.pause();
+    
+    if (this.soundEnabled) {
+      this.deathSound?.play();
+      bgMusic?.pause(); // Using the bgMusic from screens.js
+    }
 
     if (this.score > this.highScore) {
       this.highScore = this.score;
       localStorage.setItem(this.scoreKey, this.highScore);
     }
+
     // Save beans
     const totalBeans = parseInt(this.savedBeanCount) + this.beanCount;
     localStorage.setItem(this.beanKey, totalBeans);
 
-    document.getElementById("highScore").textContent =
-      `High: ${this.highScore}`;
-    showEndScreen(this.score); // from screens.js
+    document.getElementById("highScore").textContent = `High: ${this.highScore}`;
+    showEndScreen(this.score);
   }
 
   updateScore() {
