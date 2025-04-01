@@ -5,6 +5,13 @@ bgMusic.volume = 0.5;
 
 let soundEnabled = true; // shared flag
 
+// Play music when page loads
+document.addEventListener('DOMContentLoaded', () => {
+  if (soundEnabled) {
+    bgMusic.play();
+  }
+});
+
 // Sound toggle function
 function toggleSound() {
   soundEnabled = !soundEnabled;
