@@ -119,23 +119,26 @@ class Game {
     const capital =
       this.elementType.charAt(0).toUpperCase() + this.elementType.slice(1);
 
-    // Controls
-    window.addEventListener("keydown", (e) => {
-      if ((e.code === "Space" || e.code === "ArrowUp") && !this.isJumping) {
-        this.velocityY = this.jumpForce;
-        this.isJumping = true;
-        this.jumpFrameIndex = 0;
-        if (this.soundEnabled) this.jumpSound?.play();
-      }
-    });
-
-    this.canvas.addEventListener("click", () => {
+    // Controls for desktop and mobile
+    const jump = () => {
       if (!this.isJumping) {
         this.velocityY = this.jumpForce;
         this.isJumping = true;
         this.jumpFrameIndex = 0;
         if (this.soundEnabled) this.jumpSound?.play();
       }
+    };
+
+    // Keyboard controls
+    window.addEventListener("keydown", (e) => {
+      if (e.code === "Space" || e.code === "ArrowUp") jump();
+    });
+
+    // Touch and click controls
+    this.canvas.addEventListener("click", jump);
+    this.canvas.addEventListener("touchstart", (e) => {
+      e.preventDefault(); // Prevent double-firing on mobile
+      jump();
     });
 
     // Load background and obstacle
