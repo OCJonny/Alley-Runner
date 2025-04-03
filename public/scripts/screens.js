@@ -1,5 +1,12 @@
 // screens.js
 
+function showScreen(screenId) {
+  const screens = document.querySelectorAll(".screen");
+  screens.forEach((screen) => screen.classList.add("hidden"));
+  const target = document.getElementById(screenId);
+  if (target) target.classList.remove("hidden");
+}
+
 // 🌐 API base URL (use current host for both local and deployed environments)
 const API_BASE_URL = window.location.origin;
 
@@ -48,18 +55,6 @@ function toggleSound() {
 
   if (game) {
     game.soundEnabled = soundEnabled;
-  }
-}
-
-// 🖥 Screen utilities
-function showScreen(screenId) {
-  document
-    .querySelectorAll(".screen")
-    .forEach((screen) => screen.classList.add("hidden"));
-
-  const screenToShow = document.getElementById(screenId);
-  if (screenToShow) {
-    screenToShow.classList.remove("hidden");
   }
 }
 
@@ -156,10 +151,6 @@ function restartGame() {
     : "🔇";
 }
 
-// Domain stats display update
-// Use the current host for API calls (works with both local and deployed environments)
-const API_BASE_URL = window.location.origin;
-
 function updateDomainStatsDisplay() {
   // First, show the data from localStorage while we fetch from the server
   const domains = ["fire", "earth", "water", "lightning"];
@@ -216,3 +207,4 @@ document.addEventListener("visibilitychange", () => {
     }
   }
 });
+window.showMainMenu = showMainMenu;

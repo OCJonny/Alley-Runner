@@ -2,9 +2,6 @@
 
 let game = null;
 
-// Use the current host for API calls (works with both local and deployed environments)
-const API_BASE_URL = window.location.origin;
-
 // Initialize the game with the selected element
 async function initGame(canvas, elementType) {
   if (!canvas || !elementType) {
