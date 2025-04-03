@@ -1,5 +1,8 @@
 modules = ["nodejs-20", "bash", "web", "python-3.11", "postgresql-16"]
-run = "npm run dev"
+
+# 🚀 Tell Replit to run your Express server instead of npx serve
+run = "node server.js"
+
 hidden = [".config", ".git", "generated-icon.png", "node_modules", "dist"]
 
 [nix]
@@ -10,41 +13,25 @@ deploymentTarget = "cloudrun"
 run = "node server.js"
 
 [[ports]]
+localPort = 3000
+externalPort = 3000
+
+[[ports]]
 localPort = 5000
 externalPort = 80
 
 [workflows]
-runButton = "Project"
+runButton = "Start Server"
 
 [[workflows.workflow]]
-name = "Project"
-mode = "parallel"
+name = "Start Server"
+mode = "sequential"
 author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "Start Game"
-
-[[workflows.workflow]]
-name = "Start Game"
-author = "agent"
-
-[workflows.workflow.metadata]
-agentRequireRestartOnSave = false
 
 [[workflows.workflow.tasks]]
 task = "packager.installForAll"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "npm run dev"
-waitForPort = 5000
-
-[[workflows.workflow]]
-name = "Start Server"
-author = 40447580
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
 args = "node server.js"
+waitForPort = 5000
