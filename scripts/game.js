@@ -401,11 +401,11 @@ class Game {
     const base = "images";
     const run = Array.from(
       { length: 4 },
-      (_, i) => `${base}/${capital}_Run ${i + 1}.png`,
+      (_, i) => `${base}/${capital}_Run%20${i + 1}.png`,
     );
     const jump = Array.from(
       { length: 6 },
-      (_, i) => `${base}/${capital}_Jump ${i + 1}.png`,
+      (_, i) => `${base}/${capital}_Jump%20${i + 1}.png`,
     );
     const [runFrames, jumpFrames, idle, jumpStill, defeat] = await Promise.all([
       this.preloadImages(run),
