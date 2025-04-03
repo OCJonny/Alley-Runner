@@ -362,7 +362,9 @@ class Game {
     if (this.obstacleSpawnTimer >= this.obstacleSpawnInterval) {
       this.spawnObstacle();
       this.obstacleSpawnTimer = 0;
-      this.obstacleSpawnInterval = 2000 + Math.random() * 1500;
+      this.obstacleSpawnInterval = this.isMobile ? 
+        (3000 + Math.random() * 2000) : // Slower spawn on mobile
+        (2000 + Math.random() * 1500);
     }
 
     this.obstacles.forEach((obstacle, index) => {
@@ -400,7 +402,9 @@ class Game {
     if (this.beanSpawnTimer >= this.beanSpawnInterval) {
       this.spawnBean();
       this.beanSpawnTimer = 0;
-      this.beanSpawnInterval = 3000 + Math.random() * 2000;
+      this.beanSpawnInterval = this.isMobile ?
+        (4500 + Math.random() * 3000) : // Slower spawn on mobile
+        (3000 + Math.random() * 2000);
     }
 
     this.beans.forEach((bean, index) => {
