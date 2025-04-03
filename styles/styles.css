@@ -235,11 +235,41 @@ canvas {
   }
 }
 
+/* Domain Stats Styling */
+.domain-button {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+  gap: 16px;
+}
+
+.domain-button img {
+  width: 100px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.domain-stats {
+  font-size: 16px;
+  color: white;
+  text-align: left;
+  line-height: 1.4;
+  text-shadow: 1px 1px 2px black;
+}
+
 /* 🔁 Responsive Tweaks */
 @media (max-width: 768px) {
   #mainMenu img {
     width: 80px;
     margin: 8px;
+  }
+
+  .domain-button img {
+    width: 80px;
+  }
+
+  .domain-stats {
+    font-size: 14px;
   }
 
   .hud {

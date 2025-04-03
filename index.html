@@ -29,34 +29,45 @@
     <div id="mainMenu" class="screen hidden">
       <div class="overlay"></div>
 
-      <img
-        src="images/Button_Lightning_Up.png"
-        alt="Play Lightning Element"
-        onclick="startGame('lightning')"
-        onmouseover="this.src='images/Button_Lightning_Down.png'"
-        onmouseout="this.src='images/Button_Lightning_Up.png'"
-      />
-      <img
-        src="images/Button_Fire_Up.png"
-        alt="Play Fire Element"
-        onclick="startGame('fire')"
-        onmouseover="this.src='images/Button_Fire_Down.png'"
-        onmouseout="this.src='images/Button_Fire_Up.png'"
-      />
-      <img
-        src="images/Button_Water_Up.png"
-        alt="Play Water Element"
-        onclick="startGame('water')"
-        onmouseover="this.src='images/Button_Water_Down.png'"
-        onmouseout="this.src='images/Button_Water_Up.png'"
-      />
-      <img
-        src="images/Button_Earth_Up.png"
-        alt="Play Earth Element"
-        onclick="startGame('earth')"
-        onmouseover="this.src='images/Button_Earth_Down.png'"
-        onmouseout="this.src='images/Button_Earth_Up.png'"
-      />
+      <div class="domain-button">
+        <img
+          src="images/Button_Fire_Up.png"
+          onclick="startGame('fire')"
+          onmouseover="this.src='images/Button_Fire_Down.png'"
+          onmouseout="this.src='images/Button_Fire_Up.png'"
+        />
+        <div class="domain-stats" id="fireStats"></div>
+      </div>
+
+      <div class="domain-button">
+        <img
+          src="images/Button_Earth_Up.png"
+          onclick="startGame('earth')"
+          onmouseover="this.src='images/Button_Earth_Down.png'"
+          onmouseout="this.src='images/Button_Earth_Up.png'"
+        />
+        <div class="domain-stats" id="earthStats"></div>
+      </div>
+
+      <div class="domain-button">
+        <img
+          src="images/Button_Water_Up.png"
+          onclick="startGame('water')"
+          onmouseover="this.src='images/Button_Water_Down.png'"
+          onmouseout="this.src='images/Button_Water_Up.png'"
+        />
+        <div class="domain-stats" id="waterStats"></div>
+      </div>
+
+      <div class="domain-button">
+        <img
+          src="images/Button_Lightning_Up.png"
+          onclick="startGame('lightning')"
+          onmouseover="this.src='images/Button_Lightning_Down.png'"
+          onmouseout="this.src='images/Button_Lightning_Up.png'"
+        />
+        <div class="domain-stats" id="lightningStats"></div>
+      </div>
     </div>
 
     <!-- 🕹️ Game Screen -->
