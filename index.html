@@ -5,110 +5,140 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Alley Run</title>
     <link rel="stylesheet" href="styles/styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
   </head>
-
   <body>
-    <!-- 🔊 Sound Toggle (always visible) -->
-    <button id="soundToggle" onclick="toggleSound()" style="position: absolute; top: 10px; right: 10px; font-size: 24px; z-index: 20;">
-      🔊
-    </button>
-
-    <!-- 🎮 Title Screen -->
+    <!-- Title Screen -->
     <div id="titleScreen" class="screen">
+      <h1>Alley Run</h1>
       <img
-        src="images/Button_Start_Up.png"
-        alt="Start Game"
-        class="start-button"
-        onclick="showMainMenu()"
-        onmouseover="this.src='images/Button_Start_Down.png'"
-        onmouseout="this.src='images/Button_Start_Up.png'"
+        src="images/Logo.png"
+        alt="Alley Run Logo"
+        class="logo"
       />
-    </div>
-
-    <!-- ⚡ Main Menu -->
-    <div id="mainMenu" class="screen hidden">
-      <div class="overlay"></div>
-
-      <div class="domain-button">
+      <button
+        onclick="showMainMenu()"
+        class="start-button"
+      >
+        Start Game
+      </button>
+      
+      <div class="sound-toggle">
         <img
-          src="images/Button_Fire_Up.png"
-          onclick="startGame('fire')"
-          onmouseover="this.src='images/Button_Fire_Down.png'"
-          onmouseout="this.src='images/Button_Fire_Up.png'"
+          id="soundButton"
+          src="images/Button_Sound_On.png"
+          alt="Toggle Sound"
         />
-        <div class="domain-stats" id="fireStats"></div>
-      </div>
-
-      <div class="domain-button">
-        <img
-          src="images/Button_Earth_Up.png"
-          onclick="startGame('earth')"
-          onmouseover="this.src='images/Button_Earth_Down.png'"
-          onmouseout="this.src='images/Button_Earth_Up.png'"
-        />
-        <div class="domain-stats" id="earthStats"></div>
-      </div>
-
-      <div class="domain-button">
-        <img
-          src="images/Button_Water_Up.png"
-          onclick="startGame('water')"
-          onmouseover="this.src='images/Button_Water_Down.png'"
-          onmouseout="this.src='images/Button_Water_Up.png'"
-        />
-        <div class="domain-stats" id="waterStats"></div>
-      </div>
-
-      <div class="domain-button">
-        <img
-          src="images/Button_Lightning_Up.png"
-          onclick="startGame('lightning')"
-          onmouseover="this.src='images/Button_Lightning_Down.png'"
-          onmouseout="this.src='images/Button_Lightning_Up.png'"
-        />
-        <div class="domain-stats" id="lightningStats"></div>
       </div>
     </div>
 
-    <!-- 🕹️ Game Screen -->
-    <div id="gameScreen" class="screen hidden">
-      <div class="game-container">
-        <canvas id="gameCanvas"></canvas>
-
-        <!-- HUD -->
-        <div class="hud">
-          <div id="livesContainer"></div> <!-- Lives go here -->
-          <span id="score">Score: 0</span>
-          <span id="highScore">High: 0</span>
+    <!-- Main Menu Screen -->
+    <div id="mainMenuScreen" class="screen">
+      <h2>Choose Your Element</h2>
+      
+      <div class="domain-selection">
+        <!-- Lightning Domain -->
+        <div class="domain-option">
+          <button 
+            onclick="startGame('lightning')"
+            class="domain-button lightning"
+          >
+            <img
+              src="images/Domain_Lightning.png"
+              alt="Lightning Domain"
+            />
+          </button>
+          <div class="domain-stats" id="lightningStats">
+            <div class="stat">High: 0</div>
+            <div class="stat">Total: 0</div>
+            <div class="stat">Beans: 0</div>
+          </div>
         </div>
-
-        <!-- Speed Bar -->
-        <div class="speed-container">
-          <div id="speedBar"></div>
-        </div>
-
-        <!-- Speed Up Text -->
-        <div id="speedUpMessage">⚡ Speed Up!</div>
         
-        <!-- Health Message -->
-        <div id="healthUpMessage">+1 Health! 💚</div>
+        <!-- Fire Domain -->
+        <div class="domain-option">
+          <button 
+            onclick="startGame('fire')"
+            class="domain-button fire"
+          >
+            <img
+              src="images/Domain_Fire.png"
+              alt="Fire Domain"
+            />
+          </button>
+          <div class="domain-stats" id="fireStats">
+            <div class="stat">High: 0</div>
+            <div class="stat">Total: 0</div>
+            <div class="stat">Beans: 0</div>
+          </div>
+        </div>
+        
+        <!-- Water Domain -->
+        <div class="domain-option">
+          <button 
+            onclick="startGame('water')"
+            class="domain-button water"
+          >
+            <img
+              src="images/Domain_Water.png"
+              alt="Water Domain"
+            />
+          </button>
+          <div class="domain-stats" id="waterStats">
+            <div class="stat">High: 0</div>
+            <div class="stat">Total: 0</div>
+            <div class="stat">Beans: 0</div>
+          </div>
+        </div>
+        
+        <!-- Earth Domain -->
+        <div class="domain-option">
+          <button 
+            onclick="startGame('earth')"
+            class="domain-button earth"
+          >
+            <img
+              src="images/Domain_Earth.png"
+              alt="Earth Domain"
+            />
+          </button>
+          <div class="domain-stats" id="earthStats">
+            <div class="stat">High: 0</div>
+            <div class="stat">Total: 0</div>
+            <div class="stat">Beans: 0</div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- 🧨 End Game Screen -->
-    <div id="endGameScreen" class="screen hidden">
-      <img src="images/AlleyRun_logo_red.png" alt="Game Logo" class="logo-small" />
-      <img id="defeatSprite" class="defeat-sprite" src="" alt="Defeated Character" />
+    <!-- Game Screen -->
+    <div id="gameScreen" class="screen">
+      <div class="game-hud">
+        <div class="score-container">
+          Score: <span id="score">0</span>
+        </div>
+        <div id="lives" class="lives-container">
+          <!-- Lives will be added dynamically -->
+        </div>
+      </div>
+      
+      <canvas id="gameCanvas" width="320" height="480"></canvas>
+    </div>
 
+    <!-- End Screen -->
+    <div id="endScreen" class="screen">
       <h2>Game Over</h2>
-      <p id="finalScore">Your Score: 0</p>
-      <p id="beanCountDisplay">Total Beans Collected: 0</p>
-      <p id="finalHighScore">High Score: 0</p>
-
+      <div class="final-score">
+        Your Score: <span id="finalScore">0</span>
+      </div>
+      
       <img
         src="images/Button_Restart_Up.png"
-        alt="Restart Game"
-        class="start-button"
+        alt="Restart"
+        class="restart-button"
         onclick="restartGame()"
         onmouseover="this.src='images/Button_Restart_Down.png'"
         onmouseout="this.src='images/Button_Restart_Up.png'"
@@ -116,6 +146,7 @@
     </div>
 
     <!-- 🧠 Scripts -->
+    <script src="scripts/api.js" defer></script>
     <script src="scripts/game.js" defer></script>
     <script src="scripts/screens.js" defer></script>
   </body>

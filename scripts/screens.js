@@ -1,187 +1,201 @@
-// screens.js
+// Global variables for audio management
+let backgroundMusic = null;
+let soundEnabled = true;
 
-// 🔊 Global Music (shared across screens)
-let bgMusic = new Audio("sounds/Game_Music.wav");
-bgMusic.loop = true;
-bgMusic.volume = 0.5;
+// Start audio context on user interaction
+document.addEventListener('click', initAudio, { once: true });
+document.addEventListener('keydown', initAudio, { once: true });
 
-window.soundEnabled = true;
-let resizeListenerAdded = false;
+function initAudio() {
+  if (!backgroundMusic) {
+    backgroundMusic = new Audio('sounds/Game_Music.wav');
+    backgroundMusic.loop = true;
+    backgroundMusic.volume = 0;
+  }
+}
 
-// 🔁 Set sound toggle icon on load
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("soundToggle").textContent = "🔊";
-});
-
-// Helper function for smooth fade-in of audio
+// Fade in the music over a specified duration
 function fadeInMusic(audio, duration = 2000) {
-  audio.volume = 0;
-  const targetVolume = 0.5;
-  const step = targetVolume / (duration / 50); // 50ms intervals
-
-  const fade = setInterval(() => {
-    if (audio.volume < targetVolume) {
-      audio.volume = Math.min(audio.volume + step, targetVolume);
-    } else {
-      clearInterval(fade);
+  if (!audio || !soundEnabled) return;
+  
+  let startTime = Date.now();
+  let interval = setInterval(() => {
+    let elapsed = Date.now() - startTime;
+    let volume = Math.min(0.5, elapsed / duration);
+    
+    audio.volume = volume;
+    
+    if (elapsed >= duration) {
+      clearInterval(interval);
     }
   }, 50);
 }
 
-// 🎚 Toggle sound
+// Toggle sound on/off
 function toggleSound() {
   soundEnabled = !soundEnabled;
-
-  if (soundEnabled) {
-    bgMusic.volume = 0; // start silent
-    bgMusic.play()
-      .then(() => fadeInMusic(bgMusic))
-      .catch(err => console.warn("Music play blocked:", err));
-    document.getElementById("soundToggle").textContent = "🔊";
-  } else {
-    bgMusic.pause();
-    document.getElementById("soundToggle").textContent = "🔇";
+  
+  if (backgroundMusic) {
+    if (soundEnabled) {
+      backgroundMusic.play();
+      fadeInMusic(backgroundMusic);
+    } else {
+      backgroundMusic.pause();
+    }
   }
-
-  if (game) {
-    game.soundEnabled = soundEnabled;
+  
+  // Update button image
+  const soundButton = document.getElementById('soundButton');
+  if (soundButton) {
+    soundButton.src = soundEnabled ? 'images/Button_Sound_On.png' : 'images/Button_Sound_Off.png';
   }
 }
 
-// 🖥 Screen utilities
+// Auto-pause music when tab is not focused
+document.addEventListener('visibilitychange', () => {
+  if (backgroundMusic && soundEnabled) {
+    if (document.hidden) {
+      backgroundMusic.pause();
+    } else {
+      backgroundMusic.play();
+    }
+  }
+});
+
+// Show a specific screen by ID
 function showScreen(screenId) {
-  document
-    .querySelectorAll(".screen")
-    .forEach((screen) => screen.classList.add("hidden"));
-
-  const screenToShow = document.getElementById(screenId);
-  if (screenToShow) {
-    screenToShow.classList.remove("hidden");
-  }
-}
-
-// ⏮ Title screen
-function showTitleScreen() {
-  showScreen("titleScreen");
+  // Hide all screens
+  const screens = document.querySelectorAll('.screen');
+  screens.forEach(screen => {
+    screen.style.display = 'none';
+  });
   
-  if (soundEnabled && bgMusic.paused) {
-    bgMusic.volume = 0; // start silent
-    bgMusic.play()
-      .then(() => fadeInMusic(bgMusic))
-      .catch(err => console.warn("Music play blocked:", err));
+  // Show the requested screen
+  const targetScreen = document.getElementById(screenId);
+  if (targetScreen) {
+    targetScreen.style.display = 'flex';
   }
 }
 
-// 🧭 Main menu
-function showMainMenu() {
-  showScreen("mainMenu");
-  updateDomainStatsDisplay();
-
-  if (soundEnabled && bgMusic.paused) {
-    bgMusic.volume = 0; // start silent
-    bgMusic.play()
-      .then(() => fadeInMusic(bgMusic))
-      .catch(err => console.warn("Music play blocked:", err));
+// Initialize and show the title screen
+async function showTitleScreen() {
+  showScreen('titleScreen');
+  
+  if (backgroundMusic) {
+    backgroundMusic.currentTime = 0;
+    backgroundMusic.play();
+    fadeInMusic(backgroundMusic);
+  }
+  
+  // Initialize the leaderboard
+  if (window.leaderboardAPI) {
+    await window.leaderboardAPI.init();
   }
 }
 
-// 🎮 Game screen
+// Show the main menu with domains
+async function showMainMenu() {
+  showScreen('mainMenuScreen');
+  
+  // Fetch and display domain stats
+  await updateDomainStatsDisplay();
+}
+
+// Show the game screen
 function showGameScreen() {
-  showScreen("gameScreen");
+  showScreen('gameScreen');
 }
 
-// ☠️ End screen
+// Show the end screen with score
 function showEndScreen(score) {
-  showScreen("endGameScreen");
-
-  document.getElementById("finalScore").textContent = `Your Score: ${score}`;
-  document.getElementById("finalHighScore").textContent =
-    `High Score: ${localStorage.getItem(game?.scoreKey) || 0}`;
-  document.getElementById("beanCountDisplay").textContent =
-    `Beans Collected: ${localStorage.getItem(game?.beanKey) || 0}`;
-
-  if (soundEnabled) bgMusic.pause();
-
-  const defeatSprite = document.getElementById("defeatSprite");
-  if (defeatSprite && game?.characterDefeatImage?.src) {
-    defeatSprite.src = game.characterDefeatImage.src;
-  }
-}
-
-// 🧪 Game starter
-function startGame(elementType) {
-  const canvas = document.getElementById("gameCanvas");
-
-  if (!resizeListenerAdded) {
-    window.addEventListener("resize", () => {
-      if (canvas && game) {
-        initGame(canvas, game.elementType);
-      }
-    });
-    resizeListenerAdded = true;
-  }
-
-  console.log(`Starting game with ${elementType}`);
-  showGameScreen();
-
-  if (canvas) {
-    initGame(canvas, elementType).catch(console.error);
-  } else {
-    console.error("Game canvas not found");
-  }
-}
-
-// 🔁 Restart button from end screen
-function restartGame() {
-  const canvas = document.getElementById("gameCanvas");
-
-  if (soundEnabled) {
-    bgMusic.volume = 0; // start silent
-    bgMusic.play()
-      .then(() => fadeInMusic(bgMusic))
-      .catch(err => console.warn("Music play blocked:", err));
+  const scoreElement = document.getElementById('finalScore');
+  if (scoreElement) {
+    scoreElement.textContent = score;
   }
   
-  showMainMenu();
-
-  if (canvas) {
-    canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
-  }
-
-  document.getElementById("soundToggle").textContent = soundEnabled
-    ? "🔊"
-    : "🔇";
+  showScreen('endScreen');
 }
 
-// Domain stats display update
-function updateDomainStatsDisplay() {
-  const domains = ["fire", "earth", "water", "lightning"];
+// Start the game with the chosen element type
+function startGame(elementType) {
+  // Check if the game has been initialized
+  if (!window.gameInstance) {
+    const canvas = document.getElementById('gameCanvas');
+    if (canvas) {
+      window.initGame(canvas, elementType);
+    }
+  } else {
+    // Reset and start with new element type
+    window.gameInstance.elementType = elementType;
+    window.gameInstance.start();
+  }
+  
+  showGameScreen();
+}
 
-  domains.forEach((domain) => {
-    const scoreKey = `${domain}_cumulative_score`;
-    const beanKey = `${domain}_beans`;
-    const score = localStorage.getItem(scoreKey) || 0;
-    const beans = localStorage.getItem(beanKey) || 0;
+// Restart the game
+function restartGame() {
+  if (window.gameInstance) {
+    window.gameInstance.start();
+    showGameScreen();
+  }
+}
 
-    const label = document.getElementById(`${domain}Stats`);
-    if (label) {
-      label.innerHTML = `Score: ${score}<br>Beans: ${beans}`;
+// Update domain stats display on main menu
+async function updateDomainStatsDisplay() {
+  // Try to get stats from API first
+  let domainStats = null;
+  
+  if (window.leaderboardAPI) {
+    try {
+      domainStats = await window.leaderboardAPI.getAll();
+    } catch (error) {
+      console.error('Failed to fetch leaderboard data:', error);
+    }
+  }
+  
+  // If API call failed, use local storage
+  if (!domainStats) {
+    domainStats = [];
+    const domains = ['lightning', 'fire', 'water', 'earth'];
+    
+    domains.forEach(domain => {
+      const stats = JSON.parse(localStorage.getItem(`domain_${domain}`)) || {
+        highScore: 0,
+        totalScore: 0,
+        totalBeans: 0
+      };
+      
+      domainStats.push({
+        domain,
+        high_score: stats.highScore,
+        total_score: stats.totalScore,
+        total_beans: stats.totalBeans
+      });
+    });
+  }
+  
+  // Update the UI for each domain
+  domainStats.forEach(stats => {
+    const statContainer = document.getElementById(`${stats.domain}Stats`);
+    if (statContainer) {
+      statContainer.innerHTML = `
+        <div class="stat">High: ${stats.high_score}</div>
+        <div class="stat">Total: ${stats.total_score}</div>
+        <div class="stat">Beans: ${stats.total_beans}</div>
+      `;
     }
   });
 }
 
-// Auto-pause/resume when switching tabs
-document.addEventListener("visibilitychange", () => {
-  if (document.hidden) {
-    // Pause music when tab is not visible
-    if (!bgMusic.paused) bgMusic.pause();
-  } else {
-    // Resume music with fade-in when tab becomes visible again
-    if (soundEnabled && bgMusic.paused) {
-      bgMusic.volume = 0; // start silent
-      bgMusic.play()
-        .then(() => fadeInMusic(bgMusic, 1000)) // faster fade for tab switching
-        .catch(err => console.warn("Resume blocked:", err));
-    }
+// Initialize the game
+document.addEventListener('DOMContentLoaded', () => {
+  // Show the title screen
+  showTitleScreen();
+  
+  // Setup event listeners for sound toggle
+  const soundButton = document.getElementById('soundButton');
+  if (soundButton) {
+    soundButton.addEventListener('click', toggleSound);
   }
 });
