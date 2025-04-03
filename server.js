@@ -21,8 +21,8 @@ app.use(express.json());
 // ✅ Serve static assets from /public (HTML, JS, CSS, images, etc.)
 app.use(express.static(path.join(__dirname, "public")));
 
-// Redirect root and /public to serve index.html
-app.get(["/", "/public", "/public/"], (req, res) => {
+// ✅ Serve index.html for the root route
+app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
