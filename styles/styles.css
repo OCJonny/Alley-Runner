@@ -136,6 +136,18 @@ canvas {
   margin: 4px 0;
 }
 
+#livesContainer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.life-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 4px;
+}
+
 /* Speed Bar */
 .speed-container {
   position: absolute;

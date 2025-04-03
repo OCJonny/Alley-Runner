@@ -149,6 +149,7 @@ class Game {
       this.isRunning = true;
       this.score = 0;
       this.updateScore();
+      this.updateLivesDisplay();
       this.lastTime = null;
       // Bind loop to preserve this context
       this.boundLoop = (timestamp) => this.loop(timestamp);
@@ -182,7 +183,18 @@ class Game {
   updateScore() {
     document.getElementById("score").textContent = `Score: ${this.score}`;
     document.getElementById("highScore").textContent = `High: ${this.highScore}`;
-    document.getElementById("lives").textContent = `Lives: ${this.lives}`;
+  }
+  
+  updateLivesDisplay() {
+    const container = document.getElementById("livesContainer");
+    container.innerHTML = ""; // Clear existing
+
+    for (let i = 0; i < this.lives; i++) {
+      const img = document.createElement("img");
+      img.src = "images/GreenBean.png";
+      img.classList.add("life-icon");
+      container.appendChild(img);
+    }
   }
 
   spawnBean() {
@@ -344,11 +356,11 @@ class Game {
         )
       ) {
         this.lives--;
-        this.updateScore();
+        this.updateLivesDisplay();
 
         if (this.soundEnabled) this.deathSound?.play();
 
-        this.obstacles.splice(i, 1); // Remove the obstacle on hit
+        this.obstacles.splice(i, 1); // Remove obstacle so player doesn't get hit again instantly
 
         if (this.lives <= 0) {
           this.stop();
