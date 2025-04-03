@@ -76,7 +76,7 @@ class Game {
     this.scoreKey = `${elementType}_score`;
     this.highScore = localStorage.getItem(this.scoreKey) || 0;
 
-    this.speedScale = 1.5;
+    this.speedScale = 1.0;
     this.lastSpeedTier = 0;
     this.recentlySpedUp = false;
 
