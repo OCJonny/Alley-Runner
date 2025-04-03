@@ -98,6 +98,9 @@ class Game {
     this.flashTimer = 0;
     this.flashDuration = 1000; // 1 second of flashing/invulnerability
     
+    // Background scrolling
+    this.bgScrollX = 0; // for horizontal scroll
+    
     this.updateScore(); // Initialize the HUD
   }
 
@@ -256,12 +259,30 @@ class Game {
 
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
+    // === Background Scrolling ===
+    const bgRatio = this.backgroundImage.width / this.backgroundImage.height;
+    const bgWidth = this.canvas.height * bgRatio;
+
+    this.bgScrollX -= 2 * this.speedScale * delta; // background scroll speed matches player speed
+
+    if (this.bgScrollX <= -bgWidth) {
+      this.bgScrollX = 0;
+    }
+
+    // Draw two images side by side to loop seamlessly
     this.ctx.drawImage(
       this.backgroundImage,
+      this.bgScrollX,
       0,
+      bgWidth,
+      this.canvas.height
+    );
+    this.ctx.drawImage(
+      this.backgroundImage,
+      this.bgScrollX + bgWidth,
       0,
-      this.canvas.width,
-      this.canvas.height,
+      bgWidth,
+      this.canvas.height
     );
 
     if (this.hasCollided && this.characterDefeatImage.complete) {
