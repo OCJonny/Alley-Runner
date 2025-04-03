@@ -61,7 +61,7 @@ class Game {
       y,
       width,
       height,
-      speed: 3 + Math.random() * 2,
+      speed: this.isMobile ? (1.5 + Math.random() * 1) : (3 + Math.random() * 2),
       image: beanImage,
     });
   }
