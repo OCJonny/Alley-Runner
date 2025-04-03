@@ -20,7 +20,7 @@ let resizeListenerAdded = false;
 
 // 🔁 Set sound toggle icon on load
 document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("soundToggle").textContent = "🔊";
+  document.getElementById("soundIcon").src = "images/sound-on.png";
 });
 
 // Helper function for smooth fade-in of audio
@@ -47,10 +47,10 @@ function toggleSound() {
     bgMusic.play()
       .then(() => fadeInMusic(bgMusic))
       .catch(err => console.warn("Music play blocked:", err));
-    document.getElementById("soundToggle").textContent = "🔊";
+    document.getElementById("soundIcon").src = "images/sound-on.png";
   } else {
     bgMusic.pause();
-    document.getElementById("soundToggle").textContent = "🔇";
+    document.getElementById("soundIcon").src = "images/sound-off.png";
   }
 
   if (game) {
@@ -146,9 +146,9 @@ function restartGame() {
     canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
   }
 
-  document.getElementById("soundToggle").textContent = soundEnabled
-    ? "🔊"
-    : "🔇";
+  document.getElementById("soundIcon").src = soundEnabled
+    ? "images/sound-on.png"
+    : "images/sound-off.png";
 }
 
 function updateDomainStatsDisplay() {
@@ -181,7 +181,7 @@ function updateDomainStatsDisplay() {
         const label = document.getElementById(`${domain}Stats`);
         if (label) {
           label.innerHTML = `Score: ${item.total_score}<br>Beans: ${item.total_beans}`;
-          
+
           // Also update localStorage with latest server data
           localStorage.setItem(`${domain}_cumulative_score`, item.total_score);
           localStorage.setItem(`${domain}_beans`, item.total_beans);
@@ -212,4 +212,3 @@ window.showMainMenu = showMainMenu;
 window.startGame = startGame;
 window.restartGame = restartGame;
 window.toggleSound = toggleSound;
-
