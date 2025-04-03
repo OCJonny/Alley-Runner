@@ -264,11 +264,7 @@ class Game {
     );
   }
 
-  loop(timestamp) {
-    if (!this.lastTime) this.lastTime = timestamp;
-    const deltaTime = (timestamp - this.lastTime) / 16.67; // Convert to 60fps base
-    this.lastTime = timestamp;
-    
+  loop() {
     console.log("Game loop running");
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -369,15 +365,15 @@ class Game {
       ? this.jumpFrames[this.jumpFrameIndex]
       : this.runFrames[this.currentFrameIndex];
     if (this.isJumping) {
-      this.jumpFrameTimer += deltaTime;
-      if (this.jumpFrameTimer >= this.jumpFrameInterval / 16.67) {
+      this.jumpFrameTimer += 16;
+      if (this.jumpFrameTimer >= this.jumpFrameInterval) {
         this.jumpFrameIndex =
           (this.jumpFrameIndex + 1) % this.jumpFrames.length;
         this.jumpFrameTimer = 0;
       }
     } else {
-      this.frameTimer += deltaTime;
-      if (this.frameTimer >= this.frameInterval / 16.67) {
+      this.frameTimer += 16;
+      if (this.frameTimer >= this.frameInterval) {
         this.currentFrameIndex =
           (this.currentFrameIndex + 1) % this.runFrames.length;
         this.frameTimer = 0;
@@ -395,8 +391,8 @@ class Game {
     }
 
     // Obstacles
-    this.obstacleSpawnTimer += deltaTime;
-    if (this.obstacleSpawnTimer >= this.obstacleSpawnInterval / 16.67) {
+    this.obstacleSpawnTimer += 16;
+    if (this.obstacleSpawnTimer >= this.obstacleSpawnInterval) {
       this.spawnObstacle();
       this.obstacleSpawnTimer = 0;
       this.obstacleSpawnInterval = this.isMobile ? 
@@ -481,8 +477,8 @@ class Game {
     });
 
     // Score
-    this.scoreTimer += deltaTime * this.speedScale;
-    if (this.scoreTimer >= this.scoreInterval / 16.67) {
+    this.scoreTimer += 16 * this.speedScale;
+    if (this.scoreTimer >= this.scoreInterval) {
       this.score++;
       this.updateScore();
       this.scoreTimer = 0;
