@@ -1,60 +1,67 @@
-// API integration for leaderboard
+/**
+ * API functions for interacting with the server
+ */
 
-// Get the base URL dynamically based on current hostname
-const API_URL = window.location.hostname === 'localhost' 
-  ? 'http://localhost:3000' 
-  : window.location.origin;
-
-// Initialize the leaderboard tables
+// Initialize the leaderboard data
 async function initLeaderboard() {
   try {
-    const response = await fetch(`${API_URL}/init`);
-    console.log('Leaderboard initialized:', await response.text());
-    return true;
+    const leaderboardData = await getLeaderboardData();
+    // Use this data to display in UI
+    return leaderboardData;
   } catch (error) {
     console.error('Failed to initialize leaderboard:', error);
-    return false;
+    // Handle gracefully - show empty leaderboard or error message
+    return [];
   }
 }
 
-// Get all domain stats from the server
+// Get leaderboard data from the server
 async function getLeaderboardData() {
   try {
-    const response = await fetch(`${API_URL}/leaderboard`);
+    const response = await fetch('/api/leaderboard');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
     return await response.json();
   } catch (error) {
-    console.error('Failed to fetch leaderboard data:', error);
-    return null;
+    console.error('Error fetching leaderboard data:', error);
+    throw error;
   }
 }
 
-// Update stats for a specific domain
+// Update domain stats on the server
 async function updateDomainStats(domain, score, beans) {
   try {
-    const response = await fetch(`${API_URL}/update`, {
+    const response = await fetch('/api/stats/update', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ domain, score, beans }),
+      body: JSON.stringify({
+        domain,
+        score,
+        beans
+      })
     });
     
-    if (response.ok) {
-      console.log(`Successfully updated ${domain} stats (Score: ${score}, Beans: ${beans})`);
-      return true;
-    } else {
-      console.error('Failed to update stats:', response.statusText);
-      return false;
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
+    
+    return await response.json();
   } catch (error) {
     console.error('Error updating domain stats:', error);
-    return false;
+    // Continue game even if server update fails
+    // Store stats locally as backup
+    return null;
   }
 }
 
-// Export API functions
-window.leaderboardAPI = {
-  init: initLeaderboard,
-  getAll: getLeaderboardData,
-  update: updateDomainStats
-};
+// Export functions for use in other scripts
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    initLeaderboard,
+    getLeaderboardData,
+    updateDomainStats
+  };
+}

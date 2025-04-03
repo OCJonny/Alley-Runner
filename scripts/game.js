@@ -1,159 +1,120 @@
-// Initialize game with canvas element and element type
+import { detectRectCollision, loadImage, getRandomInt } from './utils.js';
+import { updateDomainStats } from './api.js';
+
+/**
+ * Initializes the game
+ * @param {HTMLCanvasElement} canvas - Canvas element for the game
+ * @param {string} elementType - Type of element (lightning, fire, water, earth)
+ * @returns {Promise<Game>} - Game instance
+ */
 async function initGame(canvas, elementType) {
   const ctx = canvas.getContext('2d');
-  
-  // Create and initialize game instance
-  window.gameInstance = new Game(canvas, elementType, ctx);
-  await window.gameInstance.init();
-  window.gameInstance.start();
-  
-  return window.gameInstance;
+  const game = new Game(canvas, elementType, ctx);
+  await game.init();
+  return game;
 }
 
-// Main game class
+/**
+ * Main game class
+ */
 class Game {
   constructor(canvas, elementType, ctx) {
-    // Canvas and rendering
+    // Canvas setup
     this.canvas = canvas;
     this.ctx = ctx;
-    this.width = canvas.width;
-    this.height = canvas.height;
+    this.elementType = elementType;
     
-    // Game properties
-    this.elementType = elementType; // lightning, fire, water, earth
+    // Game state
     this.score = 0;
     this.lives = 3;
     this.gameOver = false;
     this.paused = false;
+    this.lastTime = 0;
+    this.animationFrameId = null;
     this.beanCount = 0;
-    this.collectedBeans = 0;
-    
-    // Movement and speed
-    this.speed = this.isMobile() ? 1.8 : 2.0; // Starting speed
-    this.maxSpeed = this.isMobile() ? 2.5 : 3.5; // Maximum speed
-    this.speedIncrease = 0.1;
-    this.speedIncreaseInterval = 1000; // ms
-    this.lastSpeedIncrease = 0;
-    
-    // Character properties
-    this.characterSize = 50;
-    this.characterX = this.width / 2 - this.characterSize / 2;
-    this.characterY = this.height - this.characterSize * 2;
-    this.characterSpeedX = 5;
-    this.characterSprites = [];
-    this.currentSpriteIndex = 0;
-    this.spriteUpdateInterval = 150; // ms
-    this.lastSpriteUpdate = 0;
+    this.obstacleCount = 0;
+    this.totalBeansCollected = 0;
     
     // Game elements
+    this.player = {
+      x: canvas.width / 2 - 25,
+      y: canvas.height - 70,
+      width: 50,
+      height: 50,
+      speed: 0,
+      maxSpeed: this.isMobile() ? 2.5 : 3.5, // Increased max speed
+      acceleration: 0.1,
+      sprites: []
+    };
+    
     this.beans = [];
     this.obstacles = [];
-    this.lastBeanSpawn = 0;
-    this.lastObstacleSpawn = 0;
-    this.beanSpawnInterval = 2000; // ms
-    this.obstacleSpawnInterval = 1500; // ms
+    this.currentSprite = 0;
+    this.spriteChangeTime = 0;
     
-    // Animation and timing
-    this.animationFrame = null;
-    this.lastUpdate = 0;
+    // Health up message
+    this.healthUpMessage = { active: false, time: 0 };
+    
+    // Speed up message
+    this.speedUpMessage = { active: false, time: 0 };
+    
+    // Game metrics
+    this.spawnRate = { bean: 1500, obstacle: 2000 };
+    this.lastSpawn = { bean: 0, obstacle: 0 };
+    this.difficulty = 1;
+    this.difficultyIncreaseInterval = 10000; // 10 seconds
+    this.lastDifficultyIncrease = 0;
     
     // Input handling
-    this.keys = {};
-    this.touches = {};
+    this.keys = { left: false, right: false };
+  }
+  
+  /**
+   * Initialize the game
+   */
+  async init() {
+    // Load character sprites
+    await this.loadCharacterSprites(this.elementType);
+    
+    // Preload other game images
+    await this.preloadImages([
+      'images/Bean.png',
+      'images/Bean_Green.png',
+      'images/Obstacle.png',
+      `images/Background_${this.elementType}.png`
+    ]);
+    
+    // Set up input handlers
     this.setupInputHandlers();
     
-    // Messages
-    this.messages = [];
-    this.messageTimeout = 2000; // ms
-    
-    // Images
-    this.images = {
-      bean: null,
-      healthBean: null,
-      obstacle: null,
-      life: null,
-    };
+    return this;
   }
   
-  // Initialize the game assets
-  async init() {
-    try {
-      // Clear any existing animation frame
-      if (this.animationFrame) {
-        cancelAnimationFrame(this.animationFrame);
-      }
-      
-      // Preload images
-      await this.preloadImages([
-        'images/Bean.png',
-        'images/Health_Bean.png',
-        'images/Obstacle.png',
-        'images/Life.png'
-      ]);
-      
-      // Load character sprites based on element type
-      await this.loadCharacterSprites(this.elementType);
-      
-      console.log('Game initialized with element type:', this.elementType);
-      return true;
-    } catch (error) {
-      console.error('Error initializing game:', error);
-      return false;
-    }
-  }
-  
-  // Start or restart the game
+  /**
+   * Start the game loop
+   */
   start() {
-    // Reset game state
-    this.score = 0;
-    this.lives = 3;
-    this.gameOver = false;
-    this.paused = false;
-    this.beanCount = 0;
-    this.collectedBeans = 0;
-    this.speed = this.isMobile() ? 1.8 : 2.0;
-    this.characterX = this.width / 2 - this.characterSize / 2;
-    this.characterY = this.height - this.characterSize * 2;
-    this.beans = [];
-    this.obstacles = [];
-    this.messages = [];
-    this.lastSpeedIncrease = 0;
-    this.lastBeanSpawn = 0;
-    this.lastObstacleSpawn = 0;
-    this.lastUpdate = performance.now();
-    
-    // Update score and lives display
-    this.updateScore();
-    this.updateLivesDisplay();
-    
-    // Start game loop
-    this.loop(performance.now());
-    console.log('Game started');
+    if (this.animationFrameId) return;
+    this.lastTime = performance.now();
+    this.loop(this.lastTime);
   }
   
-  // Stop the game
+  /**
+   * Stop the game loop
+   */
   stop() {
-    this.gameOver = true;
-    
-    if (this.animationFrame) {
-      cancelAnimationFrame(this.animationFrame);
-      this.animationFrame = null;
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
     }
     
-    // Save domain stats to local storage
+    // Save stats to server
     this.saveDomainStats();
-    
-    // Update server-side leaderboard if API is available
-    if (window.leaderboardAPI) {
-      window.leaderboardAPI.update(this.elementType, this.score, this.collectedBeans);
-    }
-    
-    // Show end screen with final score
-    window.showEndScreen(this.score);
-    console.log('Game over with score:', this.score);
   }
   
-  // Update the score display
+  /**
+   * Update score display
+   */
   updateScore() {
     const scoreElement = document.getElementById('score');
     if (scoreElement) {
@@ -161,416 +122,445 @@ class Game {
     }
   }
   
-  // Update the lives display
+  /**
+   * Update lives display
+   */
   updateLivesDisplay() {
-    const livesContainer = document.getElementById('lives');
+    const livesContainer = document.getElementById('lives-container');
     if (livesContainer) {
       livesContainer.innerHTML = '';
-      
       for (let i = 0; i < this.lives; i++) {
-        const lifeImage = document.createElement('img');
-        lifeImage.src = 'images/Life.png';
-        lifeImage.alt = 'Life';
-        lifeImage.className = 'life-icon';
-        livesContainer.appendChild(lifeImage);
+        const lifeIcon = document.createElement('img');
+        lifeIcon.src = 'images/Bean.png';
+        lifeIcon.style.width = '30px';
+        lifeIcon.style.height = '30px';
+        lifeIcon.style.marginRight = '5px';
+        livesContainer.appendChild(lifeIcon);
       }
     }
   }
   
-  // Spawn a bean at random position
+  /**
+   * Spawn a new bean
+   */
   spawnBean() {
-    const isHealthBean = this.beanCount > 0 && this.beanCount % 6 === 0;
-    const bean = {
-      x: Math.random() * (this.width - 30),
-      y: -30,
-      width: 30,
-      height: 30,
-      collected: false,
-      isHealthBean: isHealthBean
-    };
+    const beanSize = 30;
+    const isGreenBean = this.beanCount > 0 && this.beanCount % 6 === 0; // Every 6th bean is green (health)
     
-    this.beans.push(bean);
+    this.beans.push({
+      x: getRandomInt(0, this.canvas.width - beanSize),
+      y: -beanSize,
+      width: beanSize,
+      height: beanSize,
+      speed: 2 + this.difficulty * 0.5,
+      isGreen: isGreenBean
+    });
+    
     this.beanCount++;
-    this.lastBeanSpawn = performance.now();
   }
   
-  // Spawn an obstacle at random position
+  /**
+   * Spawn a new obstacle
+   */
   spawnObstacle() {
-    const obstacle = {
-      x: Math.random() * (this.width - 40),
-      y: -40,
-      width: 40,
-      height: 40,
-      hit: false
+    const obstacleSize = 40;
+    
+    this.obstacles.push({
+      x: getRandomInt(0, this.canvas.width - obstacleSize),
+      y: -obstacleSize,
+      width: obstacleSize,
+      height: obstacleSize,
+      speed: 3 + this.difficulty * 0.7
+    });
+    
+    this.obstacleCount++;
+  }
+  
+  /**
+   * Check for collision between two rectangles
+   * @param {Object} r1 - First rectangle
+   * @param {Object} r2 - Second rectangle
+   * @returns {boolean} - True if collision
+   */
+  checkCollision(r1, r2) {
+    // Apply 60% hitbox size for fairer collision detection
+    const shrinkFactor = 0.6;
+    const adjustedWidth = r1.width * shrinkFactor;
+    const adjustedHeight = r1.height * shrinkFactor;
+    const xOffset = (r1.width - adjustedWidth) / 2;
+    const yOffset = (r1.height - adjustedHeight) / 2;
+    
+    const adjustedR1 = {
+      x: r1.x + xOffset,
+      y: r1.y + yOffset,
+      width: adjustedWidth,
+      height: adjustedHeight
     };
     
-    this.obstacles.push(obstacle);
-    this.lastObstacleSpawn = performance.now();
+    return detectRectCollision(adjustedR1, r2);
   }
   
-  // Check collision between two rectangles
-  checkCollision(r1, r2) {
-    // Use a smaller hitbox for more forgiving collision detection (60% of original size)
-    const shrinkFactor = 0.6;
-    
-    // Calculate the center points of each rectangle
-    const r1CenterX = r1.x + r1.width / 2;
-    const r1CenterY = r1.y + r1.height / 2;
-    const r2CenterX = r2.x + r2.width / 2;
-    const r2CenterY = r2.y + r2.height / 2;
-    
-    // Calculate the half-widths and half-heights (with shrink factor)
-    const r1HalfWidth = (r1.width * shrinkFactor) / 2;
-    const r1HalfHeight = (r1.height * shrinkFactor) / 2;
-    const r2HalfWidth = (r2.width * shrinkFactor) / 2;
-    const r2HalfHeight = (r2.height * shrinkFactor) / 2;
-    
-    // Calculate the distance between centers
-    const distX = Math.abs(r1CenterX - r2CenterX);
-    const distY = Math.abs(r1CenterY - r2CenterY);
-    
-    // Check if the distance is less than the sum of half-widths and half-heights
-    return distX < (r1HalfWidth + r2HalfWidth) && distY < (r1HalfHeight + r2HalfHeight);
-  }
-  
-  // Main game loop
+  /**
+   * Game loop
+   * @param {number} timestamp - Current timestamp
+   */
   async loop(timestamp) {
-    // Calculate delta time
-    const deltaTime = timestamp - this.lastUpdate;
-    this.lastUpdate = timestamp;
+    const deltaTime = timestamp - this.lastTime;
+    this.lastTime = timestamp;
     
-    // Clear canvas
-    this.ctx.clearRect(0, 0, this.width, this.height);
-    
-    // Skip updating if paused
-    if (!this.paused) {
-      // Increase speed over time
-      if (timestamp - this.lastSpeedIncrease > this.speedIncreaseInterval) {
-        if (this.speed < this.maxSpeed) {
-          this.speed += this.speedIncrease;
-          this.speed = Math.min(this.speed, this.maxSpeed);
-          this.lastSpeedIncrease = timestamp;
-          this.showSpeedUpMessage();
+    if (!this.paused && !this.gameOver) {
+      // Clear canvas
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      
+      // Draw background image
+      const backgroundImage = this.backgroundImage;
+      if (backgroundImage) {
+        this.ctx.drawImage(backgroundImage, 0, 0, this.canvas.width, this.canvas.height);
+      }
+      
+      // Handle player movement
+      if (this.keys.left) {
+        this.player.speed = Math.max(-this.player.maxSpeed, this.player.speed - this.player.acceleration);
+      } else if (this.keys.right) {
+        this.player.speed = Math.min(this.player.maxSpeed, this.player.speed + this.player.acceleration);
+      } else {
+        // Apply deceleration when no keys are pressed
+        if (Math.abs(this.player.speed) < 0.1) {
+          this.player.speed = 0;
+        } else if (this.player.speed > 0) {
+          this.player.speed -= this.player.acceleration;
+        } else {
+          this.player.speed += this.player.acceleration;
         }
       }
       
-      // Handle character movement
-      if (this.keys.ArrowLeft || this.keys.a || this.touches.left) {
-        this.characterX = Math.max(0, this.characterX - this.characterSpeedX);
-      }
-      if (this.keys.ArrowRight || this.keys.d || this.touches.right) {
-        this.characterX = Math.min(this.width - this.characterSize, this.characterX + this.characterSpeedX);
+      // Update player position
+      this.player.x += this.player.speed;
+      
+      // Keep player within canvas bounds
+      if (this.player.x < 0) {
+        this.player.x = 0;
+        this.player.speed = 0;
+      } else if (this.player.x + this.player.width > this.canvas.width) {
+        this.player.x = this.canvas.width - this.player.width;
+        this.player.speed = 0;
       }
       
-      // Update sprite animation
-      if (timestamp - this.lastSpriteUpdate > this.spriteUpdateInterval) {
-        this.currentSpriteIndex = (this.currentSpriteIndex + 1) % this.characterSprites.length;
-        this.lastSpriteUpdate = timestamp;
+      // Change sprite based on time or direction
+      if (timestamp - this.spriteChangeTime > 150) {
+        this.currentSprite = (this.currentSprite + 1) % this.player.sprites.length;
+        this.spriteChangeTime = timestamp;
       }
       
-      // Spawn beans
-      if (timestamp - this.lastBeanSpawn > this.beanSpawnInterval) {
+      // Draw player
+      const sprite = this.player.sprites[this.currentSprite];
+      if (sprite) {
+        this.ctx.drawImage(sprite, this.player.x, this.player.y, this.player.width, this.player.height);
+      } else {
+        // Fallback if sprite isn't loaded
+        this.ctx.fillStyle = '#00f';
+        this.ctx.fillRect(this.player.x, this.player.y, this.player.width, this.player.height);
+      }
+      
+      // Spawn beans and obstacles based on timing
+      if (timestamp - this.lastSpawn.bean > this.spawnRate.bean) {
         this.spawnBean();
+        this.lastSpawn.bean = timestamp;
       }
       
-      // Spawn obstacles
-      if (timestamp - this.lastObstacleSpawn > this.obstacleSpawnInterval) {
+      if (timestamp - this.lastSpawn.obstacle > this.spawnRate.obstacle) {
         this.spawnObstacle();
+        this.lastSpawn.obstacle = timestamp;
       }
       
-      // Update beans
-      for (let i = 0; i < this.beans.length; i++) {
+      // Update and draw beans
+      for (let i = this.beans.length - 1; i >= 0; i--) {
         const bean = this.beans[i];
+        bean.y += bean.speed;
         
-        // Move bean down
-        bean.y += this.speed;
-        
-        // Check if bean is collected
-        if (!bean.collected) {
-          const character = {
-            x: this.characterX,
-            y: this.characterY,
-            width: this.characterSize,
-            height: this.characterSize
-          };
-          
-          if (this.checkCollision(bean, character)) {
-            bean.collected = true;
-            this.score += 10;
-            this.collectedBeans++;
-            this.updateScore();
-            
-            // Health bean restores a life
-            if (bean.isHealthBean && this.lives < 3) {
-              this.lives++;
-              this.updateLivesDisplay();
-              this.showHealthUpMessage();
-              
-              // Play health up sound
-              if (window.soundEnabled) {
-                const healthSound = new Audio('sounds/Health_Up.wav');
-                healthSound.volume = 0.5;
-                healthSound.play();
-              }
-            }
-          }
-        }
-        
-        // Remove beans that are out of bounds
-        if (bean.y > this.height) {
-          this.beans.splice(i, 1);
-          i--;
-        }
-      }
-      
-      // Update obstacles
-      for (let i = 0; i < this.obstacles.length; i++) {
-        const obstacle = this.obstacles[i];
-        
-        // Move obstacle down
-        obstacle.y += this.speed;
-        
-        // Check if obstacle hits character
-        if (!obstacle.hit) {
-          const character = {
-            x: this.characterX,
-            y: this.characterY,
-            width: this.characterSize,
-            height: this.characterSize
-          };
-          
-          if (this.checkCollision(obstacle, character)) {
-            obstacle.hit = true;
-            this.lives--;
-            this.updateLivesDisplay();
-            
-            // Check if game over
-            if (this.lives <= 0) {
-              this.stop();
-              return;
-            }
-          }
-        }
-        
-        // Remove obstacles that are out of bounds
-        if (obstacle.y > this.height) {
-          this.obstacles.splice(i, 1);
-          i--;
-        }
-      }
-      
-      // Update messages
-      for (let i = 0; i < this.messages.length; i++) {
-        const message = this.messages[i];
-        
-        if (timestamp - message.timestamp > this.messageTimeout) {
-          this.messages.splice(i, 1);
-          i--;
-        }
-      }
-    }
-    
-    // Draw background
-    this.ctx.fillStyle = '#111';
-    this.ctx.fillRect(0, 0, this.width, this.height);
-    
-    // Draw character
-    if (this.characterSprites.length > 0 && this.characterSprites[this.currentSpriteIndex]) {
-      this.ctx.drawImage(
-        this.characterSprites[this.currentSpriteIndex],
-        this.characterX,
-        this.characterY,
-        this.characterSize,
-        this.characterSize
-      );
-    } else {
-      // Fallback if sprite not loaded
-      this.ctx.fillStyle = '#f00';
-      this.ctx.fillRect(this.characterX, this.characterY, this.characterSize, this.characterSize);
-    }
-    
-    // Draw beans
-    for (const bean of this.beans) {
-      if (!bean.collected) {
-        const beanImage = bean.isHealthBean ? this.images.healthBean : this.images.bean;
+        // Draw bean
+        const beanImage = bean.isGreen ? this.greenBeanImage : this.beanImage;
         if (beanImage) {
           this.ctx.drawImage(beanImage, bean.x, bean.y, bean.width, bean.height);
         } else {
-          this.ctx.fillStyle = bean.isHealthBean ? '#0f0' : '#ff0';
+          // Fallback
+          this.ctx.fillStyle = bean.isGreen ? '#0f0' : '#ff0';
           this.ctx.fillRect(bean.x, bean.y, bean.width, bean.height);
         }
+        
+        // Check for collision with player
+        if (this.checkCollision(this.player, bean)) {
+          // Bean collected
+          this.beans.splice(i, 1);
+          
+          if (bean.isGreen && this.lives < 3) {
+            // Green bean restores life (max 3)
+            this.lives++;
+            this.updateLivesDisplay();
+            this.showHealthUpMessage();
+          } else {
+            // Regular bean increases score
+            this.score += 10;
+            this.updateScore();
+          }
+          
+          this.totalBeansCollected++;
+          continue;
+        }
+        
+        // Remove beans that go offscreen
+        if (bean.y > this.canvas.height) {
+          this.beans.splice(i, 1);
+        }
       }
-    }
-    
-    // Draw obstacles
-    for (const obstacle of this.obstacles) {
-      if (!obstacle.hit) {
-        if (this.images.obstacle) {
-          this.ctx.drawImage(this.images.obstacle, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+      
+      // Update and draw obstacles
+      for (let i = this.obstacles.length - 1; i >= 0; i--) {
+        const obstacle = this.obstacles[i];
+        obstacle.y += obstacle.speed;
+        
+        // Draw obstacle
+        if (this.obstacleImage) {
+          this.ctx.drawImage(this.obstacleImage, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
         } else {
-          this.ctx.fillStyle = '#00f';
+          // Fallback
+          this.ctx.fillStyle = '#f00';
           this.ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+        }
+        
+        // Check for collision with player
+        if (this.checkCollision(this.player, obstacle)) {
+          // Hit by obstacle
+          this.obstacles.splice(i, 1);
+          this.lives--;
+          this.updateLivesDisplay();
+          
+          if (this.lives <= 0) {
+            this.gameOver = true;
+            this.stop();
+            break;
+          }
+          
+          continue;
+        }
+        
+        // Remove obstacles that go offscreen
+        if (obstacle.y > this.canvas.height) {
+          this.obstacles.splice(i, 1);
+        }
+      }
+      
+      // Increase difficulty over time
+      if (timestamp - this.lastDifficultyIncrease > this.difficultyIncreaseInterval) {
+        this.difficulty += 0.1;
+        this.spawnRate.bean = Math.max(500, this.spawnRate.bean - 50);
+        this.spawnRate.obstacle = Math.max(1000, this.spawnRate.obstacle - 100);
+        this.lastDifficultyIncrease = timestamp;
+        
+        // At certain difficulty thresholds, increase player speed
+        if (Math.floor(this.difficulty * 10) % 5 === 0) {
+          const oldMaxSpeed = this.player.maxSpeed;
+          this.player.maxSpeed = Math.min(
+            this.isMobile() ? 4 : 5,
+            this.player.maxSpeed + 0.1
+          );
+          
+          if (this.player.maxSpeed > oldMaxSpeed) {
+            this.showSpeedUpMessage();
+          }
+        }
+      }
+      
+      // Draw health up message if active
+      if (this.healthUpMessage.active) {
+        if (timestamp - this.healthUpMessage.time < 2000) {
+          this.ctx.font = 'bold 24px Arial';
+          this.ctx.fillStyle = '#0f0';
+          this.ctx.textAlign = 'center';
+          this.ctx.fillText('Health +1', this.canvas.width / 2, this.canvas.height / 2 - 50);
+        } else {
+          this.healthUpMessage.active = false;
+        }
+      }
+      
+      // Draw speed up message if active
+      if (this.speedUpMessage.active) {
+        if (timestamp - this.speedUpMessage.time < 2000) {
+          this.ctx.font = 'bold 24px Arial';
+          this.ctx.fillStyle = '#ff0';
+          this.ctx.textAlign = 'center';
+          this.ctx.fillText('Speed Up!', this.canvas.width / 2, this.canvas.height / 2 - 80);
+        } else {
+          this.speedUpMessage.active = false;
         }
       }
     }
     
-    // Draw messages
-    this.ctx.fillStyle = '#fff';
-    this.ctx.font = '20px Arial';
-    this.ctx.textAlign = 'center';
-    
-    for (const message of this.messages) {
-      const alpha = 1 - (timestamp - message.timestamp) / this.messageTimeout;
-      this.ctx.globalAlpha = alpha;
-      this.ctx.fillText(message.text, this.width / 2, this.height / 2);
-    }
-    
-    this.ctx.globalAlpha = 1;
-    
-    // Continue the game loop if not game over
     if (!this.gameOver) {
-      this.animationFrame = requestAnimationFrame(this.loop.bind(this));
+      this.animationFrameId = requestAnimationFrame(this.loop.bind(this));
+    } else {
+      this.saveDomainStats();
     }
   }
   
-  // Show speed up message
+  /**
+   * Show speed up message
+   */
   showSpeedUpMessage() {
-    this.messages.push({
-      text: 'Speed Up!',
-      timestamp: performance.now()
-    });
+    this.speedUpMessage.active = true;
+    this.speedUpMessage.time = performance.now();
   }
   
-  // Show health up message
+  /**
+   * Show health up message
+   */
   showHealthUpMessage() {
-    this.messages.push({
-      text: '+1 Life!',
-      timestamp: performance.now()
-    });
+    this.healthUpMessage.active = true;
+    this.healthUpMessage.time = performance.now();
   }
   
-  // Preload image
+  /**
+   * Preload an image
+   * @param {string} src - Image source
+   * @returns {Promise<HTMLImageElement>} - Loaded image
+   */
   preloadImage(src) {
     return new Promise((resolve, reject) => {
       const img = new Image();
       img.onload = () => resolve(img);
-      img.onerror = (err) => reject(err);
+      img.onerror = () => {
+        console.warn(`Failed to load image: ${src}`);
+        resolve(null); // Resolve with null to allow the game to continue
+      };
       img.src = src;
     });
   }
   
-  // Preload multiple images
+  /**
+   * Preload multiple images
+   * @param {string[]} paths - Array of image paths
+   */
   async preloadImages(paths) {
     try {
-      this.images.bean = await this.preloadImage('images/Bean.png');
-      this.images.healthBean = await this.preloadImage('images/Health_Bean.png');
-      this.images.obstacle = await this.preloadImage('images/Obstacle.png');
-      this.images.life = await this.preloadImage('images/Life.png');
+      const images = await Promise.all(paths.map(path => this.preloadImage(path)));
       
-      console.log('Images preloaded successfully');
-      return true;
+      this.beanImage = images[0];
+      this.greenBeanImage = images[1];
+      this.obstacleImage = images[2];
+      this.backgroundImage = images[3];
     } catch (error) {
       console.error('Error preloading images:', error);
-      return false;
     }
   }
   
-  // Load character sprites based on domain
+  /**
+   * Load character sprites for the given domain
+   * @param {string} domain - Element domain
+   */
   async loadCharacterSprites(domain) {
     try {
-      this.characterSprites = [];
-      
-      // Load all sprites (4 frames per character)
-      for (let i = 1; i <= 4; i++) {
-        const sprite = await this.preloadImage(`images/Character_${domain}_${i}.png`);
-        this.characterSprites.push(sprite);
-      }
-      
-      console.log(`Loaded ${this.characterSprites.length} sprites for ${domain} character`);
-      return true;
+      this.player.sprites = await Promise.all([
+        this.preloadImage(`images/Character_${domain}_1.png`),
+        this.preloadImage(`images/Character_${domain}_2.png`),
+        this.preloadImage(`images/Character_${domain}_3.png`),
+        this.preloadImage(`images/Character_${domain}_4.png`)
+      ]);
     } catch (error) {
-      console.error(`Error loading sprites for ${domain}:`, error);
-      return false;
+      console.error('Error loading character sprites:', error);
+      this.player.sprites = [];
     }
   }
   
-  // Save domain stats to local storage
+  /**
+   * Save domain stats to server
+   */
   saveDomainStats() {
-    const storageKey = `domain_${this.elementType}`;
-    
-    // Get existing stats
-    const existingStats = JSON.parse(localStorage.getItem(storageKey)) || {
-      highScore: 0,
-      totalScore: 0,
-      totalBeans: 0
-    };
-    
-    // Update stats
-    const newStats = {
-      highScore: Math.max(existingStats.highScore, this.score),
-      totalScore: existingStats.totalScore + this.score,
-      totalBeans: existingStats.totalBeans + this.collectedBeans
-    };
-    
-    // Save to local storage
-    localStorage.setItem(storageKey, JSON.stringify(newStats));
-    console.log(`Saved stats for ${this.elementType}:`, newStats);
+    // Update server with latest stats
+    updateDomainStats(this.elementType, this.score, this.totalBeansCollected)
+      .then(response => {
+        console.log('Domain stats updated:', response);
+      })
+      .catch(error => {
+        console.error('Failed to update domain stats:', error);
+      });
   }
   
-  // Setup keyboard and touch input handlers
+  /**
+   * Set up input handlers for keyboard and touch
+   */
   setupInputHandlers() {
-    // Keyboard events
+    // Keyboard controls
     window.addEventListener('keydown', (e) => {
-      this.keys[e.key.toLowerCase()] = true;
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+        this.keys.left = true;
+      } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+        this.keys.right = true;
+      }
     });
     
     window.addEventListener('keyup', (e) => {
-      this.keys[e.key.toLowerCase()] = false;
-    });
-    
-    // Touch events for mobile
-    this.canvas.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      const touch = e.touches[0];
-      const touchX = touch.clientX;
-      
-      if (touchX < this.width / 2) {
-        this.touches.left = true;
-        this.touches.right = false;
-      } else {
-        this.touches.left = false;
-        this.touches.right = true;
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+        this.keys.left = false;
+      } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+        this.keys.right = false;
       }
     });
     
-    this.canvas.addEventListener('touchmove', (e) => {
-      e.preventDefault();
-      const touch = e.touches[0];
-      const touchX = touch.clientX;
+    // Touch controls for mobile
+    if (this.isMobile()) {
+      this.canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const x = touch.clientX;
+        
+        if (x < this.canvas.width / 2) {
+          this.keys.left = true;
+          this.keys.right = false;
+        } else {
+          this.keys.right = true;
+          this.keys.left = false;
+        }
+      });
       
-      if (touchX < this.width / 2) {
-        this.touches.left = true;
-        this.touches.right = false;
-      } else {
-        this.touches.left = false;
-        this.touches.right = true;
-      }
-    });
+      this.canvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const x = touch.clientX;
+        
+        if (x < this.canvas.width / 2) {
+          this.keys.left = true;
+          this.keys.right = false;
+        } else {
+          this.keys.right = true;
+          this.keys.left = false;
+        }
+      });
+      
+      this.canvas.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        this.keys.left = false;
+        this.keys.right = false;
+      });
+    }
     
-    this.canvas.addEventListener('touchend', (e) => {
-      e.preventDefault();
-      this.touches.left = false;
-      this.touches.right = false;
-    });
-    
-    // Handle visibility change (pause/resume)
+    // Visibility change handling (pause game when tab is not active)
     document.addEventListener('visibilitychange', () => {
-      this.paused = document.hidden;
+      if (document.hidden) {
+        this.paused = true;
+      } else {
+        this.paused = false;
+      }
     });
   }
   
-  // Check if running on mobile device
+  /**
+   * Check if the device is mobile
+   * @returns {boolean} - True if mobile device
+   */
   isMobile() {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   }
 }
+
+// Export for use in other modules
+export { initGame, Game };

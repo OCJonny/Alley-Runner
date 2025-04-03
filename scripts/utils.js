@@ -1,4 +1,6 @@
-// Utility functions
+/**
+ * Utility functions for game
+ */
 
 /**
  * Detects collision between two rectangles
@@ -35,8 +37,8 @@ export function loadImage(src) {
  * @returns {HTMLAudioElement} - Audio element
  */
 export function loadAudio(src) {
-  const audio = new Audio();
-  audio.src = src;
+  const audio = new Audio(src);
+  audio.load();
   return audio;
 }
 
@@ -60,14 +62,9 @@ export function getRandomInt(min, max) {
  */
 export function debounce(func, wait) {
   let timeout;
-  
-  return function executedFunction(...args) {
-    const later = () => {
-      clearTimeout(timeout);
-      func(...args);
-    };
-    
+  return function(...args) {
+    const context = this;
     clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
+    timeout = setTimeout(() => func.apply(context, args), wait);
   };
 }
