@@ -1,7 +1,7 @@
 // screens.js
 
 // 🔊 Global Music (shared across screens)
-let bgMusic = new Audio("sounds/Game Music.mp3");
+let bgMusic = new Audio("sounds/Game_Music.wav");
 bgMusic.loop = true;
 bgMusic.volume = 0.5;
 
