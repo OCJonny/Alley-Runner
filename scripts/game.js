@@ -93,6 +93,11 @@ class Game {
     this.jumpFrameTimer = 0;
     this.jumpFrameInterval = 400;
     
+    // Flashing effect variables for hit feedback
+    this.isFlashing = false;
+    this.flashTimer = 0;
+    this.flashDuration = 1000; // 1 second of flashing/invulnerability
+    
     this.updateScore(); // Initialize the HUD
   }
 
@@ -322,13 +327,40 @@ class Game {
       console.error('Current frame not completely loaded');
       return;
     }
-    this.ctx.drawImage(
-      currentFrame,
-      this.characterX,
-      this.characterY,
-      this.characterWidth,
-      this.characterHeight,
-    );
+    
+    // Handle flashing effect when player is hit
+    if (this.isFlashing) {
+      // Update flash timer
+      this.flashTimer -= 16 * delta;
+      
+      // Toggle visibility for flashing effect (visible every other 100ms)
+      const shouldDraw = Math.floor(this.flashTimer / 100) % 2 === 0;
+      
+      // End flashing state when timer runs out
+      if (this.flashTimer <= 0) {
+        this.isFlashing = false;
+      }
+      
+      // Only draw character on certain frames for blinking effect
+      if (shouldDraw) {
+        this.ctx.drawImage(
+          currentFrame,
+          this.characterX,
+          this.characterY,
+          this.characterWidth,
+          this.characterHeight,
+        );
+      }
+    } else {
+      // Normal character drawing when not flashing
+      this.ctx.drawImage(
+        currentFrame,
+        this.characterX,
+        this.characterY,
+        this.characterWidth,
+        this.characterHeight,
+      );
+    }
 
     this.obstacleSpawnTimer += 16 * delta;
     if (this.obstacleSpawnTimer >= this.obstacleSpawnInterval) {
@@ -353,7 +385,8 @@ class Game {
             height: this.characterHeight,
           },
           { x: ob.x, y: ob.y, width: ob.width, height: ob.height },
-        )
+        ) && 
+        !this.isFlashing // Only take damage if not in flashing/invulnerable state
       ) {
         this.lives--;
         this.updateLivesDisplay();
@@ -364,6 +397,10 @@ class Game {
 
         if (this.lives <= 0) {
           this.stop();
+        } else {
+          // Start flashing effect for temporary invulnerability
+          this.isFlashing = true;
+          this.flashTimer = this.flashDuration;
         }
       }
       if (ob.x + ob.width < 0) this.obstacles.splice(i, 1);
