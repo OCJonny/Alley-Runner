@@ -267,7 +267,7 @@ class Game {
     }
 
     document.getElementById("speedBar").style.width =
-      `${((this.speedScale - 0.9) / (2.0 - 0.9)) * 100}%`;
+      `${((this.speedScale - 1.5) / (2.0 - 1.5)) * 100}%`;
 
     this.velocityY += this.gravity * delta;
     this.characterY += this.velocityY * delta;
