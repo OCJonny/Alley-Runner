@@ -7,18 +7,18 @@ async function initGame(canvas, elementType) {
   // Get the game container dimensions
   const gameContainer = canvas.parentElement;
   const containerRect = gameContainer.getBoundingClientRect();
-  
+
   // Calculate dimensions while maintaining aspect ratio and handling mobile
   const isMobile = window.innerWidth <= 768;
   const aspectRatio = isMobile ? 9/16 : 16/9; // Portrait for mobile, landscape for desktop
   let width = containerRect.width;
   let height = containerRect.height;
-  
+
   if (isMobile) {
     // For mobile, use full height and calculate width
     height = containerRect.height;
     width = height * aspectRatio;
-    
+
     // Adjust character size for mobile
     this.characterWidth = 64;  // Halved from 128
     this.characterHeight = 64; // Halved from 128
@@ -29,11 +29,11 @@ async function initGame(canvas, elementType) {
       height = width / aspectRatio;
     }
   }
-  
+
   // Set canvas size
   canvas.style.width = `${width}px`;
   canvas.style.height = `${height}px`;
-  
+
   // Set actual canvas resolution
   canvas.width = width;
   canvas.height = height;
@@ -204,6 +204,7 @@ class Game {
       this.isRunning = true;
       this.score = 0;
       this.updateScore();
+      this.lastTime = null; //added
       this.loop();
       console.log("Game started");
     }
@@ -264,7 +265,11 @@ class Game {
     );
   }
 
-  loop() {
+  loop(timestamp) {
+    if (!this.lastTime) this.lastTime = timestamp;
+    const deltaTime = Math.min((timestamp - this.lastTime) / 16.67, 2); // Cap max delta and convert to 60fps base
+    this.lastTime = timestamp;
+
     console.log("Game loop running");
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -274,16 +279,16 @@ class Game {
         if (this.bgScrollX === undefined) {
           this.bgScrollX = 0;
         }
-        
+
         const bgRatio = this.backgroundImage.width / this.backgroundImage.height;
         const bgWidth = this.canvas.height * bgRatio;
-        
+
         // Update scroll position based on game speed
-        this.bgScrollX -= 2 * this.speedScale;
+        this.bgScrollX -= 2 * this.speedScale * deltaTime; // Apply deltaTime
         if (this.bgScrollX <= -bgWidth) {
           this.bgScrollX = 0;
         }
-        
+
         // Draw two copies of the background for seamless scrolling
         this.ctx.drawImage(
           this.backgroundImage,
@@ -351,8 +356,8 @@ class Game {
           : "#F44336";
 
     // Physics
-    this.velocityY += this.gravity;
-    this.characterY += this.velocityY;
+    this.velocityY += this.gravity * deltaTime; // Apply deltaTime
+    this.characterY += this.velocityY * deltaTime; // Apply deltaTime
     const groundY = this.canvas.height - this.characterHeight - 50;
     if (this.characterY > groundY) {
       this.characterY = groundY;
@@ -365,14 +370,14 @@ class Game {
       ? this.jumpFrames[this.jumpFrameIndex]
       : this.runFrames[this.currentFrameIndex];
     if (this.isJumping) {
-      this.jumpFrameTimer += 16;
+      this.jumpFrameTimer += 16 * deltaTime; // Apply deltaTime
       if (this.jumpFrameTimer >= this.jumpFrameInterval) {
         this.jumpFrameIndex =
           (this.jumpFrameIndex + 1) % this.jumpFrames.length;
         this.jumpFrameTimer = 0;
       }
     } else {
-      this.frameTimer += 16;
+      this.frameTimer += 16 * deltaTime; // Apply deltaTime
       if (this.frameTimer >= this.frameInterval) {
         this.currentFrameIndex =
           (this.currentFrameIndex + 1) % this.runFrames.length;
@@ -391,7 +396,7 @@ class Game {
     }
 
     // Obstacles
-    this.obstacleSpawnTimer += 16;
+    this.obstacleSpawnTimer += 16 * deltaTime; // Apply deltaTime
     if (this.obstacleSpawnTimer >= this.obstacleSpawnInterval) {
       this.spawnObstacle();
       this.obstacleSpawnTimer = 0;
@@ -401,7 +406,7 @@ class Game {
     }
 
     this.obstacles.forEach((obstacle, index) => {
-      obstacle.x -= obstacle.speed * this.speedScale;
+      obstacle.x -= obstacle.speed * this.speedScale * deltaTime; // Apply deltaTime
       if (obstacle.image.complete) {
         this.ctx.drawImage(
           obstacle.image,
@@ -431,7 +436,7 @@ class Game {
     });
 
     // === RED BEANS ===
-    this.beanSpawnTimer += 16;
+    this.beanSpawnTimer += 16 * deltaTime; // Apply deltaTime
     if (this.beanSpawnTimer >= this.beanSpawnInterval) {
       this.spawnBean();
       this.beanSpawnTimer = 0;
@@ -441,7 +446,7 @@ class Game {
     }
 
     this.beans.forEach((bean, index) => {
-      bean.x -= bean.speed * this.speedScale;
+      bean.x -= bean.speed * this.speedScale * deltaTime; // Apply deltaTime
 
       if (bean.image.complete) {
         this.ctx.drawImage(bean.image, bean.x, bean.y, bean.width, bean.height);
@@ -477,7 +482,7 @@ class Game {
     });
 
     // Score
-    this.scoreTimer += 16 * this.speedScale;
+    this.scoreTimer += 16 * this.speedScale * deltaTime; // Apply deltaTime
     if (this.scoreTimer >= this.scoreInterval) {
       this.score++;
       this.updateScore();
