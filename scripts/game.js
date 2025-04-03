@@ -76,13 +76,13 @@ class Game {
     this.isMobile = window.innerWidth <= 768;
 
     // === CHARACTER PROPERTIES ===
-    this.characterX = this.isMobile ? 75 : 150; // adjust X position for mobile
-    this.characterY = canvas.height - (this.isMobile ? 250 : 250); // same Y position for both
-    this.characterWidth = this.isMobile ? 128 : 128; // same size for both
-    this.characterHeight = this.isMobile ? 128 : 128;
+    this.characterX = this.isMobile ? 50 : 150; // Move character more to the left on mobile
+    this.characterY = canvas.height - (this.isMobile ? 150 : 250); // Adjust Y position for mobile
+    this.characterWidth = this.isMobile ? 96 : 128; // Slightly smaller on mobile
+    this.characterHeight = this.isMobile ? 96 : 128;
     this.velocityY = 0;
-    this.gravity = 0.24; // ⬆ lower for floaty jumps
-    this.jumpForce = -12; // ⬆ more negative = higher jump
+    this.gravity = 0.24;
+    this.jumpForce = -12;
     this.isJumping = false;
 
     // ADDING BEAN
@@ -240,17 +240,17 @@ class Game {
     const obstacleImage = new Image();
     obstacleImage.src = this.obstacleImage.src;
 
-    const width = 128;
-    const height = 128;
+    const width = this.isMobile ? 96 : 128;
+    const height = this.isMobile ? 96 : 128;
     const x = this.canvas.width;
-    const y = this.canvas.height - height - 50;
+    const y = this.canvas.height - height - (this.isMobile ? 30 : 50);
 
     this.obstacles.push({
       x,
       y,
       width,
       height,
-      speed: 4 + Math.random() * 2,
+      speed: this.isMobile ? (3 + Math.random() * 2) : (4 + Math.random() * 2),
       image: obstacleImage,
     });
   }
