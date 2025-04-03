@@ -270,14 +270,31 @@ class Game {
 
     if (this.backgroundImage.complete) {
       if (this.isMobile) {
-        // For mobile, maintain aspect ratio while covering height
+        // Initialize background scroll position if not set
+        if (this.bgScrollX === undefined) {
+          this.bgScrollX = 0;
+        }
+        
         const bgRatio = this.backgroundImage.width / this.backgroundImage.height;
         const bgWidth = this.canvas.height * bgRatio;
-        const xOffset = (this.canvas.width - bgWidth) / 2;
         
+        // Update scroll position based on game speed
+        this.bgScrollX -= 2 * this.speedScale;
+        if (this.bgScrollX <= -bgWidth) {
+          this.bgScrollX = 0;
+        }
+        
+        // Draw two copies of the background for seamless scrolling
         this.ctx.drawImage(
           this.backgroundImage,
-          xOffset,
+          this.bgScrollX,
+          0,
+          bgWidth,
+          this.canvas.height
+        );
+        this.ctx.drawImage(
+          this.backgroundImage,
+          this.bgScrollX + bgWidth,
           0,
           bgWidth,
           this.canvas.height
