@@ -97,11 +97,9 @@ function startGame(elementType) {
 
   console.log(`Starting game with ${elementType} element`);
 
-  // Show the game screen
+  // Show the game screen 
   showGameScreen();
 
-  // Initialize the game with the chosen element
-  const canvas = document.getElementById("gameCanvas");
   if (canvas) {
     // Start the game with the selected element type
     initGame(canvas, elementType);
