@@ -13,12 +13,30 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("soundToggle").textContent = "🔊";
 });
 
+// Helper function for smooth fade-in of audio
+function fadeInMusic(audio, duration = 2000) {
+  audio.volume = 0;
+  const targetVolume = 0.5;
+  const step = targetVolume / (duration / 50); // 50ms intervals
+
+  const fade = setInterval(() => {
+    if (audio.volume < targetVolume) {
+      audio.volume = Math.min(audio.volume + step, targetVolume);
+    } else {
+      clearInterval(fade);
+    }
+  }, 50);
+}
+
 // 🎚 Toggle sound
 function toggleSound() {
   soundEnabled = !soundEnabled;
 
   if (soundEnabled) {
-    bgMusic.play();
+    bgMusic.volume = 0; // start silent
+    bgMusic.play()
+      .then(() => fadeInMusic(bgMusic))
+      .catch(err => console.warn("Music play blocked:", err));
     document.getElementById("soundToggle").textContent = "🔊";
   } else {
     bgMusic.pause();
@@ -45,18 +63,24 @@ function showScreen(screenId) {
 // ⏮ Title screen
 function showTitleScreen() {
   showScreen("titleScreen");
-  if (soundEnabled) bgMusic.play();
+  
+  if (soundEnabled && bgMusic.paused) {
+    bgMusic.volume = 0; // start silent
+    bgMusic.play()
+      .then(() => fadeInMusic(bgMusic))
+      .catch(err => console.warn("Music play blocked:", err));
+  }
 }
 
 // 🧭 Main menu
 function showMainMenu() {
   showScreen("mainMenu");
 
-  // Start background music if not already playing
   if (soundEnabled && bgMusic.paused) {
-    bgMusic.play().catch((err) => {
-      console.warn("Music play blocked:", err);
-    });
+    bgMusic.volume = 0; // start silent
+    bgMusic.play()
+      .then(() => fadeInMusic(bgMusic))
+      .catch(err => console.warn("Music play blocked:", err));
   }
 }
 
@@ -110,7 +134,13 @@ function startGame(elementType) {
 function restartGame() {
   const canvas = document.getElementById("gameCanvas");
 
-  if (soundEnabled) bgMusic.play();
+  if (soundEnabled) {
+    bgMusic.volume = 0; // start silent
+    bgMusic.play()
+      .then(() => fadeInMusic(bgMusic))
+      .catch(err => console.warn("Music play blocked:", err));
+  }
+  
   showMainMenu();
 
   if (canvas) {
@@ -121,3 +151,19 @@ function restartGame() {
     ? "🔊"
     : "🔇";
 }
+
+// Auto-pause/resume when switching tabs
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    // Pause music when tab is not visible
+    if (!bgMusic.paused) bgMusic.pause();
+  } else {
+    // Resume music with fade-in when tab becomes visible again
+    if (soundEnabled && bgMusic.paused) {
+      bgMusic.volume = 0; // start silent
+      bgMusic.play()
+        .then(() => fadeInMusic(bgMusic, 1000)) // faster fade for tab switching
+        .catch(err => console.warn("Resume blocked:", err));
+    }
+  }
+});
