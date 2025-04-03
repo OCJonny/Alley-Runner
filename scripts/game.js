@@ -8,15 +8,26 @@ async function initGame(canvas, elementType) {
   const gameContainer = canvas.parentElement;
   const containerRect = gameContainer.getBoundingClientRect();
   
-  // Calculate dimensions while maintaining aspect ratio
+  // Calculate dimensions while maintaining aspect ratio and handling mobile
   const aspectRatio = 16/9;
   let width = containerRect.width;
   let height = containerRect.height;
+  const isMobile = window.innerWidth <= 768;
   
-  if (width / height > aspectRatio) {
-    width = height * aspectRatio;
-  } else {
+  if (isMobile) {
+    // For mobile, use full width and calculate height
+    width = containerRect.width;
     height = width / aspectRatio;
+    
+    // Adjust character size for mobile
+    this.characterWidth = 64;  // Halved from 128
+    this.characterHeight = 64; // Halved from 128
+  } else {
+    if (width / height > aspectRatio) {
+      width = height * aspectRatio;
+    } else {
+      height = width / aspectRatio;
+    }
   }
   
   // Set canvas size
@@ -61,11 +72,14 @@ class Game {
     this.beanKey = `${elementType}_beans`; // e.g. fire_beans
     this.savedBeanCount = localStorage.getItem(this.beanKey) || 0;
 
+    // Check if mobile
+    this.isMobile = window.innerWidth <= 768;
+
     // === CHARACTER PROPERTIES ===
-    this.characterX = 150; // character starting X
-    this.characterY = canvas.height - 250; // adjusted for larger size
-    this.characterWidth = 128; // doubled sprite size
-    this.characterHeight = 128;
+    this.characterX = this.isMobile ? 75 : 150; // adjust X position for mobile
+    this.characterY = canvas.height - (this.isMobile ? 125 : 250); // adjust Y for mobile
+    this.characterWidth = this.isMobile ? 64 : 128; // smaller on mobile
+    this.characterHeight = this.isMobile ? 64 : 128;
     this.velocityY = 0;
     this.gravity = 0.24; // ⬆ lower for floaty jumps
     this.jumpForce = -12; // ⬆ more negative = higher jump
