@@ -4,17 +4,21 @@ let game = null;
 
 // Initialize the game with the selected element
 async function initGame(canvas, elementType) {
-  // Get desired aspect ratio
-  const aspectRatio = 4 / 3;
+  // Calculate dimensions to fit the viewport while maintaining aspect ratio
+  const aspectRatio = 16 / 9;
   const maxWidth = window.innerWidth;
   const maxHeight = window.innerHeight;
-
-  let width = maxWidth;
-  let height = width / aspectRatio;
-
-  if (height > maxHeight) {
+  
+  let width, height;
+  
+  if (maxWidth / maxHeight > aspectRatio) {
+    // Window is wider than needed
     height = maxHeight;
     width = height * aspectRatio;
+  } else {
+    // Window is taller than needed
+    width = maxWidth;
+    height = width / aspectRatio;
   }
 
   // Set CSS size (visible)
