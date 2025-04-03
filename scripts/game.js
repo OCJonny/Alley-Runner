@@ -70,6 +70,7 @@ class Game {
 
     this.isRunning = false;
     this.hasCollided = false;
+    this.lives = 3; // Start with 3 lives
     this.elementType = elementType;
 
     this.score = 0;
@@ -91,6 +92,8 @@ class Game {
     this.jumpFrameIndex = 0;
     this.jumpFrameTimer = 0;
     this.jumpFrameInterval = 400;
+    
+    this.updateScore(); // Initialize the HUD
   }
 
   async init() {
@@ -178,6 +181,8 @@ class Game {
 
   updateScore() {
     document.getElementById("score").textContent = `Score: ${this.score}`;
+    document.getElementById("highScore").textContent = `High: ${this.highScore}`;
+    document.getElementById("lives").textContent = `Lives: ${this.lives}`;
   }
 
   spawnBean() {
@@ -338,7 +343,16 @@ class Game {
           { x: ob.x, y: ob.y, width: ob.width, height: ob.height },
         )
       ) {
-        this.stop();
+        this.lives--;
+        this.updateScore();
+
+        if (this.soundEnabled) this.deathSound?.play();
+
+        this.obstacles.splice(i, 1); // Remove the obstacle on hit
+
+        if (this.lives <= 0) {
+          this.stop();
+        }
       }
       if (ob.x + ob.width < 0) this.obstacles.splice(i, 1);
     });
