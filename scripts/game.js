@@ -269,13 +269,29 @@ class Game {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     if (this.backgroundImage.complete) {
-      this.ctx.drawImage(
-        this.backgroundImage,
-        0,
-        0,
-        this.canvas.width,
-        this.canvas.height,
-      );
+      if (this.isMobile) {
+        // For mobile, maintain aspect ratio while covering height
+        const bgRatio = this.backgroundImage.width / this.backgroundImage.height;
+        const bgWidth = this.canvas.height * bgRatio;
+        const xOffset = (this.canvas.width - bgWidth) / 2;
+        
+        this.ctx.drawImage(
+          this.backgroundImage,
+          xOffset,
+          0,
+          bgWidth,
+          this.canvas.height
+        );
+      } else {
+        // Desktop remains the same
+        this.ctx.drawImage(
+          this.backgroundImage,
+          0,
+          0,
+          this.canvas.width,
+          this.canvas.height
+        );
+      }
     }
 
     if (this.hasCollided && this.characterDefeatImage.complete) {
