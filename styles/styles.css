@@ -244,36 +244,12 @@ canvas {
 /* Responsive styles */
 @media (max-width: 768px) {
   #mainMenu img {
-    width: 60px;
-    margin: 6px;
+    width: 80px;
+    margin: 8px;
   }
-  
+
   .hud {
-    font-size: 14px;
-    top: 10px;
-    left: 10px;
-  }
-
-  .speed-container {
-    width: 150px;
-    height: 8px;
-  }
-
-  #speedUpMessage {
-    font-size: 20px;
-  }
-
-  .start-button {
-    width: 120px;
-  }
-
-  #endGameScreen h2 {
-    font-size: 24px;
-  }
-
-  #endGameScreen p {
-    font-size: 18px;
-  }px;
+    font-size: 16px;
   }
 
   .sound-toggle {
