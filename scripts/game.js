@@ -4,27 +4,17 @@ let game = null;
 
 // Initialize the game with the selected element
 async function initGame(canvas, elementType) {
-  // Get desired aspect ratio
-  const aspectRatio = 4 / 3;
-  const maxWidth = window.innerWidth;
-  const maxHeight = window.innerHeight;
-
-  let width = maxWidth;
-  let height = width / aspectRatio;
-
-  if (height > maxHeight) {
-    height = maxHeight;
-    width = height * aspectRatio;
-  }
-
-  // Set CSS size (visible)
-  canvas.style.width = `${width}px`;
-  canvas.style.height = `${height}px`;
-
-  // Set actual canvas resolution for crisp rendering
-  const dpr = window.devicePixelRatio || 1;
-  canvas.width = width * dpr;
-  canvas.height = height * dpr;
+  // Get the game container dimensions
+  const gameContainer = canvas.parentElement;
+  const containerRect = gameContainer.getBoundingClientRect();
+  
+  // Set canvas size to match container
+  canvas.style.width = '100%';
+  canvas.style.height = '100%';
+  
+  // Set actual canvas resolution
+  canvas.width = containerRect.width;
+  canvas.height = containerRect.height;
 
   const ctx = canvas.getContext("2d");
   ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset any existing transform
