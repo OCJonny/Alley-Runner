@@ -101,6 +101,9 @@ class Game {
     // Background scrolling
     this.bgScrollX = 0; // for horizontal scroll
     
+    // Bean tracking for green life-refill beans
+    this.totalBeansSpawned = 0;
+    
     this.updateScore(); // Initialize the HUD
   }
 
@@ -206,8 +209,12 @@ class Game {
   }
 
   spawnBean() {
+    this.totalBeansSpawned++;
+    
+    // Every 6th bean is green (gives extra life)
+    const isGreen = this.totalBeansSpawned % 6 === 0;
     const beanImage = new Image();
-    beanImage.src = "images/RedBean.png";
+    beanImage.src = isGreen ? "images/GreenBean.png" : "images/RedBean.png";
 
     const width = 64;
     const height = 64;
@@ -219,8 +226,10 @@ class Game {
       y,
       width,
       height,
-      speed: this.isMobile ? 2.5 + Math.random() * 1.5 : 4.5 + Math.random() * 2.5,
+      // Green beans move a bit slower to make them more challenging to get
+      speed: this.isMobile ? 1.5 + Math.random() * 1 : 3 + Math.random() * 2,
       image: beanImage,
+      isGreen
     });
   }
 
@@ -456,6 +465,13 @@ class Game {
         this.score += 10;
         this.beanCount++;
         this.updateScore();
+        
+        // Handle green bean special effect - restore a life if under maximum
+        if (bean.isGreen && this.lives < 3) {
+          this.lives++;
+          this.updateLivesDisplay(); // Update the lives display with new bean
+        }
+        
         this.beans.splice(index, 1);
       }
       if (bean.x + bean.width < 0) this.beans.splice(index, 1);
