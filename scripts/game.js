@@ -150,6 +150,7 @@ class Game {
     this.jumpSound = new Audio("sounds/Jump.wav");
     this.beanSound = new Audio("sounds/Bean.wav");
     this.deathSound = new Audio("sounds/Death.wav");
+    this.healthSound = new Audio("sounds/Health_Up.wav");
 
     document.getElementById("highScore").textContent =
       `High: ${this.highScore}`;
@@ -408,7 +409,7 @@ class Game {
       }
       
       // Shrink and center obstacle hitboxes
-      const shrinkFactor = 0.75;
+      const shrinkFactor = 0.6; // 75% * 80% = 60%
       
       const obstacleRect = {
         x: ob.x + (ob.width * (1 - shrinkFactor)) / 2,
@@ -484,18 +485,25 @@ class Game {
           { x: bean.x, y: bean.y, width: bean.width, height: bean.height },
         )
       ) {
-        if (this.soundEnabled) this.beanSound?.play();
+        if (bean.isGreen) {
+          // Green bean collected!
+          if (this.lives < 3) {
+            this.lives++;
+            this.updateLivesDisplay(); // Update the lives display with new bean
+            this.showHealthUpMessage(); // Show the +1 health message
+            if (this.soundEnabled) this.healthSound?.play(); // Play the health up sound
+          } else {
+            // Still play normal bean sound if already at max health
+            if (this.soundEnabled) this.beanSound?.play();
+          }
+        } else {
+          // Regular bean sound for red beans
+          if (this.soundEnabled) this.beanSound?.play();
+        }
+        
         this.score += 10;
         this.beanCount++;
         this.updateScore();
-        
-        // Handle green bean special effect - restore a life if under maximum
-        if (bean.isGreen && this.lives < 3) {
-          this.lives++;
-          this.updateLivesDisplay(); // Update the lives display with new bean
-          this.showHealthUpMessage(); // Show the +1 health message
-        }
-        
         this.beans.splice(index, 1);
       }
       if (bean.x + bean.width < 0) this.beans.splice(index, 1);
