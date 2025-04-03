@@ -1,6 +1,6 @@
 import { initGame } from './game.js';
 import { loadAudio } from './utils.js';
-import { initLeaderboard, getLeaderboardData } from './api.js';
+import { initLeaderboard, getLeaderboardData, updateDomainStats } from './api.js';
 
 // Game variables
 let game = null;
