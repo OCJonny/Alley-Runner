@@ -1,5 +1,8 @@
 // screens.js
 
+// 🌐 API base URL
+const API_BASE_URL = "https://alley-runner-v-2-ovrcldjonny.replit.app"; // ← replace with your actual URL
+
 // 🔊 Global Music (shared across screens)
 let bgMusic = new Audio("sounds/Game_Music.wav");
 bgMusic.loop = true;
@@ -63,9 +66,9 @@ function showScreen(screenId) {
 // ⏮ Title screen
 function showTitleScreen() {
   showScreen("titleScreen");
-  
+
   if (soundEnabled && bgMusic.paused) {
-    bgMusic.volume = 0; // start silent
+    bgMusic.volume = 0;
     bgMusic.play()
       .then(() => fadeInMusic(bgMusic))
       .catch(err => console.warn("Music play blocked:", err));
@@ -78,7 +81,7 @@ function showMainMenu() {
   updateDomainStatsDisplay();
 
   if (soundEnabled && bgMusic.paused) {
-    bgMusic.volume = 0; // start silent
+    bgMusic.volume = 0;
     bgMusic.play()
       .then(() => fadeInMusic(bgMusic))
       .catch(err => console.warn("Music play blocked:", err));
@@ -136,12 +139,12 @@ function restartGame() {
   const canvas = document.getElementById("gameCanvas");
 
   if (soundEnabled) {
-    bgMusic.volume = 0; // start silent
+    bgMusic.volume = 0;
     bgMusic.play()
       .then(() => fadeInMusic(bgMusic))
       .catch(err => console.warn("Music play blocked:", err));
   }
-  
+
   showMainMenu();
 
   if (canvas) {
@@ -173,14 +176,12 @@ function updateDomainStatsDisplay() {
 // Auto-pause/resume when switching tabs
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) {
-    // Pause music when tab is not visible
     if (!bgMusic.paused) bgMusic.pause();
   } else {
-    // Resume music with fade-in when tab becomes visible again
     if (soundEnabled && bgMusic.paused) {
-      bgMusic.volume = 0; // start silent
+      bgMusic.volume = 0;
       bgMusic.play()
-        .then(() => fadeInMusic(bgMusic, 1000)) // faster fade for tab switching
+        .then(() => fadeInMusic(bgMusic, 1000))
         .catch(err => console.warn("Resume blocked:", err));
     }
   }

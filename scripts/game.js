@@ -2,6 +2,8 @@
 
 let game = null;
 
+const API_BASE_URL = "https://alley-runner-v-2-ovrcldjonny.replit.app";
+
 // Initialize the game with the selected element
 async function initGame(canvas, elementType) {
   if (!canvas || !elementType) {
@@ -92,18 +94,18 @@ class Game {
     this.jumpFrameIndex = 0;
     this.jumpFrameTimer = 0;
     this.jumpFrameInterval = 400;
-    
+
     // Flashing effect variables for hit feedback
     this.isFlashing = false;
     this.flashTimer = 0;
     this.flashDuration = 1000; // 1 second of flashing/invulnerability
-    
+
     // Background scrolling
     this.bgScrollX = 0; // for horizontal scroll
-    
+
     // Bean tracking for green life-refill beans
     this.totalBeansSpawned = 0;
-    
+
     this.updateScore(); // Initialize the HUD
   }
 
@@ -194,14 +196,31 @@ class Game {
 
     document.getElementById("highScore").textContent =
       `High: ${this.highScore}`;
+    // 🌐 Send score and beans to server
+    fetch(`${API_BASE_URL}/api/update`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        domain: this.elementType,
+        score: this.score,
+        beans: this.beanCount,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => console.log("Leaderboard updated:", data))
+      .catch((err) => console.error("Failed to update leaderboard:", err));
+
     showEndScreen(this.score);
   }
 
   updateScore() {
     document.getElementById("score").textContent = `Score: ${this.score}`;
-    document.getElementById("highScore").textContent = `High: ${this.highScore}`;
+    document.getElementById("highScore").textContent =
+      `High: ${this.highScore}`;
   }
-  
+
   updateLivesDisplay() {
     const container = document.getElementById("livesContainer");
     container.innerHTML = ""; // Clear existing
@@ -216,7 +235,7 @@ class Game {
 
   spawnBean() {
     this.totalBeansSpawned++;
-    
+
     // Every 6th bean is green (gives extra life)
     const isGreen = this.totalBeansSpawned % 6 === 0;
     const beanImage = new Image();
@@ -235,7 +254,7 @@ class Game {
       // Green beans move a bit slower to make them more challenging to get
       speed: this.isMobile ? 1.5 + Math.random() * 1 : 3 + Math.random() * 2,
       image: beanImage,
-      isGreen
+      isGreen,
     });
   }
 
@@ -290,14 +309,14 @@ class Game {
       this.bgScrollX,
       0,
       bgWidth,
-      this.canvas.height
+      this.canvas.height,
     );
     this.ctx.drawImage(
       this.backgroundImage,
       this.bgScrollX + bgWidth,
       0,
       bgWidth,
-      this.canvas.height
+      this.canvas.height,
     );
 
     if (this.hasCollided && this.characterDefeatImage.complete) {
@@ -328,11 +347,12 @@ class Game {
     const maxSpeed = this.isMobile ? 2.5 : 3.5;
     document.getElementById("speedBar").style.width =
       `${((this.speedScale - minSpeed) / (maxSpeed - minSpeed)) * 100}%`;
-      
+
     // Gradient from green to red based on speed
     const red = Math.min(255, Math.floor((this.speedScale - 1) * 255));
     const green = Math.max(0, 255 - Math.floor((this.speedScale - 1) * 255));
-    document.getElementById("speedBar").style.backgroundColor = `rgb(${red}, ${green}, 50)`;
+    document.getElementById("speedBar").style.backgroundColor =
+      `rgb(${red}, ${green}, 50)`;
 
     this.velocityY += this.gravity * delta;
     this.characterY += this.velocityY * delta;
@@ -363,27 +383,27 @@ class Game {
     }
 
     if (!currentFrame) {
-      console.error('Current frame is null or undefined');
+      console.error("Current frame is null or undefined");
       return;
     }
     if (!currentFrame.complete) {
-      console.error('Current frame not completely loaded');
+      console.error("Current frame not completely loaded");
       return;
     }
-    
+
     // Handle flashing effect when player is hit
     if (this.isFlashing) {
       // Update flash timer
       this.flashTimer -= 16 * delta;
-      
+
       // Toggle visibility for flashing effect (visible every other 100ms)
       const shouldDraw = Math.floor(this.flashTimer / 100) % 2 === 0;
-      
+
       // End flashing state when timer runs out
       if (this.flashTimer <= 0) {
         this.isFlashing = false;
       }
-      
+
       // Only draw character on certain frames for blinking effect
       if (shouldDraw) {
         this.ctx.drawImage(
@@ -419,17 +439,17 @@ class Game {
       if (ob.image.complete) {
         this.ctx.drawImage(ob.image, ob.x, ob.y, ob.width, ob.height);
       }
-      
+
       // Shrink and center obstacle hitboxes
       const shrinkFactor = 0.6; // 75% * 80% = 60%
-      
+
       const obstacleRect = {
         x: ob.x + (ob.width * (1 - shrinkFactor)) / 2,
         y: ob.y + (ob.height * (1 - shrinkFactor)) / 2,
         width: ob.width * shrinkFactor,
         height: ob.height * shrinkFactor,
       };
-      
+
       // Debug: Draw hitbox rectangle (uncomment to visualize hitboxes)
       /*
       this.ctx.strokeStyle = 'lime';
@@ -441,7 +461,7 @@ class Game {
         obstacleRect.height
       );
       */
-      
+
       if (
         this.checkCollision(
           {
@@ -451,7 +471,7 @@ class Game {
             height: this.characterHeight,
           },
           obstacleRect,
-        ) && 
+        ) &&
         !this.isFlashing // Only take damage if not in flashing/invulnerable state
       ) {
         this.lives--;
@@ -512,7 +532,7 @@ class Game {
           // Regular bean sound for red beans
           if (this.soundEnabled) this.beanSound?.play();
         }
-        
+
         this.score += 10;
         this.beanCount++;
         this.updateScore();
