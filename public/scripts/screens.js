@@ -1,7 +1,7 @@
 // screens.js
 
-// 🌐 API base URL
-const API_BASE_URL = "https://alley-runner-v-2-ovrcldjonny.replit.app"; // ← replace with your actual URL
+// 🌐 API base URL (use current host for both local and deployed environments)
+const API_BASE_URL = window.location.origin;
 
 // 🔊 Global Music (shared across screens)
 let bgMusic = new Audio("sounds/Game_Music.wav");
@@ -157,9 +157,12 @@ function restartGame() {
 }
 
 // Domain stats display update
-function updateDomainStatsDisplay() {
-  const domains = ["fire", "earth", "water", "lightning"];
+// Use the current host for API calls (works with both local and deployed environments)
+const API_BASE_URL = window.location.origin;
 
+function updateDomainStatsDisplay() {
+  // First, show the data from localStorage while we fetch from the server
+  const domains = ["fire", "earth", "water", "lightning"];
   domains.forEach((domain) => {
     const scoreKey = `${domain}_cumulative_score`;
     const beanKey = `${domain}_beans`;
@@ -171,6 +174,33 @@ function updateDomainStatsDisplay() {
       label.innerHTML = `Score: ${score}<br>Beans: ${beans}`;
     }
   });
+
+  // Now fetch the latest data from the server
+  fetch(`${API_BASE_URL}/api/leaderboard`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      // Update the UI with data from the server
+      data.forEach(item => {
+        const domain = item.domain;
+        const label = document.getElementById(`${domain}Stats`);
+        if (label) {
+          label.innerHTML = `Score: ${item.total_score}<br>Beans: ${item.total_beans}`;
+          
+          // Also update localStorage with latest server data
+          localStorage.setItem(`${domain}_cumulative_score`, item.total_score);
+          localStorage.setItem(`${domain}_beans`, item.total_beans);
+        }
+      });
+    })
+    .catch(error => {
+      console.error('Failed to fetch domain stats:', error);
+      // Continue using localStorage data if server fetch fails
+    });
 }
 
 // Auto-pause/resume when switching tabs

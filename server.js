@@ -32,19 +32,7 @@ const pool = new pg.Pool({
   ssl: { rejectUnauthorized: false },
 });
 
-// ✅ Initialize leaderboard table (run only once)
-const initLeaderboardTable = async () => {
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS leaderboard (
-      domain VARCHAR(20) PRIMARY KEY,
-      total_score INTEGER DEFAULT 0,
-      total_beans INTEGER DEFAULT 0
-    );
-  `);
-};
-initLeaderboardTable();
-
-// 📥 POST endpoint: Add score/beans to leaderboard
+// 📥 POST endpoint: Add score/beans to domain_stats
 app.post("/api/update", async (req, res) => {
   const { domain, score, beans } = req.body;
 
@@ -53,14 +41,16 @@ app.post("/api/update", async (req, res) => {
   }
 
   try {
+    // Update the existing domain_stats table
     await pool.query(
       `
-      INSERT INTO leaderboard (domain, total_score, total_beans)
-      VALUES ($1, $2, $3)
-      ON CONFLICT (domain)
-      DO UPDATE SET
-        total_score = leaderboard.total_score + EXCLUDED.total_score,
-        total_beans = leaderboard.total_beans + EXCLUDED.total_beans;
+      UPDATE domain_stats
+      SET 
+        high_score = GREATEST(high_score, $2),
+        total_score = total_score + $2,
+        total_beans = total_beans + $3,
+        updated_at = CURRENT_TIMESTAMP
+      WHERE domain = $1;
     `,
       [domain, score, beans],
     );
@@ -71,11 +61,11 @@ app.post("/api/update", async (req, res) => {
   }
 });
 
-// 📤 GET endpoint: Fetch leaderboard stats
+// 📤 GET endpoint: Fetch domain stats
 app.get("/api/leaderboard", async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT * FROM leaderboard ORDER BY total_score DESC",
+      "SELECT * FROM domain_stats ORDER BY total_score DESC",
     );
     res.json(result.rows);
   } catch (err) {
@@ -85,7 +75,7 @@ app.get("/api/leaderboard", async (req, res) => {
 });
 
 // ✅ Launch server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`✅ Alley Run server running on http://localhost:${PORT}`);
 });

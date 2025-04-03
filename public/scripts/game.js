@@ -2,7 +2,8 @@
 
 let game = null;
 
-const API_BASE_URL = "https://alley-runner-v-2-ovrcldjonny.replit.app";
+// Use the current host for API calls (works with both local and deployed environments)
+const API_BASE_URL = window.location.origin;
 
 // Initialize the game with the selected element
 async function initGame(canvas, elementType) {
