@@ -76,7 +76,7 @@ class Game {
     this.scoreKey = `${elementType}_score`;
     this.highScore = localStorage.getItem(this.scoreKey) || 0;
 
-    this.speedScale = 1;
+    this.speedScale = 1.5;
     this.lastSpeedTier = 0;
     this.recentlySpedUp = false;
 
@@ -194,7 +194,7 @@ class Game {
       y,
       width,
       height,
-      speed: this.isMobile ? 1.5 + Math.random() * 1 : 3 + Math.random() * 2,
+      speed: this.isMobile ? 2.5 + Math.random() * 1.5 : 4.5 + Math.random() * 2.5,
       image: beanImage,
     });
   }
@@ -257,8 +257,8 @@ class Game {
 
     const tier = Math.floor(this.score / 100);
     if (tier > this.lastSpeedTier && !this.recentlySpedUp) {
-      const inc = this.isMobile ? 0.025 : 0.05;
-      const max = this.isMobile ? 1.4 : 2.0;
+      const inc = this.isMobile ? 0.04 : 0.08;
+      const max = this.isMobile ? 2.0 : 3.0;
       this.speedScale = Math.min(this.speedScale + inc, max);
       this.showSpeedUpMessage();
       this.recentlySpedUp = true;
