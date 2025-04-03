@@ -55,8 +55,10 @@ body {
 }
 
 .start-button {
-  width: 150px; /* change size of start button */
-  margin-top: 60px; /* ⬇️ pushes it further down */
+  width: 150px;
+  /* change size of start button */
+  margin-top: 60px;
+  /* ⬇️ pushes it further down */
   cursor: pointer;
   transition: transform 0.2s;
 }
@@ -90,7 +92,8 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.4); /* tweak opacity if needed */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* tweak opacity if needed */
   z-index: 1;
 }
 
@@ -104,26 +107,54 @@ body {
   background-color: #000;
 }
 
-#gameCanvas {
-  display: block;
-  background-color: #000;
+.game-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: 4 / 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: black;
+}
+
+canvas {
   width: 100%;
   height: 100%;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  display: block;
+  background-color: black;
+}
+
+.canvas-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  /* vertically center */
+  background-color: black;
+  /* optional: adds a clean background */
 }
 
 /* HUD - Heads Up Display */
 .hud {
   position: absolute;
   top: 20px;
-  left: 20px; /* moved to top-left */
+  left: 20px;
+  /* moved to top-left */
   display: flex;
-  flex-direction: column; /* stack vertically */
+  flex-direction: column;
+  /* stack vertically */
   align-items: flex-start;
   font-family: 'Arial', sans-serif;
   font-size: 18px;
   color: white;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  z-index: 10; /* make sure it's behind the sound button */
+  z-index: 10;
+  /* make sure it's behind the sound button */
 }
 
 .hud span {
@@ -166,11 +197,13 @@ body {
   pointer-events: none;
   z-index: 10;
 }
+
 /* 🎯 End Game Screen */
 #endGameScreen {
   background-color: #121212;
   text-align: center;
 }
+
 #endGameScreen h2 {
   font-size: 36px;
   margin: 20px 0 10px;
@@ -186,11 +219,15 @@ body {
   height: auto;
   margin-bottom: 20px;
 }
+
 /* Bouncing Defeated Sprite */
 @keyframes slowBounce {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-10px);
   }
@@ -209,10 +246,11 @@ body {
     width: 80px;
     margin: 8px;
   }
-  
+
   .hud {
     font-size: 16px;
   }
+
   .sound-toggle {
     position: absolute;
     top: 20px;
@@ -224,5 +262,17 @@ body {
     color: white;
     cursor: pointer;
     z-index: 100;
+  }
+
+  body,
+  html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
   }
 }

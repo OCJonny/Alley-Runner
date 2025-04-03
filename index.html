@@ -48,19 +48,25 @@
     </div>
     <!-- Game Screen -->
     <div id="gameScreen" class="screen hidden">
-      <canvas id="gameCanvas" width="800" height="600"></canvas>
-      <!-- HUD for score -->
-      <div class="hud">
-        <span id="score">Score: 0</span>
-        <span id="highScore">High Score: 0</span>
+      <div class="game-container">
+        <canvas id="gameCanvas"></canvas>
+
+        <!-- HUD -->
+        <div class="hud">
+          <span id="score">Score: 0</span>
+          <span id="highScore">High: 0</span>
+        </div>
+
+        <!-- Speed bar -->
+        <div class="speed-container">
+          <div id="speedBar"></div>
+        </div>
+
+        <!-- Speed Up -->
+        <div id="speedUpMessage">⚡ Speed Up!</div>
       </div>
-      <!-- Speed bar at the bottom -->
-      <div class="speed-container">
-        <div id="speedBar"></div>
-      </div>
-      <!-- Flashing message when speed increases -->
-      <div id="speedUpMessage">⚡ Speed Up!</div>
     </div>
+
     <!-- End Game Screen -->
     <div id="endGameScreen" class="screen hidden">
       <img src="images/AlleyRun_logo_red.png" class="logo-small" />

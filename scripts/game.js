@@ -4,8 +4,34 @@ let game = null;
 
 // Initialize the game with the selected element
 async function initGame(canvas, elementType) {
-  game = new Game(canvas, elementType);
-  await game.init(); // Wait until sprites are loaded
+  // Get desired aspect ratio
+  const aspectRatio = 4 / 3;
+  const maxWidth = window.innerWidth;
+  const maxHeight = window.innerHeight;
+
+  let width = maxWidth;
+  let height = width / aspectRatio;
+
+  if (height > maxHeight) {
+    height = maxHeight;
+    width = height * aspectRatio;
+  }
+
+  // Set CSS size (visible)
+  canvas.style.width = `${width}px`;
+  canvas.style.height = `${height}px`;
+
+  // Set actual canvas resolution for crisp rendering
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = width * dpr;
+  canvas.height = height * dpr;
+
+  const ctx = canvas.getContext("2d");
+  ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset any existing transform
+  ctx.scale(dpr, dpr);
+
+  game = new Game(canvas, elementType, ctx);
+  await game.init();
   game.start();
 }
 
@@ -29,7 +55,7 @@ class Game {
     });
   }
 
-  constructor(canvas, elementType, soundEnabled) {
+  constructor(canvas, elementType, ctx, soundEnabled) {
     // BEAN COUNTER
     this.beanCount = 0;
     this.beanKey = `${elementType}_beans`; // e.g. fire_beans
@@ -52,7 +78,7 @@ class Game {
 
     // === CANVAS & CONTEXT ===
     this.canvas = canvas;
-    this.ctx = canvas.getContext("2d");
+    this.ctx = ctx; // use the one we scaled
 
     // === GAME STATE ===
     this.isRunning = false;
