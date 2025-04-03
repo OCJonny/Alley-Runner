@@ -105,12 +105,10 @@ class Game {
     this.highScore = localStorage.getItem(this.scoreKey) || 0;
 
     // === SPEED ===
-    this.isMobile = window.innerWidth <= 768;
-    this.speedScale = this.isMobile ? 0.6 : 1; // Slower starting speed on mobile
+    this.speedScale = 1; // ⬆ starting speed (try 0.5 for slower)
     this.lastSpeedTier = 1;
     this.recentlySpedUp = false;
     this.lastSpeedTier = 0;
-    this.maxSpeed = this.isMobile ? 1.2 : 2.0; // Lower max speed on mobile
 
     // === OBSTACLE ===
     this.obstacles = [];
@@ -296,8 +294,7 @@ class Game {
     // Speed Up
     const tier = Math.floor(this.score / 100);
     if (tier > this.lastSpeedTier && !this.recentlySpedUp) {
-      const speedIncrease = this.isMobile ? 0.03 : 0.05;
-      this.speedScale = Math.min(this.speedScale + speedIncrease, this.maxSpeed);
+      this.speedScale = Math.min(this.speedScale + 0.05, 2.0);
       this.showSpeedUpMessage();
       this.recentlySpedUp = true;
       this.lastSpeedTier = tier;
