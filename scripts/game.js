@@ -8,18 +8,27 @@ async function initGame(canvas, elementType) {
   const gameContainer = canvas.parentElement;
   const containerRect = gameContainer.getBoundingClientRect();
   
-  // Set canvas size to match container
-  canvas.style.width = '100%';
-  canvas.style.height = '100%';
+  // Calculate dimensions while maintaining aspect ratio
+  const aspectRatio = 16/9;
+  let width = containerRect.width;
+  let height = containerRect.height;
+  
+  if (width / height > aspectRatio) {
+    width = height * aspectRatio;
+  } else {
+    height = width / aspectRatio;
+  }
+  
+  // Set canvas size
+  canvas.style.width = `${width}px`;
+  canvas.style.height = `${height}px`;
   
   // Set actual canvas resolution
-  const dpr = window.devicePixelRatio || 1;
-  canvas.width = containerRect.width * dpr;
-  canvas.height = containerRect.height * dpr;
+  canvas.width = width;
+  canvas.height = height;
 
   const ctx = canvas.getContext("2d");
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // Scale for device pixel ratio
-  ctx.scale(dpr, dpr);
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
 
   game = new Game(canvas, elementType, ctx);
   await game.init();
