@@ -81,8 +81,8 @@ class Game {
     this.characterWidth = this.isMobile ? 96 : 128; // Slightly smaller on mobile
     this.characterHeight = this.isMobile ? 96 : 128;
     this.velocityY = 0;
-    this.gravity = 0.24;
-    this.jumpForce = -12;
+    this.gravity = this.isMobile ? 0.20 : 0.24;
+    this.jumpForce = this.isMobile ? -10 : -12;
     this.isJumping = false;
 
     // ADDING BEAN
