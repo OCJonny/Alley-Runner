@@ -294,15 +294,21 @@ class Game {
       }
     }
 
-    if (currentFrame?.complete) {
-      this.ctx.drawImage(
-        currentFrame,
-        this.characterX,
-        this.characterY,
-        this.characterWidth,
-        this.characterHeight,
-      );
+    if (!currentFrame) {
+      console.error('Current frame is null or undefined');
+      return;
     }
+    if (!currentFrame.complete) {
+      console.error('Current frame not completely loaded');
+      return;
+    }
+    this.ctx.drawImage(
+      currentFrame,
+      this.characterX,
+      this.characterY,
+      this.characterWidth,
+      this.characterHeight,
+    );
 
     this.obstacleSpawnTimer += 16 * delta;
     if (this.obstacleSpawnTimer >= this.obstacleSpawnInterval) {
@@ -385,10 +391,17 @@ class Game {
   }
 
   preloadImage(src) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       const img = new Image();
+      img.onerror = () => {
+        console.error(`Failed to load image: ${src}`);
+        reject(new Error(`Failed to load image: ${src}`));
+      };
+      img.onload = () => {
+        console.log(`Successfully loaded image: ${src}`);
+        resolve(img);
+      };
       img.src = src;
-      img.onload = () => resolve(img);
     });
   }
 
