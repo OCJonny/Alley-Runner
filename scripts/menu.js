@@ -1,57 +1,49 @@
-// Menu system
+/**
+ * Menu class for handling menu items and interactions
+ */
 class Menu {
   constructor(containerId) {
     this.container = document.getElementById(containerId);
-    this.menuItems = [];
-    this.activeMenu = null;
+    this.items = [];
   }
-
-  // Add a menu item
+  
+  /**
+   * Add a menu item
+   * @param {string} id - ID for the menu item
+   * @param {string} text - Display text
+   * @param {Function} action - Click handler function
+   */
   addMenuItem(id, text, action) {
-    this.menuItems.push({
-      id,
-      text,
-      action
-    });
+    const item = document.createElement('div');
+    item.id = id;
+    item.className = 'menu-item';
+    item.textContent = text;
+    item.addEventListener('click', action);
+    
+    if (this.container) {
+      this.container.appendChild(item);
+      this.items.push(item);
+    }
   }
-
-  // Show the menu
+  
+  /**
+   * Show the menu
+   */
   show() {
-    if (!this.container) return;
-    
-    // Clear previous menu
-    this.container.innerHTML = '';
-    
-    // Create menu elements
-    const menuElement = document.createElement('div');
-    menuElement.className = 'game-menu';
-    
-    // Create title
-    const title = document.createElement('h1');
-    title.textContent = 'Game Menu';
-    menuElement.appendChild(title);
-    
-    // Create menu items
-    this.menuItems.forEach(item => {
-      const button = document.createElement('button');
-      button.id = item.id;
-      button.textContent = item.text;
-      button.addEventListener('click', item.action);
-      menuElement.appendChild(button);
-    });
-    
-    // Add to container
-    this.container.appendChild(menuElement);
-    this.activeMenu = menuElement;
+    if (this.container) {
+      this.container.style.display = 'flex';
+    }
   }
-
-  // Hide the menu
+  
+  /**
+   * Hide the menu
+   */
   hide() {
-    if (this.activeMenu) {
-      this.activeMenu.style.display = 'none';
+    if (this.container) {
+      this.container.style.display = 'none';
     }
   }
 }
 
-// Export the Menu class
-export default Menu;
+// Export for use in other modules
+export { Menu };

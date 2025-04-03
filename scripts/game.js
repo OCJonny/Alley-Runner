@@ -35,6 +35,9 @@ class Game {
     this.obstacleCount = 0;
     this.totalBeansCollected = 0;
     
+    // Game over callback
+    this.onGameOver = null;
+    
     // Game elements
     this.player = {
       x: canvas.width / 2 - 25,
@@ -110,6 +113,11 @@ class Game {
     
     // Save stats to server
     this.saveDomainStats();
+    
+    // Call game over callback if provided
+    if (this.gameOver && typeof this.onGameOver === 'function') {
+      this.onGameOver();
+    }
   }
   
   /**

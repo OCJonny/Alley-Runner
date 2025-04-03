@@ -1,274 +1,316 @@
-/* Reset and base styles */
+/* Global styles */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-body, html {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  font-family: 'Press Start 2P', cursive;
-  background-color: #000;
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #1a1a2e;
   color: #fff;
+  overflow: hidden;
 }
 
-/* Screen styles */
+/* Screen container */
 .screen {
-  width: 100%;
-  height: 100%;
   position: absolute;
-  top: 0;
-  left: 0;
-  display: none;
+  width: 100%;
+  height: 100vh;
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #000;
-  padding: 20px;
-}
-
-#titleScreen {
-  display: flex; /* Initially shown */
+  background-size: cover;
+  background-position: center;
+  transition: all 0.3s ease;
 }
 
 /* Title screen */
-#titleScreen h1 {
-  margin-bottom: 20px;
-  text-align: center;
-  font-size: 2.5rem;
-  color: #f5d300;
-  text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+#title-screen {
+  background-color: #16213e;
+}
+
+.title {
+  font-size: 48px;
+  margin-bottom: 30px;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  color: #e94560;
 }
 
 .logo {
-  max-width: 80%;
+  width: 200px;
+  height: 200px;
   margin-bottom: 30px;
 }
 
 .start-button {
-  padding: 15px 30px;
-  font-family: 'Press Start 2P', cursive;
-  font-size: 1.2rem;
-  background-color: #ff5722;
+  padding: 15px 40px;
+  font-size: 24px;
+  background-color: #e94560;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
   cursor: pointer;
-  margin-top: 20px;
-  box-shadow: 0 0 10px rgba(255, 87, 34, 0.7);
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: all 0.2s ease;
 }
 
 .start-button:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 15px rgba(255, 87, 34, 0.9);
+  background-color: #ff6b81;
 }
 
 .sound-toggle {
   position: absolute;
   top: 20px;
   right: 20px;
+  font-size: 30px;
+  background: none;
+  border: none;
+  color: white;
   cursor: pointer;
 }
 
-.sound-toggle img {
-  width: 40px;
-  height: 40px;
-}
-
 /* Main menu screen */
-#mainMenuScreen h2 {
-  margin-bottom: 40px;
-  text-align: center;
-  font-size: 1.8rem;
-  color: #f5d300;
+#main-menu {
+  background-color: #222831;
+  padding: 20px;
 }
 
-.domain-selection {
+.menu-title {
+  font-size: 36px;
+  margin-bottom: 30px;
+  color: #00adb5;
+}
+
+.domain-buttons {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 20px;
-  max-width: 600px;
-}
-
-.domain-option {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 }
 
 .domain-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition: transform 0.2s;
-  width: 120px;
-  height: 120px;
+  position: relative;
+  width: 200px;
+  height: 240px;
+  background-color: #393e46;
+  border: 3px solid #00adb5;
   border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding-bottom: 15px;
 }
 
 .domain-button:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
+  border-color: #00fff5;
 }
 
 .domain-button img {
   width: 100%;
-  height: 100%;
+  height: 150px;
   object-fit: cover;
+  margin-bottom: 10px;
 }
 
-.domain-button.lightning { background-color: #9c27b0; }
-.domain-button.fire { background-color: #f44336; }
-.domain-button.water { background-color: #2196f3; }
-.domain-button.earth { background-color: #4caf50; }
+.domain-button-label {
+  font-size: 20px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: white;
+}
 
 .domain-stats {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
   background-color: rgba(0, 0, 0, 0.7);
+  padding: 5px;
   border-radius: 5px;
-  padding: 8px;
-  margin-top: 10px;
-  width: 120px;
-  font-size: 0.6rem;
-  text-align: center;
+  font-size: 12px;
+  text-align: left;
 }
 
-.stat {
-  margin: 2px 0;
-  color: #fff;
+.domain-stats div {
+  margin: 3px 0;
 }
 
 /* Game screen */
-#gameScreen {
-  justify-content: flex-start;
-  align-items: center;
-  padding-top: 0;
+#game-screen {
+  background-color: #0f3460;
+  padding-top: 60px;
 }
 
-#gameCanvas {
-  background-color: #111;
-  max-height: calc(100vh - 60px);
+#game-screen.lightning {
+  background-color: #4a3f6b;
 }
 
-.game-hud {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  max-width: 320px;
-  padding: 10px;
-  background-color: rgba(0, 0, 0, 0.8);
+#game-screen.fire {
+  background-color: #5c1e29;
+}
+
+#game-screen.water {
+  background-color: #164a68;
+}
+
+#game-screen.earth {
+  background-color: #354f34;
+}
+
+.game-ui {
   position: absolute;
   top: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  background-color: rgba(0, 0, 0, 0.7);
   z-index: 10;
 }
 
 .score-container {
-  font-size: 0.8rem;
-  color: #fff;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
 }
 
 .lives-container {
   display: flex;
-  gap: 5px;
+  align-items: center;
 }
 
-.life-icon {
-  width: 25px;
-  height: 25px;
+#game-canvas {
+  border: 3px solid #e94560;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
 /* End screen */
-#endScreen h2 {
-  margin-bottom: 30px;
-  text-align: center;
-  font-size: 2rem;
-  color: #f5d300;
-}
-
-.final-score {
-  font-size: 1.5rem;
-  margin-bottom: 30px;
+#end-screen {
+  background-color: #1b1b2f;
   text-align: center;
 }
 
-.restart-button {
+.end-title {
+  font-size: 40px;
+  margin-bottom: 20px;
+  color: #e43f5a;
+}
+
+.score-wrapper {
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  width: 80%;
+  max-width: 400px;
+}
+
+.score-wrapper h3 {
+  font-size: 20px;
+  margin-bottom: 5px;
+  color: #a7c5eb;
+}
+
+.score-wrapper p {
+  font-size: 32px;
+  margin-bottom: 15px;
+  color: #e43f5a;
+}
+
+.score-wrapper .beans {
+  font-size: 24px;
+  color: #4cc9f0;
+}
+
+.button-container {
+  display: flex;
+  gap: 20px;
+}
+
+.button {
+  padding: 10px 30px;
+  font-size: 18px;
+  background-color: #e94560;
+  color: white;
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
-  transition: transform 0.2s;
-  width: 120px;
+  transition: all 0.2s ease;
 }
 
-.restart-button:hover {
-  transform: scale(1.1);
+.button:hover {
+  transform: scale(1.05);
+  background-color: #ff6b81;
 }
 
 /* Responsive styles */
 @media (max-width: 768px) {
-  #titleScreen h1 {
-    font-size: 1.8rem;
+  .title {
+    font-size: 36px;
   }
   
-  .start-button {
-    font-size: 1rem;
-    padding: 12px 24px;
+  .logo {
+    width: 150px;
+    height: 150px;
   }
   
-  #mainMenuScreen h2 {
-    font-size: 1.4rem;
-  }
-  
-  .domain-button {
-    width: 100px;
-    height: 100px;
-  }
-  
-  .domain-stats {
-    width: 100px;
-    font-size: 0.5rem;
-  }
-  
-  #endScreen h2 {
-    font-size: 1.6rem;
-  }
-  
-  .final-score {
-    font-size: 1.2rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .domain-selection {
+  .domain-buttons {
     gap: 10px;
   }
   
   .domain-button {
-    width: 80px;
-    height: 80px;
+    width: 150px;
+    height: 190px;
   }
   
-  .domain-stats {
-    width: 80px;
-    font-size: 0.45rem;
+  .domain-button img {
+    height: 120px;
+  }
+  
+  .domain-button-label {
+    font-size: 16px;
+  }
+  
+  .end-title {
+    font-size: 32px;
+  }
+  
+  .score-wrapper {
+    width: 90%;
+  }
+  
+  .button-container {
+    flex-direction: column;
+    gap: 10px;
   }
 }
 
-/* Game messages */
-.message {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 1.5rem;
-  color: #fff;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
-  animation: fadeOut 2s forwards;
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-@keyframes fadeOut {
-  0% { opacity: 1; }
-  100% { opacity: 0; }
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.pulse {
+  animation: pulse 1.5s infinite;
 }
