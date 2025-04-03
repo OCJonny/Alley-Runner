@@ -75,6 +75,7 @@ function showTitleScreen() {
 // 🧭 Main menu
 function showMainMenu() {
   showScreen("mainMenu");
+  updateDomainStatsDisplay();
 
   if (soundEnabled && bgMusic.paused) {
     bgMusic.volume = 0; // start silent
@@ -150,6 +151,23 @@ function restartGame() {
   document.getElementById("soundToggle").textContent = soundEnabled
     ? "🔊"
     : "🔇";
+}
+
+// Domain stats display update
+function updateDomainStatsDisplay() {
+  const domains = ["fire", "earth", "water", "lightning"];
+
+  domains.forEach((domain) => {
+    const scoreKey = `${domain}_cumulative_score`;
+    const beanKey = `${domain}_beans`;
+    const score = localStorage.getItem(scoreKey) || 0;
+    const beans = localStorage.getItem(beanKey) || 0;
+
+    const label = document.getElementById(`${domain}Stats`);
+    if (label) {
+      label.innerHTML = `Score: ${score}<br>Beans: ${beans}`;
+    }
+  });
 }
 
 // Auto-pause/resume when switching tabs

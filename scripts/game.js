@@ -187,6 +187,11 @@ class Game {
     const totalBeans = parseInt(this.savedBeanCount) + this.beanCount;
     localStorage.setItem(this.beanKey, totalBeans);
 
+    // Update cumulative domain score
+    const domainScoreKey = `${this.elementType}_cumulative_score`;
+    const prevScore = parseInt(localStorage.getItem(domainScoreKey)) || 0;
+    localStorage.setItem(domainScoreKey, prevScore + this.score);
+
     document.getElementById("highScore").textContent =
       `High: ${this.highScore}`;
     showEndScreen(this.score);
