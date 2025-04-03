@@ -3,7 +3,7 @@ let bgMusic = new Audio("sounds/Game Music.mp3");
 bgMusic.loop = true;
 bgMusic.volume = 0.5;
 
-let soundEnabled = true; // shared flag
+window.soundEnabled = true; // shared flag
 
 // Play music when page loads
 document.addEventListener("DOMContentLoaded", () => {

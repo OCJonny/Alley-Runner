@@ -66,7 +66,10 @@ class Game {
     });
   }
 
-  constructor(canvas, elementType, ctx, soundEnabled) {
+  constructor(canvas, elementType, ctx) {
+    // Get global sound state
+    this.soundEnabled = window.soundEnabled !== undefined ? window.soundEnabled : true;
+    
     // BEAN COUNTER
     this.beanCount = 0;
     this.beanKey = `${elementType}_beans`; // e.g. fire_beans
