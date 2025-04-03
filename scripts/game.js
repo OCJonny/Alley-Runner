@@ -77,9 +77,9 @@ class Game {
 
     // === CHARACTER PROPERTIES ===
     this.characterX = this.isMobile ? 75 : 150; // adjust X position for mobile
-    this.characterY = canvas.height - (this.isMobile ? 125 : 250); // adjust Y for mobile
-    this.characterWidth = this.isMobile ? 64 : 128; // smaller on mobile
-    this.characterHeight = this.isMobile ? 64 : 128;
+    this.characterY = canvas.height - (this.isMobile ? 250 : 250); // same Y position for both
+    this.characterWidth = this.isMobile ? 128 : 128; // same size for both
+    this.characterHeight = this.isMobile ? 128 : 128;
     this.velocityY = 0;
     this.gravity = 0.24; // ⬆ lower for floaty jumps
     this.jumpForce = -12; // ⬆ more negative = higher jump
