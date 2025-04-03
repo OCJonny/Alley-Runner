@@ -250,7 +250,7 @@ class Game {
       y,
       width,
       height,
-      speed: this.isMobile ? (1.5 + Math.random() * 1) : (4 + Math.random() * 2), // Much slower on mobile
+      speed: this.isMobile ? (2.0 + Math.random() * 1.2) : (4 + Math.random() * 2), // Slightly faster on mobile
       image: obstacleImage,
     });
   }
@@ -294,8 +294,8 @@ class Game {
     // Speed Up
     const tier = Math.floor(this.score / 100);
     if (tier > this.lastSpeedTier && !this.recentlySpedUp) {
-      const speedIncrease = this.isMobile ? 0.02 : 0.05;
-      const maxSpeed = this.isMobile ? 1.2 : 2.0;
+      const speedIncrease = this.isMobile ? 0.025 : 0.05;
+      const maxSpeed = this.isMobile ? 1.4 : 2.0;
       this.speedScale = Math.min(this.speedScale + speedIncrease, maxSpeed);
       this.showSpeedUpMessage();
       this.recentlySpedUp = true;
