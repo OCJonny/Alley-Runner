@@ -147,7 +147,10 @@ class Game {
       this.score = 0;
       this.updateScore();
       this.lastTime = null;
-      this.loop();
+      // Bind loop to preserve this context
+      this.boundLoop = (timestamp) => this.loop(timestamp);
+      requestAnimationFrame(this.boundLoop);
+      console.log("Animation loop started");
     }
   }
 
@@ -381,7 +384,9 @@ class Game {
       this.scoreTimer = 0;
     }
 
-    requestAnimationFrame(this.loop.bind(this));
+    if (this.isRunning) {
+      requestAnimationFrame(this.boundLoop);
+    }
   }
 
   showSpeedUpMessage() {
