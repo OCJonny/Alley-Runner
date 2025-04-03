@@ -4,7 +4,10 @@ let game = null;
 
 // Initialize the game with the selected element
 async function initGame(canvas, elementType) {
-  // Get the game container dimensions
+  if (!canvas || !elementType) {
+    console.error('Missing required parameters:', { canvas, elementType });
+    return;
+  }
   const gameContainer = canvas.parentElement;
   const containerRect = gameContainer.getBoundingClientRect();
 

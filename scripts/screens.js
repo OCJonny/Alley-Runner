@@ -102,7 +102,7 @@ function startGame(elementType) {
 
   if (canvas) {
     // Start the game with the selected element type
-    initGame(canvas, elementType);
+    initGame(canvas, elementType).catch(console.error);
   } else {
     console.error("Game canvas not found");
   }
