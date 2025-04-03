@@ -13,11 +13,12 @@ async function initGame(canvas, elementType) {
   canvas.style.height = '100%';
   
   // Set actual canvas resolution
-  canvas.width = containerRect.width;
-  canvas.height = containerRect.height;
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = containerRect.width * dpr;
+  canvas.height = containerRect.height * dpr;
 
   const ctx = canvas.getContext("2d");
-  ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset any existing transform
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // Scale for device pixel ratio
   ctx.scale(dpr, dpr);
 
   game = new Game(canvas, elementType, ctx);
