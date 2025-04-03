@@ -406,6 +406,29 @@ class Game {
       if (ob.image.complete) {
         this.ctx.drawImage(ob.image, ob.x, ob.y, ob.width, ob.height);
       }
+      
+      // Shrink and center obstacle hitboxes
+      const shrinkFactor = 0.75;
+      
+      const obstacleRect = {
+        x: ob.x + (ob.width * (1 - shrinkFactor)) / 2,
+        y: ob.y + (ob.height * (1 - shrinkFactor)) / 2,
+        width: ob.width * shrinkFactor,
+        height: ob.height * shrinkFactor,
+      };
+      
+      // Debug: Draw hitbox rectangle (uncomment to visualize hitboxes)
+      /*
+      this.ctx.strokeStyle = 'lime';
+      this.ctx.lineWidth = 2;
+      this.ctx.strokeRect(
+        obstacleRect.x,
+        obstacleRect.y,
+        obstacleRect.width,
+        obstacleRect.height
+      );
+      */
+      
       if (
         this.checkCollision(
           {
@@ -414,7 +437,7 @@ class Game {
             width: this.characterWidth,
             height: this.characterHeight,
           },
-          { x: ob.x, y: ob.y, width: ob.width, height: ob.height },
+          obstacleRect,
         ) && 
         !this.isFlashing // Only take damage if not in flashing/invulnerable state
       ) {
