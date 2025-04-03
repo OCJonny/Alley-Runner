@@ -77,7 +77,7 @@ class Game {
     this.scoreKey = `${elementType}_score`;
     this.highScore = localStorage.getItem(this.scoreKey) || 0;
 
-    this.speedScale = 1.5;
+    this.speedScale = this.isMobile ? 1.8 : 1.5;
     this.lastSpeedTier = 0;
     this.recentlySpedUp = false;
 
@@ -311,16 +311,18 @@ class Game {
     const tier = Math.floor(this.score / 100);
     if (tier > this.lastSpeedTier && !this.recentlySpedUp) {
       const inc = this.isMobile ? 0.04 : 0.08;
-      const maxSpeed = this.isMobile ? 2.5 : 3.5;
-      this.speedScale = Math.min(this.speedScale + inc, maxSpeed);
+      const tierMaxSpeed = this.isMobile ? 2.5 : 3.5;
+      this.speedScale = Math.min(this.speedScale + inc, tierMaxSpeed);
       this.showSpeedUpMessage();
       this.recentlySpedUp = true;
       this.lastSpeedTier = tier;
       setTimeout(() => (this.recentlySpedUp = false), 500);
     }
 
+    const minSpeed = this.isMobile ? 1.8 : 1.5;
+    const maxSpeed = this.isMobile ? 2.5 : 3.5;
     document.getElementById("speedBar").style.width =
-      `${((this.speedScale - 1.5) / (2.0 - 1.5)) * 100}%`;
+      `${((this.speedScale - minSpeed) / (maxSpeed - minSpeed)) * 100}%`;
       
     // Gradient from green to red based on speed
     const red = Math.min(255, Math.floor((this.speedScale - 1) * 255));
