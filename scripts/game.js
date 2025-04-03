@@ -5,26 +5,21 @@ let game = null;
 // Initialize the game with the selected element
 async function initGame(canvas, elementType) {
   if (!canvas || !elementType) {
-    console.error('Missing required parameters:', { canvas, elementType });
+    console.error("Missing required parameters:", { canvas, elementType });
     return;
   }
+
   const gameContainer = canvas.parentElement;
   const containerRect = gameContainer.getBoundingClientRect();
 
-  // Calculate dimensions while maintaining aspect ratio and handling mobile
   const isMobile = window.innerWidth <= 768;
-  const aspectRatio = isMobile ? 9/16 : 16/9; // Portrait for mobile, landscape for desktop
+  const aspectRatio = isMobile ? 9 / 16 : 16 / 9;
   let width = containerRect.width;
   let height = containerRect.height;
 
   if (isMobile) {
-    // For mobile, use full height and calculate width
     height = containerRect.height;
     width = height * aspectRatio;
-
-    // Adjust character size for mobile
-    this.characterWidth = 64;  // Halved from 128
-    this.characterHeight = 64; // Halved from 128
   } else {
     if (width / height > aspectRatio) {
       width = height * aspectRatio;
@@ -33,11 +28,8 @@ async function initGame(canvas, elementType) {
     }
   }
 
-  // Set canvas size
   canvas.style.width = `${width}px`;
   canvas.style.height = `${height}px`;
-
-  // Set actual canvas resolution
   canvas.width = width;
   canvas.height = height;
 
@@ -50,96 +42,64 @@ async function initGame(canvas, elementType) {
 }
 
 class Game {
-  spawnBean() {
-    const beanImage = new Image();
-    beanImage.src = "images/RedBean.png";
-
-    const width = 64;
-    const height = 64;
-    const x = this.canvas.width;
-    const y = this.canvas.height - height - 180 - Math.random() * 50; // adjusted for larger size
-
-    this.beans.push({
-      x,
-      y,
-      width,
-      height,
-      speed: this.isMobile ? (1.5 + Math.random() * 1) : (3 + Math.random() * 2),
-      image: beanImage,
-    });
-  }
-
   constructor(canvas, elementType, ctx) {
-    // Get global sound state
-    this.soundEnabled = window.soundEnabled !== undefined ? window.soundEnabled : true;
-    
-    // BEAN COUNTER
+    this.soundEnabled =
+      window.soundEnabled !== undefined ? window.soundEnabled : true;
+
     this.beanCount = 0;
-    this.beanKey = `${elementType}_beans`; // e.g. fire_beans
+    this.beanKey = `${elementType}_beans`;
     this.savedBeanCount = localStorage.getItem(this.beanKey) || 0;
 
-    // Check if mobile
     this.isMobile = window.innerWidth <= 768;
 
-    // === CHARACTER PROPERTIES ===
-    this.characterX = this.isMobile ? 50 : 150; // Move character more to the left on mobile
-    this.characterY = canvas.height - (this.isMobile ? 150 : 250); // Adjust Y position for mobile
-    this.characterWidth = this.isMobile ? 96 : 128; // Slightly smaller on mobile
+    this.characterX = this.isMobile ? 50 : 150;
+    this.characterY = canvas.height - (this.isMobile ? 150 : 250);
+    this.characterWidth = this.isMobile ? 96 : 128;
     this.characterHeight = this.isMobile ? 96 : 128;
     this.velocityY = 0;
-    this.gravity = this.isMobile ? 0.20 : 0.24;
+    this.gravity = this.isMobile ? 0.2 : 0.24;
     this.jumpForce = this.isMobile ? -10 : -12;
     this.isJumping = false;
 
-    // ADDING BEAN
-    this.beans = []; // List of red beans
+    this.beans = [];
     this.beanSpawnTimer = 0;
-    this.beanSpawnInterval = 3000; // Adjust as needed
+    this.beanSpawnInterval = 3000;
 
-    // === CANVAS & CONTEXT ===
     this.canvas = canvas;
-    this.ctx = ctx; // use the one we scaled
+    this.ctx = ctx;
 
-    // === GAME STATE ===
     this.isRunning = false;
     this.hasCollided = false;
     this.elementType = elementType;
 
-    // === SCORING ===
     this.score = 0;
-    this.scoreKey = `${elementType}_score`; // store by element
+    this.scoreKey = `${elementType}_score`;
     this.highScore = localStorage.getItem(this.scoreKey) || 0;
 
-    // === SPEED ===
-    this.speedScale = 1; // ⬆ starting speed (try 0.5 for slower)
-    this.lastSpeedTier = 1;
-    this.recentlySpedUp = false;
+    this.speedScale = 1;
     this.lastSpeedTier = 0;
+    this.recentlySpedUp = false;
 
-    // === OBSTACLE ===
     this.obstacles = [];
     this.obstacleSpawnTimer = 0;
-    this.obstacleSpawnInterval = 2000; // ⬆ spawn delay in ms
+    this.obstacleSpawnInterval = 2000;
 
-    // === ANIMATION ===
     this.currentFrameIndex = 0;
     this.frameTimer = 0;
-    this.frameInterval = 150; // Faster run animation (was 500)
+    this.frameInterval = 150;
 
     this.jumpFrameIndex = 0;
     this.jumpFrameTimer = 0;
-    this.jumpFrameInterval = 400; // Back to slower jump animation
+    this.jumpFrameInterval = 400;
   }
 
   async init() {
     this.scoreTimer = 0;
     this.scoreInterval = 200;
 
-    // 🟡 FIX: Define capital
     const capital =
       this.elementType.charAt(0).toUpperCase() + this.elementType.slice(1);
 
-    // Controls
     window.addEventListener("keydown", (e) => {
       if ((e.code === "Space" || e.code === "ArrowUp") && !this.isJumping) {
         this.velocityY = this.jumpForce;
@@ -158,51 +118,27 @@ class Game {
       }
     });
 
-    // Load background and obstacle
-    this.backgroundImage = new Image();
-    this.backgroundImage.src = `images/BG_${capital}.png`;
+    this.backgroundImage = await this.preloadImage(`images/BG_${capital}.png`);
+    this.obstacleImage = await this.preloadImage(
+      `images/Obstacle_${capital}.png`,
+    );
 
-    this.obstacleImage = new Image();
-    this.obstacleImage.src = `images/Obstacle_${capital}.png`;
-
-    // Load character sprites
     const sprites = await this.loadCharacterSprites(this.elementType);
+    if (!sprites || !sprites.runFrames.length) {
+      console.error("Failed to load character sprites", sprites);
+    }
     this.runFrames = sprites.runFrames;
     this.jumpFrames = sprites.jumpFrames;
     this.characterIdleImage = sprites.idle;
     this.characterJumpImage = sprites.jump;
     this.characterDefeatImage = sprites.defeat;
-    console.log("Loading sprites for", capital);
 
-    // Load sounds
     this.jumpSound = new Audio("sounds/Jump.wav");
     this.beanSound = new Audio("sounds/Bean.wav");
     this.deathSound = new Audio("sounds/Death.wav");
 
     document.getElementById("highScore").textContent =
       `High: ${this.highScore}`;
-
-    console.log(`Game initialized with ${this.elementType}`);
-
-    // 🔊 Load sound effects
-    this.jumpSound = new Audio("sounds/Jump.wav");
-    this.beanSound = new Audio("sounds/Bean.wav");
-    this.deathSound = new Audio("sounds/Death.wav");
-
-    // 👂 Setup toggle button
-    this.soundEnabled = soundEnabled; // Use global sound setting
-
-    document.getElementById("soundToggle").addEventListener("click", () => {
-      this.soundEnabled = !this.soundEnabled;
-
-      if (this.soundEnabled) {
-        this.music.play();
-        document.getElementById("soundToggle").textContent = "🔊";
-      } else {
-        this.music.pause();
-        document.getElementById("soundToggle").textContent = "🔇";
-      }
-    });
   }
 
   start() {
@@ -210,9 +146,8 @@ class Game {
       this.isRunning = true;
       this.score = 0;
       this.updateScore();
-      this.lastTime = null; //added
+      this.lastTime = null;
       this.loop();
-      console.log("Game started");
     }
   }
 
@@ -222,7 +157,7 @@ class Game {
 
     if (this.soundEnabled) {
       this.deathSound?.play();
-      bgMusic?.pause(); // Using the bgMusic from screens.js
+      if (window.bgMusic) window.bgMusic.pause();
     }
 
     if (this.score > this.highScore) {
@@ -230,7 +165,6 @@ class Game {
       localStorage.setItem(this.scoreKey, this.highScore);
     }
 
-    // Save beans
     const totalBeans = parseInt(this.savedBeanCount) + this.beanCount;
     localStorage.setItem(this.beanKey, totalBeans);
 
@@ -241,6 +175,25 @@ class Game {
 
   updateScore() {
     document.getElementById("score").textContent = `Score: ${this.score}`;
+  }
+
+  spawnBean() {
+    const beanImage = new Image();
+    beanImage.src = "images/RedBean.png";
+
+    const width = 64;
+    const height = 64;
+    const x = this.canvas.width;
+    const y = this.canvas.height - height - 180 - Math.random() * 50;
+
+    this.beans.push({
+      x,
+      y,
+      width,
+      height,
+      speed: this.isMobile ? 1.5 + Math.random() * 1 : 3 + Math.random() * 2,
+      image: beanImage,
+    });
   }
 
   spawnObstacle() {
@@ -257,70 +210,34 @@ class Game {
       y,
       width,
       height,
-      speed: this.isMobile ? (2.0 + Math.random() * 1.2) : (4 + Math.random() * 2), // Slightly faster on mobile
+      speed: this.isMobile ? 2.0 + Math.random() * 1.2 : 4 + Math.random() * 2,
       image: obstacleImage,
     });
   }
 
-  checkCollision(rect1, rect2) {
+  checkCollision(r1, r2) {
     return (
-      rect1.x < rect2.x + rect2.width &&
-      rect1.x + rect1.width > rect2.x &&
-      rect1.y < rect2.y + rect2.height &&
-      rect1.y + rect1.height > rect2.y
+      r1.x < r2.x + r2.width &&
+      r1.x + r1.width > r2.x &&
+      r1.y < r2.y + r2.height &&
+      r1.y + r1.height > r2.y
     );
   }
 
-  loop(timestamp) {
+  async loop(timestamp) {
     if (!this.lastTime) this.lastTime = timestamp;
-    const deltaTime = Math.min((timestamp - this.lastTime) / 16.67, 2); // Cap max delta and convert to 60fps base
+    const delta = Math.min((timestamp - this.lastTime) / 16.67, 2);
     this.lastTime = timestamp;
 
-    console.log("Game loop running");
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    if (this.backgroundImage.complete) {
-      if (this.isMobile) {
-        // Initialize background scroll position if not set
-        if (this.bgScrollX === undefined) {
-          this.bgScrollX = 0;
-        }
-
-        const bgRatio = this.backgroundImage.width / this.backgroundImage.height;
-        const bgWidth = this.canvas.height * bgRatio;
-
-        // Update scroll position based on game speed
-        this.bgScrollX -= 2 * this.speedScale * deltaTime; // Apply deltaTime
-        if (this.bgScrollX <= -bgWidth) {
-          this.bgScrollX = 0;
-        }
-
-        // Draw two copies of the background for seamless scrolling
-        this.ctx.drawImage(
-          this.backgroundImage,
-          this.bgScrollX,
-          0,
-          bgWidth,
-          this.canvas.height
-        );
-        this.ctx.drawImage(
-          this.backgroundImage,
-          this.bgScrollX + bgWidth,
-          0,
-          bgWidth,
-          this.canvas.height
-        );
-      } else {
-        // Desktop remains the same
-        this.ctx.drawImage(
-          this.backgroundImage,
-          0,
-          0,
-          this.canvas.width,
-          this.canvas.height
-        );
-      }
-    }
+    this.ctx.drawImage(
+      this.backgroundImage,
+      0,
+      0,
+      this.canvas.width,
+      this.canvas.height,
+    );
 
     if (this.hasCollided && this.characterDefeatImage.complete) {
       this.ctx.drawImage(
@@ -335,35 +252,22 @@ class Game {
 
     if (!this.isRunning) return;
 
-    // Speed Up
     const tier = Math.floor(this.score / 100);
     if (tier > this.lastSpeedTier && !this.recentlySpedUp) {
-      const speedIncrease = this.isMobile ? 0.025 : 0.05;
-      const maxSpeed = this.isMobile ? 1.4 : 2.0;
-      this.speedScale = Math.min(this.speedScale + speedIncrease, maxSpeed);
+      const inc = this.isMobile ? 0.025 : 0.05;
+      const max = this.isMobile ? 1.4 : 2.0;
+      this.speedScale = Math.min(this.speedScale + inc, max);
       this.showSpeedUpMessage();
       this.recentlySpedUp = true;
       this.lastSpeedTier = tier;
-
-      setTimeout(() => {
-        this.recentlySpedUp = false;
-      }, 500);
+      setTimeout(() => (this.recentlySpedUp = false), 500);
     }
 
-    // Speed bar update
-    const barWidth = ((this.speedScale - 0.9) / (2.0 - 0.9)) * 100;
-    document.getElementById("speedBar").style.width = `${barWidth}%`;
-    const speedBar = document.getElementById("speedBar");
-    speedBar.style.backgroundColor =
-      this.speedScale < 1.3
-        ? "#4CAF50"
-        : this.speedScale < 1.6
-          ? "#FFC107"
-          : "#F44336";
+    document.getElementById("speedBar").style.width =
+      `${((this.speedScale - 0.9) / (2.0 - 0.9)) * 100}%`;
 
-    // Physics
-    this.velocityY += this.gravity * deltaTime; // Apply deltaTime
-    this.characterY += this.velocityY * deltaTime; // Apply deltaTime
+    this.velocityY += this.gravity * delta;
+    this.characterY += this.velocityY * delta;
     const groundY = this.canvas.height - this.characterHeight - 50;
     if (this.characterY > groundY) {
       this.characterY = groundY;
@@ -371,19 +275,18 @@ class Game {
       this.isJumping = false;
     }
 
-    // Animation
     const currentFrame = this.isJumping
       ? this.jumpFrames[this.jumpFrameIndex]
       : this.runFrames[this.currentFrameIndex];
     if (this.isJumping) {
-      this.jumpFrameTimer += 16 * deltaTime; // Apply deltaTime
+      this.jumpFrameTimer += 16 * delta;
       if (this.jumpFrameTimer >= this.jumpFrameInterval) {
         this.jumpFrameIndex =
           (this.jumpFrameIndex + 1) % this.jumpFrames.length;
         this.jumpFrameTimer = 0;
       }
     } else {
-      this.frameTimer += 16 * deltaTime; // Apply deltaTime
+      this.frameTimer += 16 * delta;
       if (this.frameTimer >= this.frameInterval) {
         this.currentFrameIndex =
           (this.currentFrameIndex + 1) % this.runFrames.length;
@@ -401,94 +304,71 @@ class Game {
       );
     }
 
-    // Obstacles
-    this.obstacleSpawnTimer += 16 * deltaTime; // Apply deltaTime
+    this.obstacleSpawnTimer += 16 * delta;
     if (this.obstacleSpawnTimer >= this.obstacleSpawnInterval) {
       this.spawnObstacle();
       this.obstacleSpawnTimer = 0;
-      this.obstacleSpawnInterval = this.isMobile ? 
-        (3000 + Math.random() * 2000) : // Slower spawn on mobile
-        (2000 + Math.random() * 1500);
+      this.obstacleSpawnInterval = this.isMobile
+        ? 3000 + Math.random() * 2000
+        : 2000 + Math.random() * 1500;
     }
 
-    this.obstacles.forEach((obstacle, index) => {
-      obstacle.x -= obstacle.speed * this.speedScale * deltaTime; // Apply deltaTime
-      if (obstacle.image.complete) {
-        this.ctx.drawImage(
-          obstacle.image,
-          obstacle.x,
-          obstacle.y,
-          obstacle.width,
-          obstacle.height,
-        );
+    this.obstacles.forEach((ob, i) => {
+      ob.x -= ob.speed * this.speedScale * delta;
+      if (ob.image.complete) {
+        this.ctx.drawImage(ob.image, ob.x, ob.y, ob.width, ob.height);
       }
-
-      const playerRect = {
-        x: this.characterX,
-        y: this.characterY,
-        width: this.characterWidth,
-        height: this.characterHeight,
-      };
-
-      const obstacleRect = {
-        x: obstacle.x + obstacle.width * 0.075,
-        y: obstacle.y + obstacle.height * 0.075,
-        width: obstacle.width * 0.85,
-        height: obstacle.height * 0.85 * 0.85, // Further reduce height by 15%
-      };
-
-      if (this.checkCollision(playerRect, obstacleRect)) this.stop();
-      if (obstacle.x + obstacle.width < 0) this.obstacles.splice(index, 1);
+      if (
+        this.checkCollision(
+          {
+            x: this.characterX,
+            y: this.characterY,
+            width: this.characterWidth,
+            height: this.characterHeight,
+          },
+          { x: ob.x, y: ob.y, width: ob.width, height: ob.height },
+        )
+      ) {
+        this.stop();
+      }
+      if (ob.x + ob.width < 0) this.obstacles.splice(i, 1);
     });
 
-    // === RED BEANS ===
-    this.beanSpawnTimer += 16 * deltaTime; // Apply deltaTime
+    this.beanSpawnTimer += 16 * delta;
     if (this.beanSpawnTimer >= this.beanSpawnInterval) {
       this.spawnBean();
       this.beanSpawnTimer = 0;
-      this.beanSpawnInterval = this.isMobile ?
-        (4500 + Math.random() * 3000) : // Slower spawn on mobile
-        (3000 + Math.random() * 2000);
+      this.beanSpawnInterval = this.isMobile
+        ? 4500 + Math.random() * 3000
+        : 3000 + Math.random() * 2000;
     }
 
     this.beans.forEach((bean, index) => {
-      bean.x -= bean.speed * this.speedScale * deltaTime; // Apply deltaTime
-
+      bean.x -= bean.speed * this.speedScale * delta;
       if (bean.image.complete) {
         this.ctx.drawImage(bean.image, bean.x, bean.y, bean.width, bean.height);
       }
-
-      // Collision with character
-      const playerRect = {
-        x: this.characterX,
-        y: this.characterY,
-        width: this.characterWidth,
-        height: this.characterHeight,
-      };
-
-      const beanRect = {
-        x: bean.x,
-        y: bean.y,
-        width: bean.width,
-        height: bean.height,
-      };
-
-      if (this.checkCollision(playerRect, beanRect)) {
+      if (
+        this.checkCollision(
+          {
+            x: this.characterX,
+            y: this.characterY,
+            width: this.characterWidth,
+            height: this.characterHeight,
+          },
+          { x: bean.x, y: bean.y, width: bean.width, height: bean.height },
+        )
+      ) {
         if (this.soundEnabled) this.beanSound?.play();
         this.score += 10;
         this.beanCount++;
         this.updateScore();
         this.beans.splice(index, 1);
       }
-
-      // Remove if off screen
-      if (bean.x + bean.width < 0) {
-        this.beans.splice(index, 1);
-      }
+      if (bean.x + bean.width < 0) this.beans.splice(index, 1);
     });
 
-    // Score
-    this.scoreTimer += 16 * this.speedScale * deltaTime; // Apply deltaTime
+    this.scoreTimer += 16 * this.speedScale * delta;
     if (this.scoreTimer >= this.scoreInterval) {
       this.score++;
       this.updateScore();
@@ -498,16 +378,12 @@ class Game {
     requestAnimationFrame(this.loop.bind(this));
   }
 
-  // Utility: show message
   showSpeedUpMessage() {
-    const message = document.getElementById("speedUpMessage");
-    message.style.opacity = 1;
-    setTimeout(() => {
-      message.style.opacity = 0;
-    }, 1000);
+    const msg = document.getElementById("speedUpMessage");
+    msg.style.opacity = 1;
+    setTimeout(() => (msg.style.opacity = 0), 1000);
   }
 
-  // Preload helpers
   preloadImage(src) {
     return new Promise((resolve) => {
       const img = new Image();
@@ -516,31 +392,28 @@ class Game {
     });
   }
 
-  preloadImages(srcArray) {
-    return Promise.all(srcArray.map((src) => this.preloadImage(src)));
+  preloadImages(paths) {
+    return Promise.all(paths.map((p) => this.preloadImage(p)));
   }
 
   async loadCharacterSprites(domain) {
     const capital = domain.charAt(0).toUpperCase() + domain.slice(1);
-    const folder = "images";
-
-    const runPaths = Array.from(
+    const base = "images";
+    const run = Array.from(
       { length: 4 },
-      (_, i) => `${folder}/${capital}_Run ${i + 1}.png`,
+      (_, i) => `${base}/${capital}_Run ${i + 1}.png`,
     );
-    const jumpPaths = Array.from(
+    const jump = Array.from(
       { length: 6 },
-      (_, i) => `${folder}/${capital}_Jump ${i + 1}.png`,
+      (_, i) => `${base}/${capital}_Jump ${i + 1}.png`,
     );
-
-    const [runFrames, jumpFrames, idle, jump, defeat] = await Promise.all([
-      this.preloadImages(runPaths),
-      this.preloadImages(jumpPaths),
-      this.preloadImage(`${folder}/${capital}_Character_Idle.png`),
-      this.preloadImage(`${folder}/${capital}_Character_Jump.png`),
-      this.preloadImage(`${folder}/${capital}_Character_Defeat.png`),
+    const [runFrames, jumpFrames, idle, jumpStill, defeat] = await Promise.all([
+      this.preloadImages(run),
+      this.preloadImages(jump),
+      this.preloadImage(`${base}/${capital}_Character_Idle.png`),
+      this.preloadImage(`${base}/${capital}_Character_Jump.png`),
+      this.preloadImage(`${base}/${capital}_Character_Defeat.png`),
     ]);
-
-    return { runFrames, jumpFrames, idle, jump, defeat };
+    return { runFrames, jumpFrames, idle, jump: jumpStill, defeat };
   }
 }

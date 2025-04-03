@@ -1,16 +1,23 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Alley Run</title>
     <link rel="stylesheet" href="styles/styles.css" />
-  </head>  
+  </head>
+
   <body>
-    <!-- Title Screen -->
+    <!-- 🔊 Sound Toggle (always visible) -->
+    <button id="soundToggle" onclick="toggleSound()" style="position: absolute; top: 10px; right: 10px; font-size: 24px; z-index: 20;">
+      🔊
+    </button>
+
+    <!-- 🎮 Title Screen -->
     <div id="titleScreen" class="screen">
       <img
         src="images/Button_Start_Up.png"
+        alt="Start Game"
         class="start-button"
         onclick="showMainMenu()"
         onmouseover="this.src='images/Button_Start_Down.png'"
@@ -18,35 +25,41 @@
       />
     </div>
 
-    <!-- Main Menu -->
+    <!-- ⚡ Main Menu -->
     <div id="mainMenu" class="screen hidden">
-       <div class="overlay"></div>
+      <div class="overlay"></div>
+
       <img
         src="images/Button_Lightning_Up.png"
+        alt="Play Lightning Element"
         onclick="startGame('lightning')"
         onmouseover="this.src='images/Button_Lightning_Down.png'"
         onmouseout="this.src='images/Button_Lightning_Up.png'"
       />
       <img
         src="images/Button_Fire_Up.png"
+        alt="Play Fire Element"
         onclick="startGame('fire')"
         onmouseover="this.src='images/Button_Fire_Down.png'"
         onmouseout="this.src='images/Button_Fire_Up.png'"
       />
       <img
         src="images/Button_Water_Up.png"
+        alt="Play Water Element"
         onclick="startGame('water')"
         onmouseover="this.src='images/Button_Water_Down.png'"
         onmouseout="this.src='images/Button_Water_Up.png'"
       />
-    <img
-      src="images/Button_Earth_Up.png"
-      onclick="startGame('earth')"
-      onmouseover="this.src='images/Button_Earth_Down.png'"
-      onmouseout="this.src='images/Button_Earth_Up.png'"
-    />
+      <img
+        src="images/Button_Earth_Up.png"
+        alt="Play Earth Element"
+        onclick="startGame('earth')"
+        onmouseover="this.src='images/Button_Earth_Down.png'"
+        onmouseout="this.src='images/Button_Earth_Up.png'"
+      />
     </div>
-    <!-- Game Screen -->
+
+    <!-- 🕹️ Game Screen -->
     <div id="gameScreen" class="screen hidden">
       <div class="game-container">
         <canvas id="gameCanvas"></canvas>
@@ -57,37 +70,38 @@
           <span id="highScore">High: 0</span>
         </div>
 
-        <!-- Speed bar -->
+        <!-- Speed Bar -->
         <div class="speed-container">
           <div id="speedBar"></div>
         </div>
 
-        <!-- Speed Up -->
+        <!-- Speed Up Text -->
         <div id="speedUpMessage">⚡ Speed Up!</div>
       </div>
     </div>
 
-    <!-- End Game Screen -->
+    <!-- 🧨 End Game Screen -->
     <div id="endGameScreen" class="screen hidden">
-      <img src="images/AlleyRun_logo_red.png" class="logo-small" />
+      <img src="images/AlleyRun_logo_red.png" alt="Game Logo" class="logo-small" />
       <img id="defeatSprite" class="defeat-sprite" src="" alt="Defeated Character" />
+
       <h2>Game Over</h2>
       <p id="finalScore">Your Score: 0</p>
       <p id="beanCountDisplay">Total Beans Collected: 0</p>
       <p id="finalHighScore">High Score: 0</p>
+
       <img
         src="images/Button_Restart_Up.png"
+        alt="Restart Game"
         class="start-button"
         onclick="restartGame()"
         onmouseover="this.src='images/Button_Restart_Down.png'"
         onmouseout="this.src='images/Button_Restart_Up.png'"
       />
     </div>
+
+    <!-- 🧠 Scripts -->
     <script src="scripts/game.js" defer></script>
     <script src="scripts/screens.js" defer></script>
-    <!-- Sound Toggle Button -->
-    <button id="soundToggle" onclick="toggleSound()" style="position: absolute; top: 10px; right: 10px; font-size: 24px; z-index: 20;">
-      🔊
-    </button>
   </body>
 </html>

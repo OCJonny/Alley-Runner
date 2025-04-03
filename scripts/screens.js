@@ -1,11 +1,14 @@
-// Global Music (shared across screens)
+// screens.js
+
+// 🔊 Global Music (shared across screens)
 let bgMusic = new Audio("sounds/Game Music.mp3");
 bgMusic.loop = true;
 bgMusic.volume = 0.5;
 
-window.soundEnabled = true; // shared flag
+window.soundEnabled = true;
+let resizeListenerAdded = false;
 
-// Play music when page loads
+// 🔁 Auto-play music on load
 document.addEventListener("DOMContentLoaded", () => {
   bgMusic.play().catch((error) => {
     console.log("Audio playback failed:", error);
@@ -13,9 +16,10 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("soundToggle").textContent = "🔊";
 });
 
-// Sound toggle function
+// 🎚 Toggle sound
 function toggleSound() {
   soundEnabled = !soundEnabled;
+
   if (soundEnabled) {
     bgMusic.play();
     document.getElementById("soundToggle").textContent = "🔊";
@@ -24,92 +28,92 @@ function toggleSound() {
     document.getElementById("soundToggle").textContent = "🔇";
   }
 
-  // Update game instance sound if it exists
   if (game) {
     game.soundEnabled = soundEnabled;
   }
 }
 
-// Screen management functions
-
-// Show a specific screen and hide others
+// 🖥 Screen utilities
 function showScreen(screenId) {
-  // Hide all screens
-  const screens = document.querySelectorAll(".screen");
-  screens.forEach((screen) => {
-    screen.classList.add("hidden");
-  });
+  document
+    .querySelectorAll(".screen")
+    .forEach((screen) => screen.classList.add("hidden"));
 
-  // Show the requested screen
   const screenToShow = document.getElementById(screenId);
   if (screenToShow) {
     screenToShow.classList.remove("hidden");
   }
 }
 
-// Show the main menu
-function showMainMenu() {
-  showScreen("mainMenu");
-}
-
-// Show the game screen
-function showGameScreen() {
-  showScreen("gameScreen");
-}
-
-// Show the title screen
+// ⏮ Title screen
 function showTitleScreen() {
   showScreen("titleScreen");
   if (soundEnabled) bgMusic.play();
 }
 
-// Show the end game screen
+// 🧭 Main menu
+function showMainMenu() {
+  showScreen("mainMenu");
+}
+
+// 🎮 Game screen
+function showGameScreen() {
+  showScreen("gameScreen");
+}
+
+// ☠️ End screen
 function showEndScreen(score) {
-  document.getElementById("gameScreen").classList.add("hidden");
-  document.getElementById("endGameScreen").classList.remove("hidden");
+  showScreen("endGameScreen");
 
   document.getElementById("finalScore").textContent = `Your Score: ${score}`;
-  const highScore = localStorage.getItem(game?.scoreKey) || 0;
   document.getElementById("finalHighScore").textContent =
-    `High Score: ${highScore}`;
-  const beanCount = localStorage.getItem(game?.beanKey) || 0;
+    `High Score: ${localStorage.getItem(game?.scoreKey) || 0}`;
   document.getElementById("beanCountDisplay").textContent =
-    `Beans Collected: ${beanCount}`;
+    `Beans Collected: ${localStorage.getItem(game?.beanKey) || 0}`;
 
   if (soundEnabled) bgMusic.pause();
 
-  // 👇 Set the defeat sprite based on the current game instance
   const defeatSprite = document.getElementById("defeatSprite");
   if (defeatSprite && game?.characterDefeatImage?.src) {
     defeatSprite.src = game.characterDefeatImage.src;
   }
 }
 
-// Game start function that takes the element type
+// 🧪 Game starter
 function startGame(elementType) {
   const canvas = document.getElementById("gameCanvas");
 
-  window.addEventListener("resize", () => {
-    if (canvas && game) {
-      initGame(canvas, game.elementType); // dynamic resizing
-    }
-  });
+  if (!resizeListenerAdded) {
+    window.addEventListener("resize", () => {
+      if (canvas && game) {
+        initGame(canvas, game.elementType);
+      }
+    });
+    resizeListenerAdded = true;
+  }
 
-  console.log(`Starting game with ${elementType} element`);
-
-  // Show the game screen 
+  console.log(`Starting game with ${elementType}`);
   showGameScreen();
 
   if (canvas) {
-    // Start the game with the selected element type
     initGame(canvas, elementType).catch(console.error);
   } else {
     console.error("Game canvas not found");
   }
 }
-// ✅ Restart game from end screen
+
+// 🔁 Restart button from end screen
 function restartGame() {
+  const canvas = document.getElementById("gameCanvas");
+
   if (soundEnabled) bgMusic.play();
-  document.getElementById("endGameScreen").classList.add("hidden");
-  document.getElementById("mainMenu").classList.remove("hidden");
+  showMainMenu();
+
+  if (canvas) {
+    canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  document.getElementById("soundToggle").textContent = soundEnabled
+    ? "🔊"
+    : "🔇";
 }
