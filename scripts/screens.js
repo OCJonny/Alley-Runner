@@ -8,11 +8,8 @@ bgMusic.volume = 0.5;
 window.soundEnabled = true;
 let resizeListenerAdded = false;
 
-// 🔁 Auto-play music on load
+// 🔁 Set sound toggle icon on load
 document.addEventListener("DOMContentLoaded", () => {
-  bgMusic.play().catch((error) => {
-    console.log("Audio playback failed:", error);
-  });
   document.getElementById("soundToggle").textContent = "🔊";
 });
 
@@ -54,6 +51,13 @@ function showTitleScreen() {
 // 🧭 Main menu
 function showMainMenu() {
   showScreen("mainMenu");
+
+  // Start background music if not already playing
+  if (soundEnabled && bgMusic.paused) {
+    bgMusic.play().catch((err) => {
+      console.warn("Music play blocked:", err);
+    });
+  }
 }
 
 // 🎮 Game screen
