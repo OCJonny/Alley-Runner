@@ -207,4 +207,9 @@ document.addEventListener("visibilitychange", () => {
     }
   }
 });
+// Export global functions needed in HTML onclick handlers
 window.showMainMenu = showMainMenu;
+window.startGame = startGame;
+window.restartGame = restartGame;
+window.toggleSound = toggleSound;
+
