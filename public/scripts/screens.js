@@ -61,12 +61,26 @@ function toggleSound() {
 // ⏮ Title screen
 function showTitleScreen() {
   showScreen("titleScreen");
+
+  if (soundEnabled && bgMusic.paused) {
+    bgMusic.volume = 0;
+    bgMusic.play()
+      .then(() => fadeInMusic(bgMusic))
+      .catch(err => console.warn("Music play blocked:", err));
+  }
 }
 
 // 🧭 Main menu
 function showMainMenu() {
   showScreen("mainMenu");
   updateDomainStatsDisplay();
+
+  if (soundEnabled && bgMusic.paused) {
+    bgMusic.volume = 0;
+    bgMusic.play()
+      .then(() => fadeInMusic(bgMusic))
+      .catch(err => console.warn("Music play blocked:", err));
+  }
 }
 
 // 🎮 Game screen
