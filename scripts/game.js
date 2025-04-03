@@ -9,15 +9,15 @@ async function initGame(canvas, elementType) {
   const containerRect = gameContainer.getBoundingClientRect();
   
   // Calculate dimensions while maintaining aspect ratio and handling mobile
-  const aspectRatio = 16/9;
+  const isMobile = window.innerWidth <= 768;
+  const aspectRatio = isMobile ? 9/16 : 16/9; // Portrait for mobile, landscape for desktop
   let width = containerRect.width;
   let height = containerRect.height;
-  const isMobile = window.innerWidth <= 768;
   
   if (isMobile) {
-    // For mobile, use full width and calculate height
-    width = containerRect.width;
-    height = width / aspectRatio;
+    // For mobile, use full height and calculate width
+    height = containerRect.height;
+    width = height * aspectRatio;
     
     // Adjust character size for mobile
     this.characterWidth = 64;  // Halved from 128
