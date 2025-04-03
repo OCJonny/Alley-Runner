@@ -470,6 +470,7 @@ class Game {
         if (bean.isGreen && this.lives < 3) {
           this.lives++;
           this.updateLivesDisplay(); // Update the lives display with new bean
+          this.showHealthUpMessage(); // Show the +1 health message
         }
         
         this.beans.splice(index, 1);
@@ -493,6 +494,16 @@ class Game {
     const msg = document.getElementById("speedUpMessage");
     msg.style.opacity = 1;
     setTimeout(() => (msg.style.opacity = 0), 1000);
+  }
+
+  showHealthUpMessage() {
+    const message = document.getElementById("healthUpMessage");
+    if (!message) return;
+
+    message.style.opacity = 1;
+    setTimeout(() => {
+      message.style.opacity = 0;
+    }, 1000);
   }
 
   preloadImage(src) {

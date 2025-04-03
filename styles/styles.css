@@ -143,9 +143,10 @@ canvas {
 }
 
 .life-icon {
-  width: 24px;
-  height: 24px;
-  margin-right: 4px;
+  width: 32px;
+  height: 32px;
+  margin-right: 6px;
+  image-rendering: pixelated;
 }
 
 /* Speed Bar */
@@ -177,6 +178,21 @@ canvas {
   transform: translateX(-50%);
   font-size: 28px;
   color: gold;
+  font-weight: bold;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Health Up Message */
+#healthUpMessage {
+  position: absolute;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 28px;
+  color: #00ff88;
   font-weight: bold;
   opacity: 0;
   transition: opacity 0.3s;
