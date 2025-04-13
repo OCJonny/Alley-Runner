@@ -25,8 +25,9 @@ bgMusic.onerror = (e) => {
 window.soundEnabled = true;
 let resizeListenerAdded = false;
 
-// 🔁 Set sound toggle icon on load
+// 🔁 Initialize game on load
 document.addEventListener("DOMContentLoaded", () => {
+  showTitleScreen();
   document.getElementById("soundIcon").src = "images/sound-on.png";
 });
 
@@ -200,12 +201,6 @@ function updateDomainStatsDisplay() {
       // Continue using localStorage data if server fetch fails
     });
 }
-
-// Show title screen on page load
-document.addEventListener("DOMContentLoaded", () => {
-  showTitleScreen();
-  document.getElementById("soundIcon").src = "images/sound-on.png";
-});
 
 // Auto-pause/resume when switching tabs
 document.addEventListener("visibilitychange", () => {
