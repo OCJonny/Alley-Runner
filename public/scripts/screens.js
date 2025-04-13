@@ -15,6 +15,13 @@ let bgMusic = new Audio("sounds/Game_Music.mp3");
 bgMusic.loop = true;
 bgMusic.volume = 0.5;
 
+bgMusic.preload = "auto";
+bgMusic.load();
+
+bgMusic.onerror = (e) => {
+  console.error("❌ Failed to load music:", e);
+};
+
 window.soundEnabled = true;
 let resizeListenerAdded = false;
 
