@@ -1,6 +1,6 @@
 modules = ["nodejs-20", "bash", "web", "python-3.11", "postgresql-16"]
 
-# 🚀 Tell Replit to run your Express server instead of npx serve
+# 👇 Tell Replit to run your Express server
 run = "node server.js"
 
 hidden = [".config", ".git", "generated-icon.png", "node_modules", "dist"]
@@ -10,15 +10,11 @@ channel = "stable-24_05"
 
 [deployment]
 deploymentTarget = "cloudrun"
-run = "node server.js"
+run = ["node", "server.js"]
 
 [[ports]]
 localPort = 3000
-externalPort = 3000
-
-[[ports]]
-localPort = 5000
-externalPort = 80
+externalPort = 80  # Replit cloud deploy needs this
 
 [workflows]
 runButton = "Start Server"
@@ -34,4 +30,4 @@ task = "packager.installForAll"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "node server.js"
-waitForPort = 5000
+waitForPort = 3000
