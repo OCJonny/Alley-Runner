@@ -67,11 +67,15 @@ body {
   background-size: cover;
   text-align: center;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 #mainMenu img {
-  width: 100px;
-  margin: 10px;
+  width: 125px;
+  margin: 15px;
   cursor: pointer;
   transition: transform 0.2s;
   position: relative;
@@ -251,7 +255,7 @@ canvas {
 }
 
 .domain-stats {
-  font-size: 16px;
+  font-size: 20px;
   color: white;
   text-align: left;
   line-height: 1.4;
