@@ -25,9 +25,8 @@ bgMusic.onerror = (e) => {
 window.soundEnabled = true;
 let resizeListenerAdded = false;
 
-// 🔁 Initialize game on load
+// 🔁 Set sound toggle icon on load
 document.addEventListener("DOMContentLoaded", () => {
-  showTitleScreen();
   document.getElementById("soundIcon").src = "images/sound-on.png";
 });
 
