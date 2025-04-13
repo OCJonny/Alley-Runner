@@ -201,6 +201,12 @@ function updateDomainStatsDisplay() {
     });
 }
 
+// Show title screen on page load
+document.addEventListener("DOMContentLoaded", () => {
+  showTitleScreen();
+  document.getElementById("soundIcon").src = "images/sound-on.png";
+});
+
 // Auto-pause/resume when switching tabs
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) {
