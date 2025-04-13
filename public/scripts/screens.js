@@ -11,7 +11,7 @@ function showScreen(screenId) {
 const API_BASE_URL = window.location.origin;
 
 // 🔊 Global Music (shared across screens)
-let bgMusic = new Audio("sounds/Game_Music.wav");
+let bgMusic = new Audio("sounds/Game_Music.mp3");
 bgMusic.loop = true;
 bgMusic.volume = 0.5;
 
