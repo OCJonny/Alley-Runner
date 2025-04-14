@@ -15,7 +15,7 @@ body {
   overflow: hidden;
 }
 
-/* Reusable screen layout */
+/* Screen Layout */
 .screen {
   position: absolute;
   top: 0;
@@ -40,18 +40,8 @@ body {
   text-align: center;
 }
 
-.logo {
-  max-width: 80%;
-  margin-bottom: 2rem;
-}
-
-.logo-small {
-  max-width: 50%;
-  margin-bottom: 2rem;
-}
-
 .start-button {
-  width: 150px;
+  width: 180px;
   margin-top: 60px;
   cursor: pointer;
   transition: transform 0.2s;
@@ -65,25 +55,13 @@ body {
 #mainMenu {
   background: url("../images/Main_Menu.png") no-repeat center center;
   background-size: cover;
-  text-align: center;
-  position: relative;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: row;
   justify-content: center;
-}
-
-#mainMenu img {
-  width: 125px;
-  margin: 15px;
-  cursor: pointer;
-  transition: transform 0.2s;
+  align-items: flex-start;
+  padding: 60px;
+  gap: 40px;
   position: relative;
-  z-index: 2;
-}
-
-#mainMenu img:hover {
-  transform: scale(1.1);
 }
 
 #mainMenu .overlay {
@@ -96,13 +74,53 @@ body {
   z-index: 1;
 }
 
+/* Left side - Buttons */
+.menu-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 32px;
+  z-index: 2;
+}
+
+/* Right side - Stats */
+.menu-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 32px;
+  z-index: 2;
+}
+
+.domain-button {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.domain-button img {
+  width: 125px; /* 25% larger than original 100px */
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.domain-button img:hover {
+  transform: scale(1.1);
+}
+
+.domain-stats {
+  font-size: 20px;
+  color: white;
+  text-align: left;
+  line-height: 1.4;
+  text-shadow: 1px 1px 2px black;
+}
 
 /* Game Screen */
 #gameScreen {
   background-color: #000;
 }
 
-/* Container holding the canvas */
 .game-container {
   position: relative;
   width: 100%;
@@ -114,7 +132,7 @@ body {
   overflow: hidden;
 }
 
-/* Canvas Setup */
+/* Canvas */
 canvas {
   width: 100%;
   height: 100%;
@@ -124,7 +142,7 @@ canvas {
   image-rendering: crisp-edges;
 }
 
-/* HUD Elements */
+/* HUD */
 .hud {
   position: absolute;
   top: 20px;
@@ -205,7 +223,7 @@ canvas {
   z-index: 10;
 }
 
-/* End Game Screen */
+/* End Screen */
 #endGameScreen {
   background-color: #121212;
   text-align: center;
@@ -229,52 +247,22 @@ canvas {
 }
 
 @keyframes slowBounce {
-
-  0%,
-  100% {
+  0%, 100% {
     transform: translateY(0);
   }
-
   50% {
     transform: translateY(-10px);
   }
 }
 
-/* Domain Stats Styling */
-.domain-button {
-  display: flex;
-  align-items: center;
-  margin: 10px 0;
-  gap: 16px;
-}
-
-.domain-button img {
-  width: 100px;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.domain-stats {
-  font-size: 20px;
-  color: white;
-  text-align: left;
-  line-height: 1.4;
-  text-shadow: 1px 1px 2px black;
-}
-
-/* 🔁 Responsive Tweaks */
+/* Responsive Tweaks */
 @media (max-width: 768px) {
-  #mainMenu img {
-    width: 80px;
-    margin: 8px;
-  }
-
   .domain-button img {
-    width: 80px;
+    width: 90px;
   }
 
   .domain-stats {
-    font-size: 14px;
+    font-size: 16px;
   }
 
   .hud {
