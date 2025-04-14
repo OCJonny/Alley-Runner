@@ -77,5 +77,5 @@ app.get("/api/leaderboard", async (req, res) => {
 // ✅ Launch server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`✅ Alley Run server running on http://localhost:${PORT}`);
+  console.log(`✅ Alley Run server running on port ${PORT}`);
 });
