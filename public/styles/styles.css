@@ -56,9 +56,9 @@ body {
   background: url("../images/Main_Menu.png") no-repeat center center;
   background-size: cover;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   padding: 60px;
   gap: 40px;
   position: relative;
