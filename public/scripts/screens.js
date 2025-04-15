@@ -170,7 +170,7 @@ function updateDomainStatsDisplay() {
 
     const label = document.getElementById(`${domain}Stats`);
     if (label) {
-      label.innerHTML = `Score: ${score}<br>Beans: ${beans}`;
+    label.innerHTML = `Team Score: ${score}<br>Beans Collected: ${beans}`;
     }
   });
 
@@ -188,7 +188,7 @@ function updateDomainStatsDisplay() {
         const domain = item.domain;
         const label = document.getElementById(`${domain}Stats`);
         if (label) {
-          label.innerHTML = `Score: ${item.total_score}<br>Beans: ${item.total_beans}`;
+          label.innerHTML = `Team Score: ${item.total_score}<br>Beans Collected: ${item.total_beans}`;
 
           // Also update localStorage with latest server data
           localStorage.setItem(`${domain}_cumulative_score`, item.total_score);

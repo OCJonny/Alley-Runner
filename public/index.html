@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Alley Run</title>
     <link rel="stylesheet" href="styles/styles.css" />
+    <link rel="icon" type="image/png" href="images/favicon.png" />
   </head>
-  <link rel="icon" type="image/png" href="images/favicon.png" />
   <body>
-    <!-- Sound Toggle (always visible) -->
+    <!-- 🔊 Sound Toggle (always visible) -->
     <button
       id="soundToggle"
       onclick="toggleSound()"
@@ -48,46 +48,49 @@
     <div id="mainMenu" class="screen hidden">
       <div class="overlay"></div>
 
-      <div class="domain-button">
-        <img
-          src="images/Button_Fire_Up.png"
-          onclick="startGame('fire')"
-          onmouseover="this.src='images/Button_Fire_Down.png'"
-          onmouseout="this.src='images/Button_Fire_Up.png'"
-        />
-        <div class="domain-stats" id="fireStats"></div>
-      </div>
+      <div class="menu-column">
+        <div class="domain-row">
+          <img
+            src="images/Button_Fire_Up.png"
+            onclick="startGame('fire')"
+            onmouseover="this.src='images/Button_Fire_Down.png'"
+            onmouseout="this.src='images/Button_Fire_Up.png'"
+          />
+          <div class="domain-stats" id="fireStats"></div>
+        </div>
 
-      <div class="domain-button">
-        <img
-          src="images/Button_Earth_Up.png"
-          onclick="startGame('earth')"
-          onmouseover="this.src='images/Button_Earth_Down.png'"
-          onmouseout="this.src='images/Button_Earth_Up.png'"
-        />
-        <div class="domain-stats" id="earthStats"></div>
-      </div>
+        <div class="domain-row">
+          <img
+            src="images/Button_Earth_Up.png"
+            onclick="startGame('earth')"
+            onmouseover="this.src='images/Button_Earth_Down.png'"
+            onmouseout="this.src='images/Button_Earth_Up.png'"
+          />
+          <div class="domain-stats" id="earthStats"></div>
+        </div>
 
-      <div class="domain-button">
-        <img
-          src="images/Button_Water_Up.png"
-          onclick="startGame('water')"
-          onmouseover="this.src='images/Button_Water_Down.png'"
-          onmouseout="this.src='images/Button_Water_Up.png'"
-        />
-        <div class="domain-stats" id="waterStats"></div>
-      </div>
+        <div class="domain-row">
+          <img
+            src="images/Button_Water_Up.png"
+            onclick="startGame('water')"
+            onmouseover="this.src='images/Button_Water_Down.png'"
+            onmouseout="this.src='images/Button_Water_Up.png'"
+          />
+          <div class="domain-stats" id="waterStats"></div>
+        </div>
 
-      <div class="domain-button">
-        <img
-          src="images/Button_Lightning_Up.png"
-          onclick="startGame('lightning')"
-          onmouseover="this.src='images/Button_Lightning_Down.png'"
-          onmouseout="this.src='images/Button_Lightning_Up.png'"
-        />
-        <div class="domain-stats" id="lightningStats"></div>
+        <div class="domain-row">
+          <img
+            src="images/Button_Lightning_Up.png"
+            onclick="startGame('lightning')"
+            onmouseover="this.src='images/Button_Lightning_Down.png'"
+            onmouseout="this.src='images/Button_Lightning_Up.png'"
+          />
+          <div class="domain-stats" id="lightningStats"></div>
+        </div>
       </div>
     </div>
+
 
     <!-- 🕹️ Game Screen -->
     <div id="gameScreen" class="screen hidden">
@@ -97,7 +100,6 @@
         <!-- HUD -->
         <div class="hud">
           <div id="livesContainer"></div>
-          <!-- Lives go here -->
           <span id="score">Score: 0</span>
           <span id="highScore">High: 0</span>
         </div>
@@ -117,17 +119,8 @@
 
     <!-- 🧨 End Game Screen -->
     <div id="endGameScreen" class="screen hidden">
-      <img
-        src="images/AlleyRun_logo_red.png"
-        alt="Game Logo"
-        class="logo-small"
-      />
-      <img
-        id="defeatSprite"
-        class="defeat-sprite"
-        src=""
-        alt="Defeated Character"
-      />
+      <img src="images/AlleyRun_logo_red.png" alt="Game Logo" class="logo-small" />
+      <img id="defeatSprite" class="defeat-sprite" src="" alt="Defeated Character" />
 
       <h2>Game Over</h2>
       <p id="finalScore">Your Score: 0</p>

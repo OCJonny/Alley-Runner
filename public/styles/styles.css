@@ -55,14 +55,10 @@ body {
 #mainMenu {
   background: url("../images/Main_Menu.png") no-repeat center center;
   background-size: cover;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 60px;
-  gap: 40px;
+  text-align: center;
   position: relative;
 }
+
 
 #mainMenu .overlay {
   position: absolute;
@@ -73,6 +69,39 @@ body {
   background-color: rgba(0, 0, 0, 0.4);
   z-index: 1;
 }
+
+.menu-column {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  position: relative;
+  z-index: 2;
+}
+
+.domain-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 24px;
+}
+
+.domain-row img {
+  width: 125px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.domain-row img:hover {
+  transform: scale(1.1);
+}
+
+.domain-stats {
+  font-size: 24px;
+  color: white;
+  line-height: 1.6;
+  text-shadow: 1px 1px 2px black;
+}
+
 
 /* Left side - Buttons */
 .menu-left {
@@ -99,7 +128,8 @@ body {
 }
 
 .domain-button img {
-  width: 125px; /* 25% larger than original 100px */
+  width: 125px;
+  /* 25% larger than original 100px */
   cursor: pointer;
   transition: transform 0.2s;
 }
@@ -247,9 +277,12 @@ canvas {
 }
 
 @keyframes slowBounce {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-10px);
   }
