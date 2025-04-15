@@ -185,25 +185,25 @@ canvas {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  font-size: 18px;
+  font-size: 22px;  /* Increased by 20% from 18px */
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   z-index: 10;
 }
 
 .hud span {
-  margin: 4px 0;
+  margin: 5px 0;  /* Slightly increased margin to match new size */
 }
 
 #livesContainer {
   display: flex;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 10px;  /* Slightly increased margin to match new size */
 }
 
 .life-icon {
-  width: 32px;
-  height: 32px;
-  margin-right: 6px;
+  width: 38px;  /* Increased by 20% from 32px */
+  height: 38px;  /* Increased by 20% from 32px */
+  margin-right: 7px;  /* Slightly increased margin to match new size */
   image-rendering: pixelated;
 }
 
