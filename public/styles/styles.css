@@ -42,6 +42,20 @@ body {
   text-align: center;
 }
 
+.instructions {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 10px;
+  font-size: 18px;
+  line-height: 1.6;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.instructions p {
+  margin: 10px 0;
+}
+
 .start-button {
   width: 180px;
   margin-top: 60px;
