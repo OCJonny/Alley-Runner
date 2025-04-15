@@ -260,9 +260,9 @@ canvas {
 /* Speed Up Message */
 #speedUpMessage {
   position: absolute;
-  top: 60px;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   font-size: 28px;
   color: gold;
   font-weight: bold;
@@ -275,9 +275,9 @@ canvas {
 /* Health Up Message */
 #healthUpMessage {
   position: absolute;
-  top: 100px;
+  top: 60%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   font-size: 28px;
   color: #00ff88;
   font-weight: bold;
