@@ -328,6 +328,10 @@ canvas {
     width: 90px;
   }
 
+  .instructions {
+    font-size: 14px;
+  }
+
   .domain-stats {
     font-size: 14px;
   }
@@ -338,15 +342,15 @@ canvas {
 
   #speedUpMessage,
   #healthUpMessage {
-    font-size: 20px;
+    font-size: 18px;
   }
 
   #endGameScreen h2 {
-    font-size: 24px;
+    font-size: 20px;
   }
 
   #endGameScreen p {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .sound-toggle {
