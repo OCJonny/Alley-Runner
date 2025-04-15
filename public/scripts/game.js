@@ -244,16 +244,22 @@ class Game {
     const x = this.canvas.width;
     const y = this.canvas.height - height - 180 - Math.random() * 50;
 
-    this.beans.push({
+    const bean = {
       x,
       y,
       width,
       height,
-      // Green beans move slightly slower
-      speed: (this.isMobile ? 2.0 : 4.0) * (bean.isGreen ? 0.8 : 1),
+      speed: this.isMobile ? 2.0 : 4.0,
       image: beanImage,
       isGreen,
-    });
+    };
+    
+    // Adjust speed for green beans
+    if (bean.isGreen) {
+      bean.speed *= 0.8;
+    }
+    
+    this.beans.push(bean);
   }
 
   spawnObstacle() {
