@@ -340,7 +340,7 @@ class Game {
 
     const tier = Math.floor(this.score / 100);
     if (tier > this.lastSpeedTier && !this.recentlySpedUp) {
-      const inc = this.isMobile ? 0.04 : 0.08;
+      const inc = this.isMobile ? 0.046 : 0.092;
       const tierMaxSpeed = this.isMobile ? 2.5 : 3.5;
       this.speedScale = Math.min(this.speedScale + inc, tierMaxSpeed);
       this.showSpeedUpMessage();
