@@ -447,7 +447,7 @@ class Game {
       }
 
       // Shrink and center obstacle hitboxes
-      const shrinkFactor = 0.6; // 75% * 80% = 60%
+      const shrinkFactor = 0.45; // Reduced by 25% from original 0.6
 
       const obstacleRect = {
         x: ob.x + (ob.width * (1 - shrinkFactor)) / 2,
