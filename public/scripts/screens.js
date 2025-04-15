@@ -1,5 +1,16 @@
 // screens.js
 
+function resetAllDomainStats() {
+  const domains = ["fire", "earth", "water", "lightning"];
+  domains.forEach((domain) => {
+    localStorage.setItem(`${domain}_cumulative_score`, "0");
+    localStorage.setItem(`${domain}_beans`, "0");
+    localStorage.setItem(`${domain}_score`, "0");
+  });
+  updateDomainStatsDisplay();
+}
+
+
 function showScreen(screenId) {
   const screens = document.querySelectorAll(".screen");
   screens.forEach((screen) => screen.classList.add("hidden"));
