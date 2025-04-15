@@ -54,11 +54,11 @@ class Game {
 
     this.characterX = this.isMobile ? 50 : 150;
     this.characterY = canvas.height - (this.isMobile ? 150 : 250);
-    this.characterWidth = this.isMobile ? 96 : 128;
-    this.characterHeight = this.isMobile ? 96 : 128;
+    this.characterWidth = this.isMobile ? 154 : 205;
+    this.characterHeight = this.isMobile ? 154 : 205;
     this.velocityY = 0;
-    this.gravity = this.isMobile ? 0.25 : 0.29;
-    this.jumpForce = this.isMobile ? -10 : -12;
+    this.gravity = this.isMobile ? 0.28 : 0.32;
+    this.jumpForce = this.isMobile ? -11 : -13;
     this.isJumping = false;
 
     this.beans = [];
@@ -266,10 +266,10 @@ class Game {
     const obstacleImage = new Image();
     obstacleImage.src = this.obstacleImage.src;
 
-    const width = this.isMobile ? 96 : 128;
-    const height = this.isMobile ? 96 : 128;
+    const width = this.isMobile ? 154 : 205;
+    const height = this.isMobile ? 154 : 205;
     const x = this.canvas.width;
-    const y = this.canvas.height - height - (this.isMobile ? 30 : 50);
+    const y = this.canvas.height - height - (this.isMobile ? 48 : 80);
 
     this.obstacles.push({
       x,
