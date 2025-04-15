@@ -40,10 +40,14 @@ body {
   background: url("../images/Title_Screen.png") no-repeat center center;
   background-size: cover;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 10%;
 }
 
 .instructions {
-  margin-top: 20px;
+  margin-top: 40px;
   padding: 15px;
   background-color: rgba(0, 0, 0, 0.7);
   border-radius: 10px;
