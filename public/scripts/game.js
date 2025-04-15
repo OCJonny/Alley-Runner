@@ -57,8 +57,8 @@ class Game {
     this.characterWidth = this.isMobile ? 154 : 205;
     this.characterHeight = this.isMobile ? 154 : 205;
     this.velocityY = 0;
-    this.gravity = this.isMobile ? 0.28 : 0.32;
-    this.jumpForce = this.isMobile ? -11 : -13;
+    this.gravity = this.isMobile ? 0.252 : 0.288;  // Reduced by 10%
+    this.jumpForce = this.isMobile ? -13.2 : -15.6;  // Increased by 20%
     this.isJumping = false;
 
     this.beans = [];
