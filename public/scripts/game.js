@@ -341,16 +341,20 @@ class Game {
     const tier = Math.floor(this.score / 100);
     if (tier > this.lastSpeedTier && !this.recentlySpedUp) {
       const inc = this.isMobile ? 0.046 : 0.092;
-      const tierMaxSpeed = this.isMobile ? 2.5 : 3.5;
-      this.speedScale = Math.min(this.speedScale + inc, tierMaxSpeed);
-      this.showSpeedUpMessage();
+      const tierMaxSpeed = this.isMobile ? 5.0 : 7.0;  // Doubled from 2.5/3.5
+      const newSpeed = Math.min(this.speedScale + inc, tierMaxSpeed);
+      // Only show speed up message if we haven't reached max speed
+      if (newSpeed < tierMaxSpeed) {
+        this.showSpeedUpMessage();
+      }
+      this.speedScale = newSpeed;
       this.recentlySpedUp = true;
       this.lastSpeedTier = tier;
       setTimeout(() => (this.recentlySpedUp = false), 500);
     }
 
     const minSpeed = this.isMobile ? 1.8 : 1.5;
-    const maxSpeed = this.isMobile ? 2.5 : 3.5;
+    const maxSpeed = this.isMobile ? 5.0 : 7.0;  // Doubled from 2.5/3.5
     document.getElementById("speedBar").style.width =
       `${((this.speedScale - minSpeed) / (maxSpeed - minSpeed)) * 100}%`;
 
