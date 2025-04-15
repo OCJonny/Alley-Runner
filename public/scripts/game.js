@@ -119,7 +119,7 @@ class Game {
         this.velocityY = this.jumpForce;
         this.isJumping = true;
         this.jumpFrameIndex = 0;
-        if (this.soundEnabled) this.jumpSound?.play();
+        if (this.soundEnabled) this.jumpSound?.play().catch(() => {});
       }
     });
 
@@ -128,7 +128,7 @@ class Game {
         this.velocityY = this.jumpForce;
         this.isJumping = true;
         this.jumpFrameIndex = 0;
-        if (this.soundEnabled) this.jumpSound?.play();
+        if (this.soundEnabled) this.jumpSound?.play().catch(() => {});
       }
     });
 
@@ -175,7 +175,7 @@ class Game {
     this.hasCollided = true;
 
     if (this.soundEnabled) {
-      this.deathSound?.play();
+      this.deathSound?.play().catch(() => {});
       if (window.bgMusic) window.bgMusic.pause();
     }
 
@@ -253,12 +253,12 @@ class Game {
       image: beanImage,
       isGreen,
     };
-    
+
     // Adjust speed for green beans
     if (bean.isGreen) {
       bean.speed *= 0.8;
     }
-    
+
     this.beans.push(bean);
   }
 
@@ -483,7 +483,7 @@ class Game {
         this.lives--;
         this.updateLivesDisplay();
 
-        if (this.soundEnabled) this.deathSound?.play();
+        if (this.soundEnabled) this.deathSound?.play().catch(() => {});
 
         this.obstacles.splice(i, 1); // Remove obstacle so player doesn't get hit again instantly
 
@@ -529,14 +529,14 @@ class Game {
             this.lives++;
             this.updateLivesDisplay(); // Update the lives display with new bean
             this.showHealthUpMessage(); // Show the +1 health message
-            if (this.soundEnabled) this.healthSound?.play(); // Play the health up sound
+            if (this.soundEnabled) this.healthSound?.play().catch(() => {}); // Play the health up sound
           } else {
             // Still play normal bean sound if already at max health
-            if (this.soundEnabled) this.beanSound?.play();
+            if (this.soundEnabled) this.beanSound?.play().catch(() => {});
           }
         } else {
           // Regular bean sound for red beans
-          if (this.soundEnabled) this.beanSound?.play();
+          if (this.soundEnabled) this.beanSound?.play().catch(() => {});
         }
 
         this.score += 10;

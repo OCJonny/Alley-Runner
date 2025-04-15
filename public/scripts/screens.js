@@ -54,7 +54,7 @@ function toggleSound() {
     bgMusic.volume = 0; // start silent
     bgMusic.play()
       .then(() => fadeInMusic(bgMusic))
-      .catch(err => console.warn("Music play blocked:", err));
+      .catch(() => {/* Silently handle blocked autoplay */});
     document.getElementById("soundIcon").src = "images/sound-on.png";
   } else {
     bgMusic.pause();
@@ -74,7 +74,7 @@ function showTitleScreen() {
     bgMusic.volume = 0;
     bgMusic.play()
       .then(() => fadeInMusic(bgMusic))
-      .catch(err => console.warn("Music play blocked:", err));
+      .catch(() => {/* Silently handle blocked autoplay */});
   }
 }
 
@@ -87,7 +87,7 @@ function showMainMenu() {
     bgMusic.volume = 0;
     bgMusic.play()
       .then(() => fadeInMusic(bgMusic))
-      .catch(err => console.warn("Music play blocked:", err));
+      .catch(() => {/* Silently handle blocked autoplay */});
   }
 }
 
@@ -145,7 +145,7 @@ function restartGame() {
     bgMusic.volume = 0;
     bgMusic.play()
       .then(() => fadeInMusic(bgMusic))
-      .catch(err => console.warn("Music play blocked:", err));
+      .catch(() => {/* Silently handle blocked autoplay */});
   }
 
   showMainMenu();
@@ -211,7 +211,7 @@ document.addEventListener("visibilitychange", () => {
       bgMusic.volume = 0;
       bgMusic.play()
         .then(() => fadeInMusic(bgMusic, 1000))
-        .catch(err => console.warn("Resume blocked:", err));
+        .catch(() => {/* Silently handle blocked autoplay */});
     }
   }
 });
