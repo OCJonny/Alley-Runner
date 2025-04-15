@@ -14,6 +14,8 @@ const API_BASE_URL = window.location.origin;
 let bgMusic = new Audio("sounds/Game_Music.mp3");
 bgMusic.loop = true;
 bgMusic.volume = 0.5;
+bgMusic.mozAudioChannelType = 'content';  // Firefox
+bgMusic.webkitMediaClass = 'playback';    // Webkit
 
 bgMusic.preload = "auto";
 bgMusic.load();

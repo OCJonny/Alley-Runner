@@ -147,10 +147,22 @@ class Game {
     this.characterJumpImage = sprites.jump;
     this.characterDefeatImage = sprites.defeat;
 
+    // Create separate audio context for sound effects to prevent affecting background music
     this.jumpSound = new Audio("sounds/Jump.wav");
+    this.jumpSound.mozAudioChannelType = 'normal';  // Firefox
+    this.jumpSound.webkitMediaClass = 'ambient';    // Webkit
+
     this.beanSound = new Audio("sounds/Bean.wav");
+    this.beanSound.mozAudioChannelType = 'normal';
+    this.beanSound.webkitMediaClass = 'ambient';
+
     this.deathSound = new Audio("sounds/Death.wav");
+    this.deathSound.mozAudioChannelType = 'normal';
+    this.deathSound.webkitMediaClass = 'ambient';
+
     this.healthSound = new Audio("sounds/Health_Up.wav");
+    this.healthSound.mozAudioChannelType = 'normal';
+    this.healthSound.webkitMediaClass = 'ambient';
 
     document.getElementById("highScore").textContent =
       `High: ${this.highScore}`;
