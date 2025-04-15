@@ -239,8 +239,8 @@ class Game {
 
   updateScore() {
     document.getElementById("score").textContent = `Score: ${this.score}`;
-    document.getElementById("highScore").textContent =
-      `High: ${this.highScore}`;
+    document.getElementById("highScore").textContent = `High Score: ${this.highScore}`;
+    document.getElementById("beansCollected").textContent = `Beans Collected: ${this.beanCount}`;
   }
 
   updateLivesDisplay() {
