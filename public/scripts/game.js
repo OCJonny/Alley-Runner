@@ -249,8 +249,8 @@ class Game {
       y,
       width,
       height,
-      // Green beans move a bit slower to make them more challenging to get
-      speed: this.isMobile ? 1.5 + Math.random() * 1 : 3 + Math.random() * 2,
+      // Green beans move slightly slower
+      speed: (this.isMobile ? 2.0 : 4.0) * (bean.isGreen ? 0.8 : 1),
       image: beanImage,
       isGreen,
     });
@@ -270,7 +270,7 @@ class Game {
       y,
       width,
       height,
-      speed: this.isMobile ? 2.0 + Math.random() * 1.2 : 4 + Math.random() * 2,
+      speed: this.isMobile ? 2.0 : 4.0,
       image: obstacleImage,
     });
   }
@@ -294,8 +294,10 @@ class Game {
     // === Background Scrolling ===
     const bgRatio = this.backgroundImage.width / this.backgroundImage.height;
     const bgWidth = this.canvas.height * bgRatio;
+    const baseSpeed = this.isMobile ? 2.0 : 4.0;
+    const gameSpeed = baseSpeed * this.speedScale * delta;
 
-    this.bgScrollX -= 2 * this.speedScale * delta; // background scroll speed matches player speed
+    this.bgScrollX -= gameSpeed;
 
     if (this.bgScrollX <= -bgWidth) {
       this.bgScrollX = 0;
