@@ -185,6 +185,18 @@ class Game {
   stop() {
     this.isRunning = false;
     this.hasCollided = true;
+    
+    // Clear all game timers and intervals
+    if (this.boundLoop) {
+      cancelAnimationFrame(this.boundLoop);
+      this.boundLoop = null;
+    }
+    
+    // Reset all game state to prevent background updates
+    this.obstacles = [];
+    this.beans = [];
+    this.beanSpawnTimer = 0;
+    this.obstacleSpawnTimer = 0;
 
     if (this.soundEnabled) {
       this.deathSound?.play().catch(() => {});
