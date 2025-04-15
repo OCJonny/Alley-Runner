@@ -254,11 +254,6 @@ class Game {
       isGreen,
     };
 
-    // Adjust speed for green beans
-    if (bean.isGreen) {
-      bean.speed *= 0.8;
-    }
-
     this.beans.push(bean);
   }
 
