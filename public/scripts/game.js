@@ -242,7 +242,7 @@ class Game {
     const width = 64;
     const height = 64;
     const x = this.canvas.width;
-    const y = this.canvas.height - height - 180 - Math.random() * 50;
+    const y = this.canvas.height - height - 250 - Math.random() * 50;
 
     const bean = {
       x,
@@ -269,7 +269,7 @@ class Game {
     const width = this.isMobile ? 154 : 205;
     const height = this.isMobile ? 154 : 205;
     const x = this.canvas.width;
-    const y = this.canvas.height - height - (this.isMobile ? 48 : 80);
+    const y = this.canvas.height - height - (this.isMobile ? 30 : 50);
 
     this.obstacles.push({
       x,
