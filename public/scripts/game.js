@@ -57,8 +57,8 @@ class Game {
     this.characterWidth = this.isMobile ? 154 : 205;
     this.characterHeight = this.isMobile ? 154 : 205;
     this.velocityY = 0;
-    this.gravity = this.isMobile ? 0.252 : 0.288;  // Reduced by 10%
-    this.jumpForce = this.isMobile ? -13.2 : -15.6;  // Increased by 20%
+    this.gravity = this.isMobile ? 0.277 : 0.317;  // Increased by 10%
+    this.jumpForce = this.isMobile ? -11.88 : -14.04;  // Reduced by 10%
     this.isJumping = false;
 
     this.beans = [];
@@ -242,7 +242,7 @@ class Game {
     const width = 64;
     const height = 64;
     const x = this.canvas.width;
-    const y = this.canvas.height - height - 250 - Math.random() * 50;
+    const y = this.canvas.height - height - 275 - Math.random() * 50;
 
     const bean = {
       x,
