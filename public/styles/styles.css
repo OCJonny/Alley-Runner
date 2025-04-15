@@ -50,7 +50,7 @@ body {
 }
 
 .start-button:hover {
-  transform: scale(1.1);
+  transform: none;
 }
 
 /* Main Menu */
@@ -142,7 +142,7 @@ body {
 }
 
 .domain-button img:hover {
-  transform: scale(1.1);
+  transform: none;
 }
 
 .domain-stats {
