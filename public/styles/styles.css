@@ -329,10 +329,23 @@ canvas {
   }
 
   .domain-stats {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .hud {
+    font-size: 14px;
+  }
+
+  #speedUpMessage,
+  #healthUpMessage {
+    font-size: 20px;
+  }
+
+  #endGameScreen h2 {
+    font-size: 24px;
+  }
+
+  #endGameScreen p {
     font-size: 16px;
   }
 
