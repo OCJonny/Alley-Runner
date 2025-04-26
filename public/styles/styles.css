@@ -14,7 +14,9 @@ body {
   background-color: #121212;
   font-family: 'Press Start 2P', 'Roboto', system-ui, sans-serif;
   color: #fff;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  min-height: 100vh;
 }
 
 /* Screen Layout */
@@ -134,6 +136,11 @@ body {
   border-radius: 16px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(4px);
+  margin: 20px;
+  max-height: 90vh;
+  overflow-y: auto;
+  width: fit-content;
+  min-width: 300px;
 }
 
 .domain-row {
@@ -354,6 +361,21 @@ canvas {
 
   .instructions {
     font-size: 14px;
+    padding: 10px;
+    margin: 10px;
+  }
+
+  .menu-column {
+    padding: 16px;
+    margin: 10px;
+    min-width: unset;
+    width: 95%;
+  }
+
+  #instructionsBox {
+    width: 95%;
+    padding: 10px;
+    margin: 10px auto;
   }
 
   .domain-stats {
