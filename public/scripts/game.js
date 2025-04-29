@@ -359,8 +359,8 @@ class Game {
 
     const tier = Math.floor(this.score / 100);
     if (tier > this.lastSpeedTier && !this.recentlySpedUp) {
-      const inc = this.isMobile ? 0.046 : 0.092;
-      const tierMaxSpeed = this.isMobile ? 5.0 : 7.0;  // Doubled from 2.5/3.5
+      const inc = this.isMobile ? 0.092 : 0.092;  // Made mobile increment same as desktop
+      const tierMaxSpeed = this.isMobile ? 6.0 : 7.0;  // Increased mobile max speed
       const newSpeed = Math.min(this.speedScale + inc, tierMaxSpeed);
       // Only show speed up message if we haven't reached max speed
       if (newSpeed < tierMaxSpeed) {
