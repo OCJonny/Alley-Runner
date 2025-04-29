@@ -19,17 +19,21 @@ async function initGame(canvas, elementType) {
   let height = containerRect.height;
 
   if (isMobile) {
-    height = containerRect.height;
+    height = containerRect.height * 0.9; // Use 90% of container height
     width = height * aspectRatio;
-    // Scale up canvas dimensions to show more game world
-    width *= 1.2;
-    height *= 1.2;
   } else {
     if (width / height > aspectRatio) {
       width = height * aspectRatio;
     } else {
       height = width / aspectRatio;
     }
+  }
+
+  // Ensure the canvas fits within the viewport
+  const maxHeight = window.innerHeight * 0.9;
+  if (height > maxHeight) {
+    height = maxHeight;
+    width = height * aspectRatio;
   }
 
   canvas.style.width = `${width}px`;
@@ -57,7 +61,8 @@ class Game {
     this.isMobile = window.innerWidth <= 768;
 
     this.characterX = this.isMobile ? 50 : 150;
-    this.characterY = canvas.height - (this.isMobile ? 150 : 250);
+    const groundOffset = this.isMobile ? canvas.height * 0.2 : canvas.height * 0.25;
+    this.characterY = canvas.height - groundOffset;
     const mobileScaleFactor = 0.8;
     this.characterWidth = this.isMobile ? 154 * mobileScaleFactor : 205;
     this.characterHeight = this.isMobile ? 154 * mobileScaleFactor : 205;
