@@ -8,7 +8,7 @@
     <link rel="icon" type="image/png" href="images/favicon.png" />
   </head>
   <body>
-    <!-- 🔊 Sound Toggle (always visible) -->
+    <!-- 🔊 Sound Toggle -->
     <button
       id="soundToggle"
       onclick="toggleSound()"
@@ -44,8 +44,8 @@
       />
       <div class="instructions">
         <p>🎮 Click, Space, or Tap to Jump Over Obstacles</p>
-        <p><img src="images/RedBean.png" alt="Red Bean" class="bean-icon"/> Collect Red Beans to Increase Score</p>
-        <p><img src="images/GreenBean.png" alt="Green Bean" class="bean-icon"/> Green Beans Give Extra Lives</p>
+        <p><img src="images/RedBean.png" alt="Red Bean" class="bean-icon" /> Collect Red Beans to Increase Score</p>
+        <p><img src="images/GreenBean.png" alt="Green Bean" class="bean-icon" /> Green Beans Give Extra Lives</p>
       </div>
     </div>
 
@@ -53,40 +53,23 @@
     <div id="loreScreen" class="screen hidden">
       <div class="lore-container">
         <h2>Alley Run</h2>
-        <!-- Mobile View: Paginated lore paragraphs with next button -->
-        <div class="lore-pages mobile-view">
+        <div class="lore-pages">
           <div class="lore-page" data-page="1">
             <p>The Garden's gates only open to those who prove their worth, beckoning the worthy to traverse the city's Alley. Red beans, scattered throughout The Alley, are the key to the power needed to unlock the sacred entrance.</p>
           </div>
           <div class="lore-page hidden" data-page="2">
-            <p>With each step closer to the mystical Garden, the city grows more hostile as shadowy forces attempt to prevent the worthy from entering The Garden. Only by mastering the rhythm of the alley - darting between obstacles, collecting enough beans, and maintaining unwavering focus - can someone hope to reach the sanctuary?</p>
+            <p>Only by mastering the rhythm of the alley - darting between obstacles, collecting enough beans, and maintaining unwavering focus - can someone hope to reach the sanctuary.</p>
           </div>
           <div class="lore-page hidden" data-page="3">
-            <p>The journey to The Garden isn't merely a test of reflexes, but a spiritual pilgrimage that separates the destined from the unprepared.</p>
-          </div>
-        </div>
-        <!-- Desktop View: All lore paragraphs displayed at once -->
-        <div class="lore-pages desktop-view hidden">
-          <div class="all-lore-content">
-            <p>The Garden's gates only open to those who prove their worth, beckoning the worthy to traverse the city's Alley. Red beans, scattered throughout The Alley, are the key to the power needed to unlock the sacred entrance.</p>
-            <p>With each step closer to the mystical Garden, the city grows more hostile as shadowy forces attempt to prevent the worthy from entering The Garden. Only by mastering the rhythm of the alley - darting between obstacles, collecting enough beans, and maintaining unwavering focus - can someone hope to reach the sanctuary?</p>
-            <p>The journey to The Garden isn't merely a test of reflexes, but a spiritual pilgrimage that separates the destined from the unprepared.</p>
+            <p>Are you ready to face the obstacles in The Alley and collect the much needed beans for the glory of your domain?</p>
           </div>
         </div>
         <div class="lore-navigation">
-          <button class="next-button mobile-view" onclick="nextLorePage()">Next →</button>
+          <button class="next-button" onclick="nextLorePage()">Next →</button>
           <img
             src="images/Button_Start_Up.png"
             alt="Start Game"
-            class="start-button mobile-view hidden"
-            onclick="showMainMenu()"
-            onmouseover="this.src='images/Button_Start_Down.png'"
-            onmouseout="this.src='images/Button_Start_Up.png'"
-          />
-          <img
-            src="images/Button_Start_Up.png"
-            alt="Start Game"
-            class="start-button desktop-view hidden"
+            class="start-button hidden"
             onclick="showMainMenu()"
             onmouseover="this.src='images/Button_Start_Down.png'"
             onmouseout="this.src='images/Button_Start_Up.png'"
@@ -98,8 +81,9 @@
     <!-- ⚡ Main Menu -->
     <div id="mainMenu" class="screen hidden">
       <div class="overlay"></div>
-
-      <div id="instructionsBox">Choose your domain and run to earn points and collect beans for your team!</div>
+      <div id="instructionsBox">
+        Choose your domain and run to earn points and collect beans for your team!
+      </div>
       <div class="menu-column">
         <div class="domain-row">
           <img
@@ -110,7 +94,6 @@
           />
           <div class="domain-stats" id="lightningStats"></div>
         </div>
-
         <div class="domain-row">
           <img
             src="images/Button_Fire_Up.png"
@@ -120,77 +103,8 @@
           />
           <div class="domain-stats" id="fireStats"></div>
         </div>
-
         <div class="domain-row">
           <img
             src="images/Button_Water_Up.png"
             onclick="startGame('water')"
-            onmouseover="this.src='images/Button_Water_Down.png'"
-            onmouseout="this.src='images/Button_Water_Up.png'"
-          />
-          <div class="domain-stats" id="waterStats"></div>
-        </div>
-
-        <div class="domain-row">
-          <img
-            src="images/Button_Earth_Up.png"
-            onclick="startGame('earth')"
-            onmouseover="this.src='images/Button_Earth_Down.png'"
-            onmouseout="this.src='images/Button_Earth_Up.png'"
-          />
-          <div class="domain-stats" id="earthStats"></div>
-        </div>
-      </div>
-    </div>
-
-
-    <!-- 🕹️ Game Screen -->
-    <div id="gameScreen" class="screen hidden">
-      <div class="game-container">
-        <canvas id="gameCanvas"></canvas>
-
-        <!-- HUD -->
-        <div class="hud">
-          <div id="livesContainer"></div>
-          <span id="score">Score: 0</span>
-          <span id="highScore">High Score: 0</span>
-          <span id="beansCollected">Beans Collected: 0</span>
-        </div>
-
-        <!-- Speed Bar -->
-        <div class="speed-container">
-          <div id="speedBar"></div>
-        </div>
-
-        <!-- Speed Up Text -->
-        <div id="speedUpMessage">⚡ Speed Up!</div>
-
-        <!-- Health Message -->
-        <div id="healthUpMessage">+1 Health! 💚</div>
-      </div>
-    </div>
-
-    <!-- 🧨 End Game Screen -->
-    <div id="endGameScreen" class="screen hidden">
-      <img id="defeatSprite" class="defeat-sprite" src="" alt="Defeated Character" />
-
-      <h2>Game Over</h2>
-      <p id="finalScore">Your Score: 0</p>
-      <p id="beanCountDisplay">Total Beans Collected: 0</p>
-      <p id="finalHighScore">High Score: 0</p>
-
-      <img
-        src="images/Button_Restart_Up.png"
-        alt="Restart Game"
-        class="start-button"
-        onclick="restartGame()"
-        onmouseover="this.src='images/Button_Restart_Down.png'"
-        onmouseout="this.src='images/Button_Restart_Up.png'"
-      />
-    </div>
-
-    <!-- 🧠 Scripts -->
-    <script src="scripts/game.js" defer></script>
-    <script src="scripts/screens.js" defer></script>
-  </body>
-</html>
+            onmouseover="th
