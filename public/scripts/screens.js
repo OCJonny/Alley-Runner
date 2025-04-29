@@ -326,10 +326,10 @@ function updateLorePages() {
     
     if (nextButton && mobileStartButton) {
       if (currentLorePage === 3) {
-        nextButton.style.display = 'none';
+        nextButton.classList.add('hidden');
         mobileStartButton.classList.remove('hidden');
       } else {
-        nextButton.style.display = 'block';
+        nextButton.classList.remove('hidden');
         mobileStartButton.classList.add('hidden');
       }
     }
