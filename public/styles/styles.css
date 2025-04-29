@@ -172,7 +172,7 @@ body {
 }
 
 .domain-row img:hover {
-  transform: scale(1.1);
+  transform: none;
 }
 
 .domain-stats {
