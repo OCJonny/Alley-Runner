@@ -53,20 +53,28 @@
     <div id="loreScreen" class="screen hidden">
       <div class="lore-container">
         <h2>Alley Run</h2>
-        <p>The Garden's gates only open to those who prove their worth, beckoning the worthy to traverse the city's Alley. Red beans, scattered throughout The Alley, are the key to the power needed to unlock the sacred entrance.
-          
-          <p>With each step closer to the mystical Garden, the city grows more hostile as shadowy forces attempt to prevent the worthy from entering The Garden. Only by mastering the rhythm of the alley - darting between obstacles, collecting enough beans, and maintaining unwavering focus - can someone hope to reach the sanctuary.
-          
-            <p>The journey to The Garden isn't merely a test of reflexes, but a spiritual pilgrimage that separates the destined from the unprepared.
-        </p>
-        <img
-          src="images/Button_Start_Up.png"
-          alt="Start Game"
-          class="start-button"
-          onclick="showMainMenu()"
-          onmouseover="this.src='images/Button_Start_Down.png'"
-          onmouseout="this.src='images/Button_Start_Up.png'"
-        />
+        <div class="lore-pages">
+          <div class="lore-page" data-page="1">
+            <p>The Garden's gates only open to those who prove their worth, beckoning the worthy to traverse the city's Alley. Red beans, scattered throughout The Alley, are the key to the power needed to unlock the sacred entrance.</p>
+          </div>
+          <div class="lore-page hidden" data-page="2">
+            <p>With each step closer to the mystical Garden, the city grows more hostile as shadowy forces attempt to prevent the worthy from entering The Garden. Only by mastering the rhythm of the alley - darting between obstacles, collecting enough beans, and maintaining unwavering focus - can someone hope to reach the sanctuary.</p>
+          </div>
+          <div class="lore-page hidden" data-page="3">
+            <p>The journey to The Garden isn't merely a test of reflexes, but a spiritual pilgrimage that separates the destined from the unprepared.</p>
+          </div>
+        </div>
+        <div class="lore-navigation">
+          <button class="next-button" onclick="nextLorePage()">Next →</button>
+          <img
+            src="images/Button_Start_Up.png"
+            alt="Start Game"
+            class="start-button hidden"
+            onclick="showMainMenu()"
+            onmouseover="this.src='images/Button_Start_Down.png'"
+            onmouseout="this.src='images/Button_Start_Up.png'"
+          />
+        </div>
       </div>
     </div>
 

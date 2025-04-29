@@ -231,6 +231,40 @@ document.addEventListener("visibilitychange", () => {
 // Show lore screen
 function showLoreScreen() {
   showScreen("loreScreen");
+  // Reset to first page when showing lore screen
+  currentLorePage = 1;
+  updateLorePages();
+}
+
+let currentLorePage = 1;
+
+function nextLorePage() {
+  if (currentLorePage < 3) {
+    currentLorePage++;
+    updateLorePages();
+  }
+}
+
+function updateLorePages() {
+  // Hide all pages
+  document.querySelectorAll('.lore-page').forEach(page => {
+    page.classList.add('hidden');
+  });
+  
+  // Show current page
+  document.querySelector(`.lore-page[data-page="${currentLorePage}"]`).classList.remove('hidden');
+  
+  // Update navigation
+  const nextButton = document.querySelector('.next-button');
+  const startButton = document.querySelector('#loreScreen .start-button');
+  
+  if (currentLorePage === 3) {
+    nextButton.classList.add('hidden');
+    startButton.classList.remove('hidden');
+  } else {
+    nextButton.classList.remove('hidden');
+    startButton.classList.add('hidden');
+  }
 }
 
 // Export global functions needed in HTML onclick handlers
