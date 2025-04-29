@@ -138,6 +138,23 @@ body {
   backdrop-filter: blur(4px);
   width: min(90%, 800px);
   margin: 10px auto;
+  max-height: 80vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.menu-column::-webkit-scrollbar {
+  width: 8px;
+}
+
+.menu-column::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.menu-column::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
 }
 
 .domain-row {
