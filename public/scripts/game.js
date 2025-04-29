@@ -19,7 +19,7 @@ async function initGame(canvas, elementType) {
   let height = containerRect.height;
 
   if (isMobile) {
-    height = containerRect.height * 0.75; // Use 75% of container height
+    height = containerRect.height * 0.9; // Use 90% of container height
     width = containerRect.width; // Use full width
   } else {
     if (width / height > aspectRatio) {
