@@ -42,6 +42,9 @@ let resizeListenerAdded = false;
 document.addEventListener("DOMContentLoaded", () => {
   showTitleScreen();
   document.getElementById("soundIcon").src = "images/sound-on.png";
+  
+  // Initialize device type detection
+  checkDeviceType();
 });
 
 // Helper function for smooth fade-in of audio
@@ -247,17 +250,48 @@ let isDesktop = false;
 // Check if user is on desktop or mobile
 function checkDeviceType() {
   isDesktop = window.innerWidth > 768;
+
+  const mobileView = document.querySelector('.lore-pages.mobile-view');
+  const desktopView = document.querySelector('.lore-pages.desktop-view');
+  const desktopStartButton = document.querySelector('#loreScreen .start-button.desktop-view');
+  const mobileStartButton = document.querySelector('#loreScreen .start-button.mobile-view');
+  const nextButton = document.querySelector('.next-button.mobile-view');
   
-  // Set up the appropriate view
   if (isDesktop) {
-    // Show desktop view (show all paragraphs at once with start button below)
-    // This is now handled by CSS media queries
+    // Desktop view: Show all paragraphs at once with start button
+    if (desktopView) desktopView.classList.remove('hidden');
+    if (mobileView) mobileView.classList.add('hidden');
+    if (desktopStartButton) desktopStartButton.classList.remove('hidden');
     
-    // Show start button for desktop immediately
-    const desktopStartButton = document.querySelector('#loreScreen .start-button.desktop-view');
-    if (desktopStartButton) {
-      desktopStartButton.classList.remove('hidden');
+    // Hide mobile elements
+    if (mobileStartButton) mobileStartButton.classList.add('hidden');
+    if (nextButton) nextButton.classList.add('hidden');
+  } else {
+    // Mobile view: Show only the current paragraph
+    if (desktopView) desktopView.classList.add('hidden');
+    if (mobileView) mobileView.classList.remove('hidden');
+    
+    // Update the correct page visibility
+    document.querySelectorAll('.lore-page').forEach(page => {
+      page.classList.add('hidden');
+    });
+    
+    const currentPage = document.querySelector(`.lore-page[data-page="${currentLorePage}"]`);
+    if (currentPage) {
+      currentPage.classList.remove('hidden');
     }
+    
+    // Update navigation buttons
+    if (currentLorePage === 3) {
+      if (nextButton) nextButton.classList.add('hidden');
+      if (mobileStartButton) mobileStartButton.classList.remove('hidden');
+    } else {
+      if (nextButton) nextButton.classList.remove('hidden');
+      if (mobileStartButton) mobileStartButton.classList.add('hidden');
+    }
+    
+    // Hide desktop button
+    if (desktopStartButton) desktopStartButton.classList.add('hidden');
   }
 }
 
@@ -272,31 +306,32 @@ function nextLorePage() {
 }
 
 function updateLorePages() {
-  // Only needed for mobile view
-  // Desktop view shows all paragraphs by default
-  
-  // Hide all pages (mobile view)
-  document.querySelectorAll('.lore-page').forEach(page => {
-    page.classList.add('hidden');
-  });
-  
-  // Show current page (mobile view)
-  const currentPage = document.querySelector(`.lore-page[data-page="${currentLorePage}"]`);
-  if (currentPage) {
-    currentPage.classList.remove('hidden');
-  }
-  
-  // Update navigation for mobile view
-  const nextButton = document.querySelector('.next-button.mobile-view');
-  const mobileStartButton = document.querySelector('#loreScreen .start-button.mobile-view');
-  
-  if (nextButton && mobileStartButton) {
-    if (currentLorePage === 3) {
-      nextButton.classList.add('hidden');
-      mobileStartButton.classList.remove('hidden');
-    } else {
-      nextButton.classList.remove('hidden');
-      mobileStartButton.classList.add('hidden');
+  // For desktop, we don't need to update anything as all pages are shown
+  // For mobile, we need to update the current page and navigation
+  if (!isDesktop) {
+    // Hide all pages (mobile view)
+    document.querySelectorAll('.lore-page').forEach(page => {
+      page.classList.add('hidden');
+    });
+    
+    // Show current page (mobile view)
+    const currentPage = document.querySelector(`.lore-page[data-page="${currentLorePage}"]`);
+    if (currentPage) {
+      currentPage.classList.remove('hidden');
+    }
+    
+    // Update navigation for mobile view
+    const nextButton = document.querySelector('.next-button.mobile-view');
+    const mobileStartButton = document.querySelector('#loreScreen .start-button.mobile-view');
+    
+    if (nextButton && mobileStartButton) {
+      if (currentLorePage === 3) {
+        nextButton.classList.add('hidden');
+        mobileStartButton.classList.remove('hidden');
+      } else {
+        nextButton.classList.remove('hidden');
+        mobileStartButton.classList.add('hidden');
+      }
     }
   }
 }
