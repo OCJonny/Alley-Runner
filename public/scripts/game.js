@@ -14,12 +14,16 @@ async function initGame(canvas, elementType) {
 
   const isMobile = window.innerWidth <= 768;
   const aspectRatio = isMobile ? 9 / 16 : 16 / 9;
+  const mobileScaleFactor = 0.8; // Scale factor for mobile elements
   let width = containerRect.width;
   let height = containerRect.height;
 
   if (isMobile) {
     height = containerRect.height;
     width = height * aspectRatio;
+    // Scale up canvas dimensions to show more game world
+    width *= 1.2;
+    height *= 1.2;
   } else {
     if (width / height > aspectRatio) {
       width = height * aspectRatio;
@@ -54,8 +58,9 @@ class Game {
 
     this.characterX = this.isMobile ? 50 : 150;
     this.characterY = canvas.height - (this.isMobile ? 150 : 250);
-    this.characterWidth = this.isMobile ? 154 : 205;
-    this.characterHeight = this.isMobile ? 154 : 205;
+    const mobileScaleFactor = 0.8;
+    this.characterWidth = this.isMobile ? 154 * mobileScaleFactor : 205;
+    this.characterHeight = this.isMobile ? 154 * mobileScaleFactor : 205;
     this.velocityY = 0;
     this.gravity = this.isMobile ? 0.249 : 0.317;  // Mobile gravity reduced by 10%
     this.jumpForce = this.isMobile ? -11.88 : -14.04;  // Reduced by 10%
@@ -285,9 +290,10 @@ class Game {
     const obstacleImage = new Image();
     obstacleImage.src = this.obstacleImage.src;
 
-    const width = this.isMobile ? 154 : 205;
-    const height = this.isMobile ? 154 : 205;
-    const x = this.canvas.width;
+    const mobileScaleFactor = 0.8;
+    const width = this.isMobile ? 154 * mobileScaleFactor : 205;
+    const height = this.isMobile ? 154 * mobileScaleFactor : 205;
+    const x = this.canvas.width + (this.isMobile ? this.canvas.width * 0.2 : 0);
     const y = this.canvas.height - height - (this.isMobile ? 30 : 50);
 
     this.obstacles.push({
