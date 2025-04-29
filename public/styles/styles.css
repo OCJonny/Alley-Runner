@@ -128,26 +128,24 @@ body {
 .menu-column {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 20px;
   position: relative;
   z-index: 2;
   background-color: rgba(0, 0, 0, 0.7);
-  padding: 32px;
+  padding: 20px;
   border-radius: 16px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(4px);
-  margin: 20px;
-  max-height: 90vh;
-  overflow-y: auto;
-  width: fit-content;
-  min-width: 300px;
+  width: min(90%, 800px);
+  margin: 10px auto;
 }
 
 .domain-row {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  gap: 24px;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 5px;
 }
 
 .domain-row img {
@@ -161,10 +159,11 @@ body {
 }
 
 .domain-stats {
-  font-size: 24px;
+  font-size: clamp(14px, 2.5vw, 24px);
   color: white;
-  line-height: 1.6;
+  line-height: 1.4;
   text-shadow: 1px 1px 2px black;
+  flex: 1;
 }
 
 
@@ -356,46 +355,30 @@ canvas {
 /* Responsive Tweaks */
 @media (max-width: 768px) {
   .domain-button img {
-    width: 80px;
+    width: 90px;
   }
 
   .instructions {
     font-size: 14px;
-    padding: 8px;
-    margin: 8px;
+    padding: 10px;
+    margin: 10px;
   }
 
   .menu-column {
-    padding: 12px;
-    margin: 8px;
+    padding: 16px;
+    margin: 10px;
     min-width: unset;
-    width: 92%;
-    gap: 16px;
+    width: 95%;
   }
 
   #instructionsBox {
-    width: 92%;
-    padding: 8px;
-    margin: 8px auto;
-    font-size: 18px;
-  }
-
-  .domain-row {
-    gap: 12px;
-    flex-direction: column;
-    align-items: center;
-    padding: 8px 0;
-  }
-
-  .domain-row img {
-    width: 100px;
+    width: 95%;
+    padding: 10px;
+    margin: 10px auto;
   }
 
   .domain-stats {
-    font-size: 12px;
-    text-align: center;
-    width: 100%;
-    margin-top: 4px;
+    font-size: 14px;
   }
 
   .hud {
