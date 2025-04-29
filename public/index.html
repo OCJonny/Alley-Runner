@@ -57,7 +57,14 @@
           Collect red beans to increase your score and green beans to earn extra lives! The speed bar below represents your current pace in the race.
           Beware of the obstacles that will try to stop you in your quest!  Good luck!
         </p>
-        <button class="continue-button" onclick="showMainMenu()">Continue</button>
+        <img
+          src="images/Button_Start_Up.png"
+          alt="Start Game"
+          class="start-button"
+          onclick="showMainMenu()"
+          onmouseover="this.src='images/Button_Start_Down.png'"
+          onmouseout="this.src='images/Button_Start_Up.png'"
+        />
       </div>
     </div>
 

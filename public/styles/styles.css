@@ -456,11 +456,6 @@ canvas {
   color: #fff;
 }
 
-.continue-button {
-  width: 180px;
-  cursor: pointer;
-}
-
 @media (max-width: 768px) {
   .lore-container {
     padding: 20px;
