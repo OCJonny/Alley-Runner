@@ -38,7 +38,7 @@
         src="images/Button_Start_Up.png"
         alt="Start Game"
         class="start-button"
-        onclick="showMainMenu()"
+        onclick="showLoreScreen()"
         onmouseover="this.src='images/Button_Start_Down.png'"
         onmouseout="this.src='images/Button_Start_Up.png'"
       />
@@ -46,6 +46,18 @@
         <p>🎮 Click, Space, or Tap to Jump Over Obstacles</p>
         <p><img src="images/RedBean.png" alt="Red Bean" class="bean-icon"/> Collect Red Beans to Increase Score</p>
         <p><img src="images/GreenBean.png" alt="Green Bean" class="bean-icon"/> Green Beans Give Extra Lives</p>
+      </div>
+    </div>
+
+    <!-- 📜 Lore Screen -->
+    <div id="loreScreen" class="screen hidden">
+      <div class="lore-container">
+        <h2>Alley Run Lore</h2>
+        <p>Once upon a time, in a bustling city filled with vibrant alleys, lived the most daring runners who risked everything for the chance to win glory and gather the most beans!
+          Collect red beans to increase your score and green beans to earn extra lives! The speed bar below represents your current pace in the race.
+          Beware of the obstacles that will try to stop you in your quest!  Good luck!
+        </p>
+        <button class="continue-button" onclick="showMainMenu()">Continue</button>
       </div>
     </div>
 

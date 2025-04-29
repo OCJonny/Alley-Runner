@@ -428,3 +428,50 @@ canvas {
     z-index: 100;
   }
 }
+#loreScreen {
+  background: url("../images/Title_Screen.png") no-repeat center center;
+  background-size: cover;
+}
+
+.lore-container {
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 30px;
+  border-radius: 15px;
+  max-width: 800px;
+  margin: 0 20px;
+  text-align: center;
+  backdrop-filter: blur(4px);
+}
+
+.lore-container h2 {
+  font-size: 32px;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.lore-container p {
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 30px;
+  color: #fff;
+}
+
+.continue-button {
+  width: 180px;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .lore-container {
+    padding: 20px;
+    margin: 0 15px;
+  }
+
+  .lore-container h2 {
+    font-size: 24px;
+  }
+
+  .lore-container p {
+    font-size: 14px;
+  }
+}

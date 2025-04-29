@@ -228,8 +228,14 @@ document.addEventListener("visibilitychange", () => {
     }
   }
 });
+// Show lore screen
+function showLoreScreen() {
+  showScreen("loreScreen");
+}
+
 // Export global functions needed in HTML onclick handlers
 window.showMainMenu = showMainMenu;
+window.showLoreScreen = showLoreScreen;
 window.startGame = startGame;
 window.restartGame = restartGame;
 window.toggleSound = toggleSound;
