@@ -1,4 +1,6 @@
-/* Reset and Base Styles */
+/* ---------------------------------- */
+/* 🌐 Reset and Base Global Styles */
+/* ---------------------------------- */
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@400;700&display=swap');
 
 * {
@@ -7,113 +9,72 @@
   box-sizing: border-box;
 }
 
-html,
-body {
+html, body {
   width: 100%;
-  height: 100%;
+  height: 100dvh;
   background-color: #121212;
   font-family: 'Press Start 2P', 'Roboto', system-ui, sans-serif;
   color: #fff;
-  overflow-x: hidden;
-  overflow-y: auto;
-  min-height: 100vh;
+  overflow: hidden;
 }
 
-/* Screen Layout */
+/* ---------------------------------- */
+/* 🖼️ Generic Screen Wrapper */
+/* Only the .screen.active will be shown */
+/* ---------------------------------- */
 .screen {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
-  display: flex;
+  height: 100dvh;
+  display: none;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   transition: opacity 0.5s;
+  z-index: 0;
 }
 
-.hidden {
-  display: none;
+.screen.active {
+  display: flex;
 }
 
-/* Title Screen */
+/* ---------------------------------- */
+/* 🎮 Title Screen */
+/* ---------------------------------- */
 #titleScreen {
   background: url("../images/Title_Screen.png") no-repeat center center;
   background-size: cover;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
   justify-content: flex-end;
   padding-bottom: 10%;
 }
 
-.instructions {
-  margin-top: 40px;
-  padding: 15px;
-  background-color: rgba(0, 0, 0, 0.7);
-  border-radius: 10px;
-  font-size: 18px;
-  line-height: 1.6;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-}
-
-.instructions p {
-  margin: 10px 0;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.bean-icon {
-  width: 24px;
-  height: 24px;
-  image-rendering: pixelated;
-}
-
 .start-button {
   width: 180px;
-  margin-top: 60px;
+  margin-top: 40px;
   cursor: pointer;
   transition: transform 0.2s;
 }
 
-.start-button:hover {
+/* Prevent buttons from scaling on hover globally */
+.start-button:hover,
+.domain-row img:hover {
   transform: none;
 }
 
-/* Main Menu */
+/* ---------------------------------- */
+/* ⚡ Main Menu Screen */
+/* ---------------------------------- */
 #mainMenu {
   background: url("../images/Main_Menu.png") no-repeat center center;
   background-size: cover;
-  text-align: center;
-  position: relative;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: absolute;
+  z-index: 1;
 }
-
-#instructionsBox {
-  font-size: 24px;
-  font-weight: bold;
-  color: white;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  margin: 20px auto 30px;
-  text-align: center;
-  width: 90%;
-  max-width: 800px;
-  position: relative;
-  z-index: 2;
-  padding: 20px;
-  background-color: rgba(0, 0, 0, 0.5);
-  border-radius: 10px;
-  line-height: 1.4;
-}
-
-@media (max-width: 768px) {
-  #instructionsBox {
-    font-size: 20px;
-    padding: 15px;
-  }
-}
-
 
 #mainMenu .overlay {
   position: absolute;
@@ -125,27 +86,41 @@ body {
   z-index: 1;
 }
 
+/* Instruction Box */
+#instructionsBox {
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  margin: 20px 0 30px;
+  padding: 15px;
+  background-color: rgba(0,0,0,0.5);
+  border-radius: 10px;
+  width: 90%;
+  max-width: 800px;
+  text-align: center;
+  z-index: 2;
+}
+
+/* Container for level buttons */
 .menu-column {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  position: relative;
   z-index: 2;
-  background-color: rgba(0, 0, 0, 0.7);
-  padding: 20px;
-  border-radius: 16px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(4px);
   width: min(90%, 800px);
-  margin: 10px auto;
+  background: rgba(0,0,0,0.6);
+  border-radius: 12px;
+  padding: 20px;
+  overflow-y: auto;
 }
 
+/* Each level row */
 .domain-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 15px;
-  padding: 5px;
+  gap: 16px;
 }
 
 .domain-row img {
@@ -154,63 +129,18 @@ body {
   transition: transform 0.2s;
 }
 
-.domain-row img:hover {
-  transform: scale(1.1);
-}
-
 .domain-stats {
-  font-size: clamp(14px, 2.5vw, 24px);
+  font-size: 22px;
   color: white;
-  line-height: 1.4;
-  text-shadow: 1px 1px 2px black;
   flex: 1;
-}
-
-
-/* Left side - Buttons */
-.menu-left {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 32px;
-  z-index: 2;
-}
-
-/* Right side - Stats */
-.menu-right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 32px;
-  z-index: 2;
-}
-
-.domain-button {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.domain-button img {
-  width: 125px;
-  /* 25% larger than original 100px */
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.domain-button img:hover {
-  transform: none;
-}
-
-.domain-stats {
-  font-size: 20px;
-  color: white;
   text-align: left;
-  line-height: 1.4;
   text-shadow: 1px 1px 2px black;
+  line-height: 1.4;
 }
 
-/* Game Screen */
+/* ---------------------------------- */
+/* 🕹️ Game Screen */
+/* ---------------------------------- */
 #gameScreen {
   background-color: #000;
 }
@@ -218,51 +148,50 @@ body {
 .game-container {
   position: relative;
   width: 100%;
-  height: 100vh;
+  height: 100%;
+  background: black;
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: black;
-  overflow: hidden;
 }
 
-/* Canvas */
+/* Canvas Setup */
 canvas {
   width: 100%;
   height: 100%;
+  background: black;
   display: block;
-  background-color: black;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
 }
 
-/* HUD */
+/* In-Game HUD */
 .hud {
   position: absolute;
   top: 20px;
   left: 20px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  font-size: 22px;  /* Increased by 20% from 18px */
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  font-size: 22px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
   z-index: 10;
 }
 
 .hud span {
-  margin: 5px 0;  /* Slightly increased margin to match new size */
+  margin: 5px 0;
 }
 
 #livesContainer {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;  /* Slightly increased margin to match new size */
+  margin-bottom: 10px;
 }
 
 .life-icon {
-  width: 38px;  /* Increased by 20% from 32px */
-  height: 38px;  /* Increased by 20% from 32px */
-  margin-right: 7px;  /* Slightly increased margin to match new size */
+  width: 38px;
+  height: 38px;
+  margin-right: 6px;
   image-rendering: pixelated;
 }
 
@@ -274,27 +203,25 @@ canvas {
   transform: translateX(-50%);
   width: 200px;
   height: 12px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid #fff;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid white;
   border-radius: 6px;
   overflow: hidden;
 }
 
 #speedBar {
   height: 100%;
-  background-color: #4CAF50;
   width: 0%;
+  background-color: #4CAF50;
   transition: width 0.2s;
 }
 
-/* Speed Up Message */
-#speedUpMessage {
+/* Speed Up + Health Up Messages */
+#speedUpMessage, #healthUpMessage {
   position: absolute;
-  top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translateX(-50%);
   font-size: 28px;
-  color: gold;
   font-weight: bold;
   opacity: 0;
   transition: opacity 0.3s;
@@ -302,22 +229,12 @@ canvas {
   z-index: 10;
 }
 
-/* Health Up Message */
-#healthUpMessage {
-  position: absolute;
-  top: 60%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 28px;
-  color: #00ff88;
-  font-weight: bold;
-  opacity: 0;
-  transition: opacity 0.3s;
-  pointer-events: none;
-  z-index: 10;
-}
+#speedUpMessage { top: 50%; color: gold; }
+#healthUpMessage { top: 60%; color: #00ff88; }
 
-/* End Screen */
+/* ---------------------------------- */
+/* 💀 End Game Screen */
+/* ---------------------------------- */
 #endGameScreen {
   background-color: #121212;
   text-align: center;
@@ -325,7 +242,7 @@ canvas {
 
 #endGameScreen h2 {
   font-size: 36px;
-  margin: 20px 0 10px;
+  margin-top: 20px;
 }
 
 #endGameScreen p {
@@ -335,79 +252,28 @@ canvas {
 
 .defeat-sprite {
   width: 128px;
-  height: auto;
-  margin-bottom: 20px;
-  animation: slowBounce 2s ease-in-out infinite;
+  animation: slowBounce 2s infinite ease-in-out;
 }
 
 @keyframes slowBounce {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-10px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
-/* Responsive Tweaks */
+/* ---------------------------------- */
+/* 📱 Mobile Responsive Tweaks */
+/* ---------------------------------- */
 @media (max-width: 768px) {
-  .domain-button img {
-    width: 90px;
-  }
-
-  .instructions {
-    font-size: 14px;
-    padding: 10px;
-    margin: 10px;
-  }
-
-  .menu-column {
-    padding: 16px;
-    margin: 10px;
-    min-width: unset;
-    width: 95%;
-  }
-
-  #instructionsBox {
-    width: 95%;
-    padding: 10px;
-    margin: 10px auto;
-  }
-
-  .domain-stats {
-    font-size: 14px;
-  }
-
-  .hud {
-    font-size: 14px;
-  }
-
-  #speedUpMessage,
-  #healthUpMessage {
-    font-size: 18px;
-  }
-
-  #endGameScreen h2 {
-    font-size: 20px;
-  }
-
-  #endGameScreen p {
-    font-size: 14px;
-  }
-
-  .sound-toggle {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    font-size: 24px;
-    padding: 10px;
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-    z-index: 100;
-  }
+  #instructionsBox { font-size: 18px; padding: 12px; }
+  .domain-row img { width: 90px; }
+  .domain-stats { font-size: 18px; }
+  .hud { font-size: 16px; }
+  .life-icon { width: 30px; height: 30px; }
+  #speedUpMessage, #healthUpMessage { font-size: 18px; }
+  #endGameScreen h2 { font-size: 24px; }
+  #endGameScreen p { font-size: 18px; }
 }
+
+/* ---------------------------------- */
+/* 🛑 End of File */
+/* ---------------------------------- */
