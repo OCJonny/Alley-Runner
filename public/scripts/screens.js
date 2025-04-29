@@ -131,26 +131,26 @@ function showEndScreen(score) {
 
 // 🧪 Game starter
 function startGame(elementType) {
-  const canvas = document.getElementById("gameCanvas");
+  showGameScreen(); // Switch to Game Screen first
 
-  if (!resizeListenerAdded) {
-    window.addEventListener("resize", () => {
-      if (canvas && game) {
-        initGame(canvas, game.elementType);
-      }
-    });
-    resizeListenerAdded = true;
-  }
+  // Wait a tiny moment for DOM to update (allow canvas to exist)
+  setTimeout(() => {
+    const canvas = document.getElementById("gameCanvas");
+    if (!canvas) {
+      console.error("Game canvas not found");
+      return;
+    }
 
-  console.log(`Starting game with ${elementType}`);
-  showGameScreen();
+    console.log(`Starting game with ${elementType}`);
 
-  if (canvas) {
-    initGame(canvas, elementType).catch(console.error);
-  } else {
-    console.error("Game canvas not found");
-  }
+    initGame(canvas, elementType)
+      .then(() => {
+        window.game = { elementType }; // Save type for resize handling
+      })
+      .catch(console.error);
+  }, 100); // small 100ms delay
 }
+
 
 // 🔁 Restart button
 function restartGame() {

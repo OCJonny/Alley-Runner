@@ -123,8 +123,51 @@
         </div>
       </div>
     </div>
+
+    <!-- 🕹️ Game Screen -->
+    <div id="gameScreen" class="screen hidden">
+      <div class="game-container">
+        <canvas id="gameCanvas"></canvas>
+
+        <!-- HUD -->
+        <div class="hud">
+          <div id="livesContainer"></div>
+          <span id="score">Score: 0</span>
+          <span id="highScore">High Score: 0</span>
+          <span id="beansCollected">Beans Collected: 0</span>
+        </div>
+
+        <!-- Speed Bar -->
+        <div class="speed-container">
+          <div id="speedBar"></div>
+        </div>
+
+        <!-- Speed Up Text -->
+        <div id="speedUpMessage">⚡ Speed Up!</div>
+        <div id="healthUpMessage">+1 Health! 💚</div>
+      </div>
+    </div>
+
+    <!-- 🧨 End Game Screen -->
+    <div id="endGameScreen" class="screen hidden">
+      <img id="defeatSprite" class="defeat-sprite" src="" alt="Defeated Character" />
+      <h2>Game Over</h2>
+      <p id="finalScore">Your Score: 0</p>
+      <p id="beanCountDisplay">Total Beans Collected: 0</p>
+      <p id="finalHighScore">High Score: 0</p>
+
+      <img
+        src="images/Button_Restart_Up.png"
+        alt="Restart Game"
+        class="start-button"
+        onclick="restartGame()"
+        onmouseover="this.src='images/Button_Restart_Down.png'"
+        onmouseout="this.src='images/Button_Restart_Up.png'"
+      />
+    </div>
+
+    <!-- 🧠 Scripts (DEFERRED and FIXED) -->
     <script src="scripts/game.js" defer></script>
     <script src="scripts/screens.js" defer></script>
-    <script src="scripts/script.js"></script>
   </body>
 </html>
