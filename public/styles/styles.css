@@ -429,7 +429,7 @@ canvas {
   }
 }
 #loreScreen {
-  background: url("../images/Title_Screen.png") no-repeat center center;
+  background: url("../images/Lore_Screen.png") no-repeat center center;
   background-size: cover;
 }
 
