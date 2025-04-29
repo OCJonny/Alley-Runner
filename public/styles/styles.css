@@ -1,6 +1,4 @@
-/* ---------------------------------- */
-/* 🌐 Reset and Base Global Styles */
-/* ---------------------------------- */
+/* Reset and Base Styles */
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@400;700&display=swap');
 
 * {
@@ -9,73 +7,113 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   width: 100%;
-  height: 100dvh;
+  height: 100%;
   background-color: #121212;
   font-family: 'Press Start 2P', 'Roboto', system-ui, sans-serif;
   color: #fff;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  min-height: 100vh;
 }
 
-/* ---------------------------------- */
-/* 🖼️ Generic Screen Wrapper */
-/* Only the .screen.active will be shown */
-/* ---------------------------------- */
+/* Screen Layout */
 .screen {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100dvh;
-  display: none;
+  height: 100%;
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   transition: opacity 0.5s;
-  z-index: 0;
 }
 
-.screen:not(.hidden) {
-  display: flex;
-  opacity: 1;
+.hidden {
+  display: none;
 }
 
-/* ---------------------------------- */
-/* 🎮 Title Screen */
-/* ---------------------------------- */
+/* Title Screen */
 #titleScreen {
   background: url("../images/Title_Screen.png") no-repeat center center;
   background-size: cover;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
   justify-content: flex-end;
   padding-bottom: 10%;
 }
 
+.instructions {
+  margin-top: 40px;
+  padding: 15px;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 10px;
+  font-size: 18px;
+  line-height: 1.6;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.instructions p {
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bean-icon {
+  width: 24px;
+  height: 24px;
+  image-rendering: pixelated;
+}
+
 .start-button {
   width: 180px;
-  margin-top: 40px;
+  margin-top: 60px;
   cursor: pointer;
   transition: transform 0.2s;
 }
 
-/* Prevent buttons from scaling on hover globally */
-.start-button:hover,
-.domain-row img:hover {
+.start-button:hover {
   transform: none;
 }
 
-/* ---------------------------------- */
-/* ⚡ Main Menu Screen */
-/* ---------------------------------- */
+/* Main Menu */
 #mainMenu {
   background: url("../images/Main_Menu.png") no-repeat center center;
   background-size: cover;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  position: absolute;
-  z-index: 1;
+  text-align: center;
+  position: relative;
 }
+
+#instructionsBox {
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  margin: 20px auto 30px;
+  text-align: center;
+  width: 90%;
+  max-width: 800px;
+  position: relative;
+  z-index: 2;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+  #instructionsBox {
+    font-size: 20px;
+    padding: 15px;
+  }
+}
+
 
 #mainMenu .overlay {
   position: absolute;
@@ -87,42 +125,27 @@ html, body {
   z-index: 1;
 }
 
-/* Instruction Box */
-#instructionsBox {
-  font-size: 24px;
-  font-weight: bold;
-  color: white;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-  margin: 20px 0 30px;
-  padding: 15px;
-  background-color: rgba(0,0,0,0.5);
-  border-radius: 10px;
-  width: 90%;
-  max-width: 800px;
-  text-align: center;
-  z-index: 2;
-}
-
-/* Container for level buttons */
 .menu-column {
   display: flex;
   flex-direction: column;
   gap: 20px;
   position: relative;
   z-index: 2;
-  width: min(90%, 800px);
-  background: rgba(0,0,0,0.6);
-  border-radius: 12px;
+  background-color: rgba(0, 0, 0, 0.7);
   padding: 20px;
-  margin: 20px auto;
+  border-radius: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+  width: min(90%, 800px);
+  margin: 10px auto;
 }
 
-/* Each level row */
 .domain-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 15px;
+  padding: 5px;
 }
 
 .domain-row img {
@@ -131,18 +154,63 @@ html, body {
   transition: transform 0.2s;
 }
 
-.domain-stats {
-  font-size: 22px;
-  color: white;
-  flex: 1;
-  text-align: left;
-  text-shadow: 1px 1px 2px black;
-  line-height: 1.4;
+.domain-row img:hover {
+  transform: scale(1.1);
 }
 
-/* ---------------------------------- */
-/* 🕹️ Game Screen */
-/* ---------------------------------- */
+.domain-stats {
+  font-size: clamp(14px, 2.5vw, 24px);
+  color: white;
+  line-height: 1.4;
+  text-shadow: 1px 1px 2px black;
+  flex: 1;
+}
+
+
+/* Left side - Buttons */
+.menu-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 32px;
+  z-index: 2;
+}
+
+/* Right side - Stats */
+.menu-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 32px;
+  z-index: 2;
+}
+
+.domain-button {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.domain-button img {
+  width: 125px;
+  /* 25% larger than original 100px */
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.domain-button img:hover {
+  transform: none;
+}
+
+.domain-stats {
+  font-size: 20px;
+  color: white;
+  text-align: left;
+  line-height: 1.4;
+  text-shadow: 1px 1px 2px black;
+}
+
+/* Game Screen */
 #gameScreen {
   background-color: #000;
 }
@@ -150,50 +218,51 @@ html, body {
 .game-container {
   position: relative;
   width: 100%;
-  height: 100%;
-  background: black;
-  overflow: hidden;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  background: black;
+  overflow: hidden;
 }
 
-/* Canvas Setup */
+/* Canvas */
 canvas {
   width: 100%;
   height: 100%;
-  background: black;
   display: block;
+  background-color: black;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
 }
 
-/* In-Game HUD */
+/* HUD */
 .hud {
   position: absolute;
   top: 20px;
   left: 20px;
   display: flex;
   flex-direction: column;
-  font-size: 22px;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  align-items: flex-start;
+  font-size: 22px;  /* Increased by 20% from 18px */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   z-index: 10;
 }
 
 .hud span {
-  margin: 5px 0;
+  margin: 5px 0;  /* Slightly increased margin to match new size */
 }
 
 #livesContainer {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 10px;  /* Slightly increased margin to match new size */
 }
 
 .life-icon {
-  width: 38px;
-  height: 38px;
-  margin-right: 6px;
+  width: 38px;  /* Increased by 20% from 32px */
+  height: 38px;  /* Increased by 20% from 32px */
+  margin-right: 7px;  /* Slightly increased margin to match new size */
   image-rendering: pixelated;
 }
 
@@ -205,25 +274,27 @@ canvas {
   transform: translateX(-50%);
   width: 200px;
   height: 12px;
-  background: rgba(255,255,255,0.1);
-  border: 1px solid white;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid #fff;
   border-radius: 6px;
   overflow: hidden;
 }
 
 #speedBar {
   height: 100%;
-  width: 0%;
   background-color: #4CAF50;
+  width: 0%;
   transition: width 0.2s;
 }
 
-/* Speed Up + Health Up Messages */
-#speedUpMessage, #healthUpMessage {
+/* Speed Up Message */
+#speedUpMessage {
   position: absolute;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   font-size: 28px;
+  color: gold;
   font-weight: bold;
   opacity: 0;
   transition: opacity 0.3s;
@@ -231,12 +302,22 @@ canvas {
   z-index: 10;
 }
 
-#speedUpMessage { top: 50%; color: gold; }
-#healthUpMessage { top: 60%; color: #00ff88; }
+/* Health Up Message */
+#healthUpMessage {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 28px;
+  color: #00ff88;
+  font-weight: bold;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  z-index: 10;
+}
 
-/* ---------------------------------- */
-/* 💀 End Game Screen */
-/* ---------------------------------- */
+/* End Screen */
 #endGameScreen {
   background-color: #121212;
   text-align: center;
@@ -244,7 +325,7 @@ canvas {
 
 #endGameScreen h2 {
   font-size: 36px;
-  margin-top: 20px;
+  margin: 20px 0 10px;
 }
 
 #endGameScreen p {
@@ -254,28 +335,79 @@ canvas {
 
 .defeat-sprite {
   width: 128px;
-  animation: slowBounce 2s infinite ease-in-out;
+  height: auto;
+  margin-bottom: 20px;
+  animation: slowBounce 2s ease-in-out infinite;
 }
 
 @keyframes slowBounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
-/* ---------------------------------- */
-/* 📱 Mobile Responsive Tweaks */
-/* ---------------------------------- */
+/* Responsive Tweaks */
 @media (max-width: 768px) {
-  #instructionsBox { font-size: 18px; padding: 12px; }
-  .domain-row img { width: 90px; }
-  .domain-stats { font-size: 18px; }
-  .hud { font-size: 16px; }
-  .life-icon { width: 30px; height: 30px; }
-  #speedUpMessage, #healthUpMessage { font-size: 18px; }
-  #endGameScreen h2 { font-size: 24px; }
-  #endGameScreen p { font-size: 18px; }
-}
+  .domain-button img {
+    width: 90px;
+  }
 
-/* ---------------------------------- */
-/* 🛑 End of File */
-/* ---------------------------------- */
+  .instructions {
+    font-size: 14px;
+    padding: 10px;
+    margin: 10px;
+  }
+
+  .menu-column {
+    padding: 16px;
+    margin: 10px;
+    min-width: unset;
+    width: 95%;
+  }
+
+  #instructionsBox {
+    width: 95%;
+    padding: 10px;
+    margin: 10px auto;
+  }
+
+  .domain-stats {
+    font-size: 14px;
+  }
+
+  .hud {
+    font-size: 14px;
+  }
+
+  #speedUpMessage,
+  #healthUpMessage {
+    font-size: 18px;
+  }
+
+  #endGameScreen h2 {
+    font-size: 20px;
+  }
+
+  #endGameScreen p {
+    font-size: 14px;
+  }
+
+  .sound-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 24px;
+    padding: 10px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    z-index: 100;
+  }
+}
