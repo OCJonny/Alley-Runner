@@ -17,6 +17,11 @@ function showScreen(screenId) {
   if (target) target.classList.remove("hidden");
 }
 
+function hideAllScreens() {
+  const screens = document.querySelectorAll(".screen");
+  screens.forEach((screen) => screen.classList.add("hidden"));
+}
+
 // 🌐 API base URL
 const API_BASE_URL = window.location.origin;
 
@@ -317,10 +322,11 @@ window.addEventListener('resize', () => {
   }
 });
 
-// Expose to HTML
+// Export functions globally for HTML onclick
 window.showMainMenu = showMainMenu;
 window.showLoreScreen = showLoreScreen;
 window.startGame = startGame;
 window.restartGame = restartGame;
 window.toggleSound = toggleSound;
 window.nextLorePage = nextLorePage;
+
