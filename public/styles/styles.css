@@ -467,6 +467,27 @@ canvas {
   justify-content: center;
 }
 
+.all-lore-content {
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 10px;
+  text-align: left;
+}
+
+.all-lore-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.all-lore-content::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+}
+
+.all-lore-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
 .lore-navigation {
   display: flex;
   flex-direction: column;
@@ -489,7 +510,31 @@ canvas {
   background: rgba(255, 255, 255, 0.1);
 }
 
+/* Desktop View (> 768px) */
+@media (min-width: 769px) {
+  .mobile-view {
+    display: none !important;
+  }
+  
+  .desktop-view {
+    display: block !important;
+  }
+  
+  .start-button.desktop-view {
+    display: inline-block !important;
+  }
+}
+
+/* Mobile View (≤ 768px) */
 @media (max-width: 768px) {
+  .mobile-view {
+    display: block !important;
+  }
+  
+  .desktop-view {
+    display: none !important;
+  }
+  
   .lore-container {
     padding: 20px;
     margin: 0 15px;

@@ -233,10 +233,36 @@ function showLoreScreen() {
   showScreen("loreScreen");
   // Reset to first page when showing lore screen
   currentLorePage = 1;
+  
+  // Check if user is on desktop or mobile
+  checkDeviceType();
+  
+  // Update lore pages
   updateLorePages();
 }
 
 let currentLorePage = 1;
+let isDesktop = false;
+
+// Check if user is on desktop or mobile
+function checkDeviceType() {
+  isDesktop = window.innerWidth > 768;
+  
+  // Set up the appropriate view
+  if (isDesktop) {
+    // Show desktop view (show all paragraphs at once with start button below)
+    // This is now handled by CSS media queries
+    
+    // Show start button for desktop immediately
+    const desktopStartButton = document.querySelector('#loreScreen .start-button.desktop-view');
+    if (desktopStartButton) {
+      desktopStartButton.classList.remove('hidden');
+    }
+  }
+}
+
+// Add resize listener to handle screen rotations or window resizing
+window.addEventListener('resize', checkDeviceType);
 
 function nextLorePage() {
   if (currentLorePage < 3) {
@@ -246,24 +272,32 @@ function nextLorePage() {
 }
 
 function updateLorePages() {
-  // Hide all pages
+  // Only needed for mobile view
+  // Desktop view shows all paragraphs by default
+  
+  // Hide all pages (mobile view)
   document.querySelectorAll('.lore-page').forEach(page => {
     page.classList.add('hidden');
   });
   
-  // Show current page
-  document.querySelector(`.lore-page[data-page="${currentLorePage}"]`).classList.remove('hidden');
+  // Show current page (mobile view)
+  const currentPage = document.querySelector(`.lore-page[data-page="${currentLorePage}"]`);
+  if (currentPage) {
+    currentPage.classList.remove('hidden');
+  }
   
-  // Update navigation
-  const nextButton = document.querySelector('.next-button');
-  const startButton = document.querySelector('#loreScreen .start-button');
+  // Update navigation for mobile view
+  const nextButton = document.querySelector('.next-button.mobile-view');
+  const mobileStartButton = document.querySelector('#loreScreen .start-button.mobile-view');
   
-  if (currentLorePage === 3) {
-    nextButton.classList.add('hidden');
-    startButton.classList.remove('hidden');
-  } else {
-    nextButton.classList.remove('hidden');
-    startButton.classList.add('hidden');
+  if (nextButton && mobileStartButton) {
+    if (currentLorePage === 3) {
+      nextButton.classList.add('hidden');
+      mobileStartButton.classList.remove('hidden');
+    } else {
+      nextButton.classList.remove('hidden');
+      mobileStartButton.classList.add('hidden');
+    }
   }
 }
 
@@ -273,3 +307,4 @@ window.showLoreScreen = showLoreScreen;
 window.startGame = startGame;
 window.restartGame = restartGame;
 window.toggleSound = toggleSound;
+window.nextLorePage = nextLorePage;
