@@ -356,30 +356,46 @@ canvas {
 /* Responsive Tweaks */
 @media (max-width: 768px) {
   .domain-button img {
-    width: 90px;
+    width: 80px;
   }
 
   .instructions {
     font-size: 14px;
-    padding: 10px;
-    margin: 10px;
+    padding: 8px;
+    margin: 8px;
   }
 
   .menu-column {
-    padding: 16px;
-    margin: 10px;
+    padding: 12px;
+    margin: 8px;
     min-width: unset;
-    width: 95%;
+    width: 92%;
+    gap: 16px;
   }
 
   #instructionsBox {
-    width: 95%;
-    padding: 10px;
-    margin: 10px auto;
+    width: 92%;
+    padding: 8px;
+    margin: 8px auto;
+    font-size: 18px;
+  }
+
+  .domain-row {
+    gap: 12px;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 0;
+  }
+
+  .domain-row img {
+    width: 100px;
   }
 
   .domain-stats {
-    font-size: 14px;
+    font-size: 12px;
+    text-align: center;
+    width: 100%;
+    margin-top: 4px;
   }
 
   .hud {
