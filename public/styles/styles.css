@@ -128,24 +128,26 @@ body {
 .menu-column {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 32px;
   position: relative;
   z-index: 2;
   background-color: rgba(0, 0, 0, 0.7);
-  padding: 20px;
+  padding: 32px;
   border-radius: 16px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(4px);
-  width: min(90%, 800px);
-  margin: 10px auto;
+  margin: 20px;
+  max-height: 90vh;
+  overflow-y: auto;
+  width: fit-content;
+  min-width: 300px;
 }
 
 .domain-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 15px;
-  padding: 5px;
+  justify-content: flex-start;
+  gap: 24px;
 }
 
 .domain-row img {
@@ -159,11 +161,10 @@ body {
 }
 
 .domain-stats {
-  font-size: clamp(14px, 2.5vw, 24px);
+  font-size: 24px;
   color: white;
-  line-height: 1.4;
+  line-height: 1.6;
   text-shadow: 1px 1px 2px black;
-  flex: 1;
 }
 
 
