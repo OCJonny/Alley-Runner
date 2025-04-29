@@ -493,6 +493,10 @@ canvas {
   .lore-container {
     padding: 20px;
     margin: 0 15px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
   .lore-container h2 {
@@ -500,6 +504,22 @@ canvas {
   }
 
   .lore-container p {
-    font-size: 14px;
+    font-size: 16px;
+    line-height: 1.8;
+  }
+
+  .lore-page {
+    min-height: 200px;
+    padding: 20px 10px;
+  }
+
+  .next-button {
+    margin-top: auto;
+    padding: 15px 30px;
+    font-size: 18px;
+  }
+
+  .start-button {
+    margin-top: 30px;
   }
 }
