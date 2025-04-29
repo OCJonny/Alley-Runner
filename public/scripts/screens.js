@@ -224,6 +224,11 @@ document.addEventListener("visibilitychange", () => {
 
 let currentLorePage = 1;
 
+function hideAllScreens() {
+  const screens = document.querySelectorAll('.screen');
+  screens.forEach(screen => screen.classList.add('hidden'));
+}
+
 function isMobileByAspectRatio() {
   return window.innerHeight > window.innerWidth;
 }
