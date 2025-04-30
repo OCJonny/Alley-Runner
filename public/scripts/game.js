@@ -87,7 +87,7 @@ class Game {
     this.scoreKey = `${elementType}_score`;
     this.highScore = localStorage.getItem(this.scoreKey) || 0;
 
-    this.speedScale = this.isMobile ? 1.8 : 2.0;  // Desktop starts faster
+    this.speedScale = this.isMobile ? 2.07 : 2.0;  // Mobile starts 15% faster
     this.lastSpeedTier = 0;
     this.recentlySpedUp = false;
 
