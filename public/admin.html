@@ -1,0 +1,29 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin - Reset Stats</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; text-align: center; }
+    button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>Admin Controls</h1>
+  <button onclick="resetStats()">Reset All Stats</button>
+  <p id="message"></p>
+
+  <script>
+    function resetStats() {
+      fetch('/api/reset', { method: 'POST' })
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('message').textContent = data.message;
+        })
+        .catch(err => {
+          document.getElementById('message').textContent = 'Error: ' + err.message;
+        });
+    }
+  </script>
+</body>
+</html>
