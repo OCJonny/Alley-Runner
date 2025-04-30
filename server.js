@@ -74,6 +74,16 @@ app.get("/api/leaderboard", async (req, res) => {
   }
 });
 
+// Admin authentication endpoint
+app.post("/api/admin/auth", (req, res) => {
+  const { password } = req.body;
+  if (password === process.env.ADMIN_PASSWORD) {
+    res.json({ success: true });
+  } else {
+    res.status(401).json({ success: false });
+  }
+});
+
 // ✅ Launch server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {

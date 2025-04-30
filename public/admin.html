@@ -25,16 +25,27 @@
   </div>
 
   <script>
-    const ADMIN_PASSWORD = "Discuss-internet-415-reset";
-
     function login() {
       const password = document.getElementById("password").value;
-      if (password === ADMIN_PASSWORD) {
-        document.getElementById("loginPanel").style.display = "none";
-        document.getElementById("adminPanel").style.display = "block";
-      } else {
-        document.getElementById("loginError").textContent = "Invalid password";
-      }
+      fetch('/api/admin/auth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ password })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById("loginPanel").style.display = "none";
+          document.getElementById("adminPanel").style.display = "block";
+        } else {
+          document.getElementById("loginError").textContent = "Invalid password";
+        }
+      })
+      .catch(err => {
+        document.getElementById("loginError").textContent = "Server error";
+      });
     }
 
     function resetStats() {
