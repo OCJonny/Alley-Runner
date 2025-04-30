@@ -383,10 +383,10 @@ class Game {
       setTimeout(() => (this.recentlySpedUp = false), 500);
     }
 
-    const minSpeed = this.isMobile ? 1.8 : 1.5;
     const maxSpeed = this.isMobile ? 5.0 : 7.0;  // Doubled from 2.5/3.5
+    const initialSpeed = this.isMobile ? 2.07 : 2.0;
     document.getElementById("speedBar").style.width =
-      `${((this.speedScale - minSpeed) / (maxSpeed - minSpeed)) * 100}%`;
+      `${((this.speedScale - initialSpeed) / (maxSpeed - initialSpeed)) * 100}%`;
 
     // Gradient from green to red based on speed
     const red = Math.min(255, Math.floor((this.speedScale - 1) * 255));
