@@ -84,6 +84,23 @@ app.post("/api/admin/auth", (req, res) => {
   }
 });
 
+// Reset all stats endpoint
+app.post("/api/reset", async (req, res) => {
+  try {
+    await pool.query(`
+      UPDATE domain_stats 
+      SET high_score = 0, 
+          total_score = 0, 
+          total_beans = 0,
+          updated_at = CURRENT_TIMESTAMP
+    `);
+    res.json({ message: "All stats have been reset successfully" });
+  } catch (err) {
+    console.error("Reset error:", err);
+    res.status(500).json({ error: "Failed to reset stats" });
+  }
+});
+
 // ✅ Launch server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
