@@ -6,22 +6,45 @@
   <style>
     body { font-family: sans-serif; padding: 20px; text-align: center; }
     button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+    #adminPanel { display: none; }
+    .error { color: red; margin: 10px 0; }
   </style>
 </head>
 <body>
-  <h1>Admin Controls</h1>
-  <button onclick="resetStats()">Reset All Stats</button>
-  <p id="message"></p>
+  <div id="loginPanel">
+    <h1>Admin Login</h1>
+    <input type="password" id="password" placeholder="Enter password">
+    <button onclick="login()">Login</button>
+    <p id="loginError" class="error"></p>
+  </div>
+
+  <div id="adminPanel">
+    <h1>Admin Controls</h1>
+    <button onclick="resetStats()">Reset All Stats</button>
+    <p id="message"></p>
+  </div>
 
   <script>
+    const ADMIN_PASSWORD = "alleyrun123"; // You should change this password
+
+    function login() {
+      const password = document.getElementById("password").value;
+      if (password === ADMIN_PASSWORD) {
+        document.getElementById("loginPanel").style.display = "none";
+        document.getElementById("adminPanel").style.display = "block";
+      } else {
+        document.getElementById("loginError").textContent = "Invalid password";
+      }
+    }
+
     function resetStats() {
       fetch('/api/reset', { method: 'POST' })
         .then(res => res.json())
         .then(data => {
-          document.getElementById('message').textContent = data.message;
+          document.getElementById("message").textContent = data.message;
         })
         .catch(err => {
-          document.getElementById('message').textContent = 'Error: ' + err.message;
+          document.getElementById("message").textContent = 'Error: ' + err.message;
         });
     }
   </script>
