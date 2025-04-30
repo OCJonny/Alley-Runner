@@ -87,7 +87,7 @@ class Game {
     this.scoreKey = `${elementType}_score`;
     this.highScore = localStorage.getItem(this.scoreKey) || 0;
 
-    this.speedScale = this.isMobile ? 1.8 : 1.65;  // Desktop speed increased by 10% from 1.5
+    this.speedScale = this.isMobile ? 1.8 : 2.0;  // Desktop starts faster
     this.lastSpeedTier = 0;
     this.recentlySpedUp = false;
 
@@ -471,7 +471,7 @@ class Game {
       this.obstacleSpawnTimer = 0;
       this.obstacleSpawnInterval = this.isMobile
         ? 3000 + Math.random() * 2000
-        : 2000 + Math.random() * 1500;
+        : 1800 + Math.random() * 1200;
     }
 
     this.obstacles.forEach((ob, i) => {
