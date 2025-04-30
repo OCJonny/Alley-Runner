@@ -5,7 +5,7 @@
   <title>Admin - Reset Stats</title>
   <style>
     body { font-family: sans-serif; padding: 20px; text-align: center; }
-    button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+    button { padding: 10px 20px; font-size: 16px; cursor: pointer; margin: 10px; }
     #adminPanel { display: none; }
     .error { color: red; margin: 10px 0; }
   </style>
@@ -24,11 +24,6 @@
     <button onclick="exportCSV()">Export Stats (CSV)</button>
     <p id="message"></p>
   </div>
-
-  <script>
-    function exportCSV() {
-      window.location.href = '/api/export-csv';
-    }
 
   <script>
     function login() {
@@ -63,6 +58,10 @@
         .catch(err => {
           document.getElementById("message").textContent = 'Error: ' + err.message;
         });
+    }
+
+    function exportCSV() {
+      window.location.href = '/api/export-csv';
     }
   </script>
 </body>
