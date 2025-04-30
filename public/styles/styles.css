@@ -131,7 +131,7 @@ body {
   gap: 20px;
   position: relative;
   z-index: 2;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.85);
   padding: 20px;
   border-radius: 16px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
