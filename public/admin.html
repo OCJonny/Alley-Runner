@@ -21,8 +21,14 @@
   <div id="adminPanel">
     <h1>Admin Controls</h1>
     <button onclick="resetStats()">Reset All Stats</button>
+    <button onclick="exportCSV()">Export Stats (CSV)</button>
     <p id="message"></p>
   </div>
+
+  <script>
+    function exportCSV() {
+      window.location.href = '/api/export-csv';
+    }
 
   <script>
     function login() {

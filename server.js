@@ -101,6 +101,28 @@ app.post("/api/reset", async (req, res) => {
   }
 });
 
+// Export stats as CSV endpoint
+app.get("/api/export-csv", async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT domain, high_score, total_score, total_beans, updated_at FROM domain_stats ORDER BY domain"
+    );
+    
+    // Create CSV content
+    const csvHeader = "Domain,High Score,Total Score,Total Beans,Last Updated\n";
+    const csvRows = result.rows.map(row => 
+      `${row.domain},${row.high_score},${row.total_score},${row.total_beans},${row.updated_at}`
+    ).join("\n");
+    
+    res.setHeader("Content-Type", "text/csv");
+    res.setHeader("Content-Disposition", "attachment; filename=alleyrun_stats.csv");
+    res.send(csvHeader + csvRows);
+  } catch (err) {
+    console.error("Export error:", err);
+    res.status(500).json({ error: "Failed to export stats" });
+  }
+});
+
 // ✅ Launch server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
