@@ -32,12 +32,50 @@ const pool = new pg.Pool({
   ssl: { rejectUnauthorized: false },
 });
 
+// Rate limiting setup
+const rateLimit = {
+  windowMs: 60 * 1000, // 1 minute
+  maxRequests: 10, // max requests per minute
+  requests: new Map()
+};
+
+function checkRateLimit(ip) {
+  const now = Date.now();
+  const windowStart = now - rateLimit.windowMs;
+  
+  // Clean up old requests
+  for (const [key, timestamps] of rateLimit.requests.entries()) {
+    rateLimit.requests.set(key, timestamps.filter(time => time > windowStart));
+    if (rateLimit.requests.get(key).length === 0) {
+      rateLimit.requests.delete(key);
+    }
+  }
+  
+  // Get/initialize request timestamps for this IP
+  const timestamps = rateLimit.requests.get(ip) || [];
+  
+  // Check if limit exceeded
+  if (timestamps.filter(time => time > windowStart).length >= rateLimit.maxRequests) {
+    return false;
+  }
+  
+  // Add new timestamp
+  timestamps.push(now);
+  rateLimit.requests.set(ip, timestamps);
+  return true;
+}
+
 // 📥 POST endpoint: Add score/beans to domain_stats
 app.post("/api/update", async (req, res) => {
   const { domain, score, beans } = req.body;
+  const clientIP = req.ip;
 
   if (!domain || isNaN(score) || isNaN(beans)) {
     return res.status(400).json({ error: "Missing or invalid data." });
+  }
+
+  if (!checkRateLimit(clientIP)) {
+    return res.status(429).json({ error: "Too many requests. Please try again later." });
   }
 
   try {
